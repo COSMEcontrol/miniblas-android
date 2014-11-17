@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">miniBlas</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_delete">Eliminar</string>
+    <string name="lista_perfiles">Lista de Perfiles</string>
+    <string name="menu">Menu</string>
+    <string name="nuevo">Nuevo</string>
+    <string name="editar">Editar</string>
+    <string name="sin_perfiles">¡No hay perfiles!</string>
+    <string name="nombre_perfil">Nombre del perfil:</string>
+    <string name="ip">IP:</string>
+    <string name="puerto">Puerto:</string>
+    <string name="pass">Contraseña:</string>
+    <string name="nuevo_perfil">Nuevo Perfil</string>
+    <string name="nombre_cesta">Nombre de la cesta:</string>
+    <string name="periodo_refresco">Periodo de refresco:</string>
+    <string name="valor">Valor:</string>
+    <string name="ajustes">Ajustes</string>
+    <string name="Guardar">Guardar</string>
+    <string name="Cancelar">Cancelar</string>
+    <string name="valor_max">Valor máximo:</string>
+    <string name="valor_min">Valor mínimo</string>
+    <string name="sin_cestas">¡No tiene ninguna cesta creada!</string>
+    <string name="editar_cesta">Editar Cesta</string>
+    <string name="nueva_cesta">Nueva Cesta</string>
+    <string name="editar_perfil">Editar Perfil</string>
+    <string name="menu_search">Buscar</string>
+    <string name="acercade">Acerca de</string>
+    <string name="buscar">Buscar</string>
+    <string name="estado">Estado</string>
+
+</resources>

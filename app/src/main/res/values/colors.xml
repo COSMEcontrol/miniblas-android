@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#000000</color>
+    <color name="status_bar_tint">#DDDDDD</color>
+    <color name="actionbar_bg">#9999FF</color>
+
+    <color name="cabinet_accent_color_lighter">#f06292</color>
+    <color name="cabinet_accent_color">#e91e63</color>
+    <color name="cabinet_color_darker">#455ede</color>
+    <color name="cabinet_accent_color_darker">#d81b60</color>
+    <color name="miniblas_color">#96AA3B</color>
+    <color name="miniblas_color_status_bar">#808B44</color>
+    <color name="button_disabled">#ddd</color>
+
+
+    <color name="drawer_background">#fff</color>
+    <color name="accent_color">#333</color>
+    <color name="search_view_hint">#BBFFFFFF</color>
+
+    <color name="button_disabled_dark">#303030</color>
+    <color name="dark_background">#242424</color>
+
+    <color name="empty_text">#C7C7C7</color>
+    <color name="empty_text_dark">#575757</color>
+
+    <color name="statusbar_color_cab">#212121</color>
+    <color name="holo_blue_light">#ff33b5e5</color>
+
+
+    
+</resources>

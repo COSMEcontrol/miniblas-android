@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.miniblas.app"
+    android:versionCode="20"
+    android:versionName="2.0.11 Alpha compilación (11/11/2014)" >
+
+    <permission
+        android:name="com.miniblas.api.v1.provider.READ_PROFILES"
+        android:label="prueba"
+        android:permissionGroup="android.permission-group.COST_MONEY"
+        android:protectionLevel="dangerous" />
+
+    <application
+        android:name="com.miniblas.app.AplicacionPrincipal"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/MiniblasMaterialDesing" >
+        <activity
+            android:name="com.miniblas.iu.FabActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.miniblas.iu.AcercaDe"
+            android:theme="@android:style/Theme.Dialog"
+            android:label="@string/acercaDe">
+        </activity>
+        <activity
+            android:name="com.miniblas.iu.Preferences"/>
+    </application>
+
+</manifest>

@@ -1,0 +1,83 @@
+K 25
+svn:wc:ra_dav:version-url
+V 35
+/svn/!svn/ver/5/miniBlas/res/layout
+END
+lyt_ajustes_variable.xml
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/!svn/ver/3/miniBlas/res/layout/lyt_ajustes_variable.xml
+END
+activity_main.xml
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/!svn/ver/3/miniBlas/res/layout/activity_main.xml
+END
+lyt_lista_cestas.xml
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/!svn/ver/5/miniBlas/res/layout/lyt_lista_cestas.xml
+END
+lyt_nuevo_perfil.xml
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/!svn/ver/3/miniBlas/res/layout/lyt_nuevo_perfil.xml
+END
+layout_search.xml
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/!svn/ver/3/miniBlas/res/layout/layout_search.xml
+END
+lyt_lista_perfiles.xml
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/3/miniBlas/res/layout/lyt_lista_perfiles.xml
+END
+menu.xml
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/!svn/ver/3/miniBlas/res/layout/menu.xml
+END
+lyt_lista_variable.xml
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/3/miniBlas/res/layout/lyt_lista_variable.xml
+END
+lyt_editar_cesta.xml
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/!svn/ver/3/miniBlas/res/layout/lyt_editar_cesta.xml
+END
+lyt_lista_variables.xml
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/!svn/ver/3/miniBlas/res/layout/lyt_lista_variables.xml
+END
+lyt_perfil.xml
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/3/miniBlas/res/layout/lyt_perfil.xml
+END
+lyt_variable.xml
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/!svn/ver/3/miniBlas/res/layout/lyt_variable.xml
+END
+lyt_cesta.xml
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/3/miniBlas/res/layout/lyt_cesta.xml
+END

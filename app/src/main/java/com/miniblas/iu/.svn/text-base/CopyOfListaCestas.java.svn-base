@@ -1,0 +1,200 @@
+package com.example.miniblas;
+
+import java.util.ArrayList;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.ClipData.Item;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.Toast;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.ActionMode;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+
+public class CopyOfListaCestas extends SherlockActivity {
+
+	public Context yo;
+	private ViewGroup lista;
+	private ActionMode mActionMode;
+	private int numSeleccionados;
+	public ArrayList<ViewGroup> listaVistasEliminar;
+	public MenuItem iconoEstado;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		setTheme(R.style.Theme_Sherlock_Light);
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.lyt_lista_cestas);
+		numSeleccionados = 0;
+		listaVistasEliminar = new ArrayList<ViewGroup>();
+		lista= (ViewGroup) findViewById(R.id.container);
+		findViewById(android.R.id.empty).setVisibility(View.INVISIBLE);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		if(lista.getChildCount() == 0){
+			addItem("Cesta 1");
+			addItem("Cesta 2");
+			addItem("Cesta 3");
+			addItem("Cesta 4");
+		}
+
+	}
+	public void nuevaCesta(){
+		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(yo);
+		LayoutInflater inflater = (LayoutInflater) yo.getSystemService(yo.LAYOUT_INFLATER_SERVICE);
+		final View layout = inflater.inflate(R.layout.lyt_nuevo_perfil,null);
+		alertDialogBuilder.setView(layout);
+		//opciones del dialog
+			alertDialogBuilder
+				.setTitle(getResources().getString(R.string.nueva_cesta))
+				.setCancelable(false)
+				.setPositiveButton(getResources().getString(R.string.Guardar),new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						layout.findViewById(R.id.et_nombre);
+						layout.findViewById(R.id.et_ip);
+						layout.findViewById(R.id.et_puerto);
+						layout.findViewById(R.id.et_pass);
+						//listaPerfiles.add(et_perfilNuevo.getText().toString());
+						addItem("Prueba Cesta");
+					}
+				  })
+				.setNegativeButton(getResources().getString(R.string.Cancelar),new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						// if this button is clicked, just close
+						// the dialog box and do nothing
+						dialog.cancel();
+					}
+				}); 
+
+		AlertDialog alertDialog = alertDialogBuilder.create();
+		alertDialog.show();
+	}
+	
+	private void addItem(String nombre) {
+        // Instantiate a new "row" view.
+        final ViewGroup newView = (ViewGroup) LayoutInflater.from(this).inflate(
+        		R.layout.lyt_cesta, lista, false);
+        
+        ((TextView) newView.findViewById(R.id.tv_nom_cesta)).setText(nombre);
+        // Set a click listener for the "X" button in the row that will remove the row.
+        ((CheckBox) newView.findViewById(R.id.ch_marcar_cesta)).setOnCheckedChangeListener(new OnCheckedChangeListener() {	
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				if (isChecked) {
+					// Start the CAB using the ActionMode.Callback defined above
+					numSeleccionados++;
+					listaVistasEliminar.add(newView);
+			        mActionMode = startActionMode(mActionModeCallback);
+			        mActionMode.setTitle(String.valueOf(numSeleccionados)+" seleccionadas");
+
+		        } else{
+		        	numSeleccionados--;
+		        	listaVistasEliminar.remove(newView);
+		        	mActionMode.setTitle(String.valueOf(numSeleccionados)+" seleccionadas");
+		        	//si no hay ninguno seleccionado borrar la barra
+		        	if(numSeleccionados==0){
+		        		mActionMode.finish();
+		        	}
+		        }
+				
+			}
+		});
+        if (lista.getChildCount() == 0) {
+            findViewById(android.R.id.empty).setVisibility(View.VISIBLE);
+        }
+        newView.setFocusable(true);
+        // Because mContainerView has android:animateLayoutChanges set to true,
+        // adding this view is automatically animated.
+        lista.addView(newView, 0);
+    }
+	
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getSupportMenuInflater();
+		inflater.inflate(R.menu.menu_cestas, menu);
+		iconoEstado= (MenuItem) menu.findItem(R.id.estado);
+		//iconoEstado.setIcon(R.drawable.desconectado);
+		return true;
+	}
+	@Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+		case R.id.menu_anadir_cesta:
+			nuevaCesta();
+			return true;
+		case R.id.estado:
+			((MenuItem) iconoEstado).setIcon(R.drawable.conectado);
+			return true;
+		case android.R.id.home:
+	        finish();
+	        return(true);
+		default:
+			return false;
+		}
+    }
+	private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+
+	    // Called when the action mode is created; startActionMode() was called
+	    @Override
+	    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+	        // Inflate a menu resource providing context menu items
+	        MenuInflater inflater = mode.getMenuInflater();
+	        //si el numero de elementos seleccionados es mayor de 1 no mostrar el boton de editar
+	        if(numSeleccionados>1){
+	        	inflater.inflate(R.menu.menu_seleccion_noeditar, menu);
+	        }else{
+	        	inflater.inflate(R.menu.menu_seleccion, menu);
+	        }
+	        return true;
+	    }
+	    // Called each time the action mode is shown. Always called after onCreateActionMode, but
+	    // may be called multiple times if the mode is invalidated.
+	    @Override
+	    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+	        return false; // Return false if nothing is done
+	    }
+
+	    // Called when the user selects a contextual menu item
+	    @Override
+	    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+	        switch (item.getItemId()) {
+	            case R.id.menu_eliminar:
+	                Log.v("Eliminar cesta", "Eliminar cesta");
+	                for(ViewGroup vista: listaVistasEliminar){
+	                	lista.removeView(vista);
+	                }
+	                numSeleccionados = 0;
+	                listaVistasEliminar.clear();
+	                mActionMode.finish();
+	                return true;
+	            case R.id.menu_editar:
+	            	return true;
+	            default:
+	                return false;
+	        }
+	    }
+
+	    // Called when the user exits the action mode
+	    @Override
+	    public void onDestroyActionMode(ActionMode mode) {
+	        mActionMode = null;
+	    }
+
+	};
+
+}

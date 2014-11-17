@@ -1,0 +1,366 @@
+package com.example.miniblas;
+
+import java.util.ArrayList;
+import java.util.Vector;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Interpolator.Result;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.EditText;
+import android.widget.Filter;
+import android.widget.Filterable;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.ActionMode;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.widget.SearchView;
+import com.actionbarsherlock.widget.SearchView.OnQueryTextListener;
+import com.example.arcadio.Perfil;
+
+public class MainActivity extends SherlockActivity implements OnQueryTextListener {
+
+	public AdaptadorListaElementos adapter = null;
+	
+	//Elementos de la interfaz
+	public ListView lv_lista;
+	
+	
+	private Vector<String> lista;
+	private ActionMode mActionMode;
+	private int numSeleccionados;
+	public Vector<Integer> listaElementosSeleccionados;
+	public Context yo;
+	public static final String NOMBRE_PERFIL = "NOMBRE_PEFIL";
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		setTheme(R.style.Theme_Sherlock_Light);
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.lyt_lista_perfiles);		
+		yo = this;
+		numSeleccionados = 0;
+		listaElementosSeleccionados = new Vector<Integer>();
+		lista = new Vector<String>();
+		lv_lista= (ListView) findViewById(R.id.container);
+		//findViewById(android.R.id.empty).setVisibility(View.INVISIBLE);
+		//tomar datod de la base de datos
+		
+		lista.add("Prueba");
+		lista.add("Prueba1");
+		lista.add("Prueba2");
+		lista.add("Prueba3");
+		adapter = new AdaptadorListaElementos(this,lista);
+		lv_lista.setAdapter(adapter); 
+		
+	}
+	
+	@Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+			case R.id.menu_anadir_perfil:
+				nuevoPerfil();
+				return true;
+			default:
+				return false;
+		}
+    }
+	public void editarPerfil(){
+		//TextView perfil = (TextView) listaElementosSeleccionados.get(0).findViewById(R.id.tv_nom_perfil);
+		//buscar en base de datos por nombre y devolver la case ya formada
+		
+		Perfil perfilmod = new Perfil("Perfil a modificar", "122.3.23.3", 33, "contraseñasupersecreta");
+		//mostrar cuadro de dialogo
+		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(yo);
+		LayoutInflater inflater = (LayoutInflater) yo.getSystemService(yo.LAYOUT_INFLATER_SERVICE);
+		final View layout = inflater.inflate(R.layout.lyt_nuevo_perfil,null);
+		EditText et_nombre = (EditText) layout.findViewById(R.id.et_nombre);
+		EditText et_ip = (EditText) layout.findViewById(R.id.et_ip);
+		EditText et_puerto = (EditText)layout.findViewById(R.id.et_puerto);
+		EditText et_pass = (EditText)layout.findViewById(R.id.et_pass);
+		et_nombre.setText(perfilmod.getNombre());
+		et_ip.setText(perfilmod.getIp());
+		et_puerto.setText(String.valueOf(perfilmod.getPuerto()));
+		et_pass.setText(perfilmod.getPassword());
+		alertDialogBuilder.setView(layout);
+		//opciones del dialog
+			alertDialogBuilder
+				.setTitle(getResources().getString(R.string.editar_perfil))
+				.setCancelable(false)
+				.setPositiveButton(getResources().getString(R.string.Guardar),new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						//guardar en base de datos
+					}
+				  })
+				.setNegativeButton(getResources().getString(R.string.Cancelar),new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						// if this button is clicked, just close
+						// the dialog box and do nothing
+						dialog.cancel();
+					}
+				}); 
+
+		AlertDialog alertDialog = alertDialogBuilder.create();
+		alertDialog.show();
+	}
+	public void nuevoPerfil(){
+		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(yo);
+		LayoutInflater inflater = (LayoutInflater) yo.getSystemService(yo.LAYOUT_INFLATER_SERVICE);
+		final View layout = inflater.inflate(R.layout.lyt_nuevo_perfil,null);
+		alertDialogBuilder.setView(layout);
+		//opciones del dialog
+			alertDialogBuilder
+				.setTitle(getResources().getString(R.string.nuevo_perfil))
+				.setCancelable(false)
+				.setPositiveButton(getResources().getString(R.string.Guardar),new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						EditText et_nombre = (EditText) layout.findViewById(R.id.et_nombre);
+						EditText et_ip = (EditText) layout.findViewById(R.id.et_ip);
+						EditText et_puerto = (EditText)layout.findViewById(R.id.et_puerto);
+						EditText et_pass = (EditText)layout.findViewById(R.id.et_pass);
+						new Perfil(et_nombre.getText().toString(),
+								et_ip.getText().toString(),
+								Integer.parseInt(et_puerto.getText().toString()),
+								et_pass.getText().toString());
+						lista.add(et_nombre.getText().toString());
+						//guardar en la base de datos
+					}
+				  })
+				.setNegativeButton(getResources().getString(R.string.Cancelar),new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						dialog.cancel();
+					}
+				}); 
+
+		AlertDialog alertDialog = alertDialogBuilder.create();
+		alertDialog.show();
+	}
+	
+	
+	private void addItem(final String nombre) {
+		
+		Intent intent = new Intent(yo, ListaCestas.class);
+		intent.putExtra(NOMBRE_PERFIL,nombre);
+		startActivity(intent);
+	}
+
+
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getSupportMenuInflater();
+		inflater.inflate(R.menu.menu_perfiles, menu);
+		
+		SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setOnQueryTextListener(this);
+        return true;
+            
+	}
+	
+	private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+
+	    // Called when the action mode is created; startActionMode() was called
+	    @Override
+	    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+	        // Inflate a menu resource providing context menu items
+	        MenuInflater inflater = mode.getMenuInflater();
+	        if(numSeleccionados>1){
+	        	inflater.inflate(R.menu.menu_seleccion_noeditar, menu);
+	        }else{
+	        	inflater.inflate(R.menu.menu_seleccion, menu);
+	        }
+	        return true;
+	    }
+
+	    // Called each time the action mode is shown. Always called after onCreateActionMode, but
+	    // may be called multiple times if the mode is invalidated.
+	    @Override
+	    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+	        return false; // Return false if nothing is done
+	    }
+
+	    // Called when the user selects a contextual menu item
+	    @Override
+	    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+	        switch (item.getItemId()) {
+	            case R.id.menu_eliminar:
+	                for(Integer vista: listaElementosSeleccionados){
+	                	Log.v("Elemeno", String.valueOf(vista));
+	                	lista.removeElementAt(Integer.valueOf(vista));
+	                	
+	                	//lista.removeView(vista);
+	                }
+	                for(String elemento: lista){
+	                	Log.v("Elemento de listview", elemento);
+	                }
+	                numSeleccionados = 0;
+	                listaElementosSeleccionados.clear();
+	                adapter.notifyDataSetChanged();
+	                mActionMode.finish();
+
+	                return true;
+	    		case R.id.menu_editar:
+	    			editarPerfil();
+	    			return true;
+
+	            default:
+	                return false;
+	        }
+	    }
+
+	    // Called when the user exits the action mode
+	    @Override
+	    public void onDestroyActionMode(ActionMode mode) {
+	        mActionMode = null;
+	    }
+
+	};
+	/**
+	 * Adaptador para mostrar en la interfaz los elementos de la lista.
+	 * @author alberto
+	 *
+	 */
+	public class AdaptadorListaElementos extends BaseAdapter implements Filterable{
+		
+		private final Activity actividad;
+		private final Vector<String> lista;
+		
+		public AdaptadorListaElementos(Activity actividad,Vector<String> lista) {
+			super();
+			this.actividad = actividad;
+			this.lista=lista;
+		}
+		// Este metodo se ejecuta cada vez que la lista tiene que cargar una
+		public View getView(final int position, View convertView, ViewGroup parent) {
+			// Con estas dos líneas lo que hacemos es inflar una fila
+			LayoutInflater inflater = actividad.getLayoutInflater();
+			final View item = inflater.inflate(R.layout.lyt_perfil, null, true); 
+			
+			item.setOnClickListener( new View.OnClickListener()
+	        {
+	                public void onClick(View v)
+	                {
+	                	Intent intent = new Intent(yo, ListaCestas.class);
+						intent.putExtra(NOMBRE_PERFIL,lista.get(position));
+						startActivity(intent);    
+	                }});
+			((TextView) item.findViewById(R.id.tv_nom_perfil)).setText(lista.get(position));
+	        // Set a click listener for the "X" button in the row that will remove the row.
+	        ((CheckBox) item.findViewById(R.id.ch_marcar_perfil)).setOnCheckedChangeListener(new OnCheckedChangeListener() {	
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					if (isChecked) {
+						// Start the CAB using the ActionMode.Callback defined above
+						numSeleccionados++;
+						listaElementosSeleccionados.add(position);
+				        mActionMode = startActionMode(mActionModeCallback);
+				        mActionMode.setTitle(String.valueOf(numSeleccionados)+" seleccionados");
+
+			        } else{
+			        	numSeleccionados--;
+			        	listaElementosSeleccionados.remove(position);
+			        	mActionMode.setTitle(String.valueOf(numSeleccionados)+" seleccionados");
+			        	//si no hay ninguno seleccionado borrar la barra
+			        	if(numSeleccionados==0){
+			        		mActionMode.finish();
+			        	}
+			        }
+					
+				}
+			});
+		return (item);
+		}
+		@Override
+		public int getCount() {
+			return lista.size();
+		}
+		@Override
+		public Object getItem(int position) {
+			return lista.elementAt(position);
+		}
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
+		
+		public Filter getFilter() {
+		    return new Filter() {
+
+		        @Override
+		        protected FilterResults performFiltering(CharSequence constraint) {
+		        	Log.v("Texto", String.valueOf(constraint));
+		            final FilterResults oReturn = new FilterResults();
+		            final ArrayList<String> results = new ArrayList<String>();
+		            results.clear();
+		            for(String resultado: lista){
+		            	Log.v("Es el valor de lista en el filtro", resultado);
+		            	
+		            }
+		            if (constraint != null) {
+
+		              
+		                    for (String g:lista) {
+		                        if (g.toLowerCase()
+		                                .contains(String.valueOf(constraint)))
+		                        	results.add(g);
+		                        	Log.v("buscar", String.valueOf(constraint)+String.valueOf(g.toLowerCase()));
+		                    }
+		               
+		                oReturn.values = results;
+		                
+		            }
+		            else
+		            	Toast.makeText(yo, "nuloooo", Toast.LENGTH_SHORT).show();
+		            return oReturn;
+		        }
+
+		        @SuppressWarnings("unchecked")
+		        @Override
+		        protected void publishResults(CharSequence constraint,
+		                FilterResults results) {
+		            lista.clear();
+			            for(String resultado: (ArrayList<String>) results.values){
+			            	Log.v("Resultados encontrados", resultado);
+			            	lista.add(resultado);
+			            }
+		            adapter.notifyDataSetChanged();
+		        }
+		    };
+		}
+	}
+	// The following callbacks are called for the SearchView.OnQueryChangeListener
+    public boolean onQueryTextChange(String newText) {
+    	Vector<String> listaCopia = new Vector<String>();
+    	listaCopia.addAll(lista);
+    	adapter.getFilter().filter(newText);
+    	lista = listaCopia;
+    	for(String resultado: lista){
+        	Log.v("Es el valor de lista", resultado);
+        }
+        return true;
+    }
+ 
+    public boolean      onQueryTextSubmit      (String query) {
+    	Vector<String> listaCopia = new Vector<String>();
+    	listaCopia.addAll(lista);
+    	adapter.getFilter().filter(query);
+    	lista = listaCopia;
+    	for(String resultado: lista){
+        	Log.v("Es el valor de lista", resultado);
+        }
+        return true;
+    }
+}

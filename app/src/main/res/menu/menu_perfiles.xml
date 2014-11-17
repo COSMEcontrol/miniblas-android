@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<item android:id="@+id/menu_anadir_perfil" android:title="@string/nuevo" android:icon="@android:drawable/ic_menu_add" android:showAsAction="ifRoom|withText" android:visible="true" />
+<item android:id="@+id/menu_ajustes" android:titleCondensed="@string/ajustes" android:title="@string/ajustes" android:showAsAction="never"></item><item android:id="@+id/Acercade"
+        android:titleCondensed="@string/acercade"
+        android:title="@string/acercade"
+        android:showAsAction="never">
+        
+    </item>
+
+ 
+    
+    
+</menu>

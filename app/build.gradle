@@ -1,0 +1,43 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion "20.0.0"
+
+    defaultConfig {
+        applicationId "iu.miniblas.com.miniblas"
+        minSdkVersion 14
+        targetSdkVersion 21
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    // eliminar problemas entre inyector dagger e inyector butterknife
+    packagingOptions {
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'com.android.support:appcompat-v7:21.0.0'
+    // @aar or @jar
+    compile 'com.j256.ormlite:ormlite-android:4.48'
+    compile 'com.j256.ormlite:ormlite-jdbc:4.48'
+    compile 'com.j256.ormlite:ormlite-core:4.48'
+    compile 'com.tojc.ormlite.android:ormlite-content-provider-library:1.0.4'
+    //compile 'com.tojc.ormlite.android:ormlite-content-provider-compiler:1.0.4'
+    compile 'com.alazuga:arcadioLibrary:0.1'
+    compile 'com.squareup.dagger:dagger-compiler:1.2.2'
+    compile 'com.github.pedrovgs:renderers:1.2'
+    compile 'com.melnykov:floatingactionbutton:1.0.7'
+    compile 'asia.ivity.android:drag-sort-listview:1.0'
+    compile 'com.jakewharton:butterknife:6.0.0'
+    compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
+    compile 'com.afollestad:material-dialogs:0.0.8'
+}

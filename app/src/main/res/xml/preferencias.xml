@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="Ajustes por defecto"
+        android:layout="@layout/preference_category_custom">
+        <EditTextPreference
+            android:key="porPref"
+            android:summary="@string/cambiarPuertoPorDefecto"
+            android:defaultValue="@string/puertoPrecargado"
+			android:title="@string/puerto"
+			android:inputType="number"
+            android:layout="@layout/preference_custom"/>
+        <EditTextPreference
+            android:key="passPref"
+            android:summary="@string/cambiarPasswordPorDefecto"
+            android:defaultValue="GTA70"
+			android:title="Password"
+            android:layout="@layout/preference_custom"/>
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="Interfaz"
+        android:layout="@layout/preference_category_custom">
+
+        <CheckBoxPreference
+            android:key="basic_mode"
+            android:title="Tema básico"
+            android:summary="Tema con vista básica"
+            android:persistent="true"
+            android:layout="@layout/preference_custom" />
+
+        <CheckBoxPreference
+            android:key="other_mode"
+            android:title="Otro tema"
+            android:summary="Descripción de otro tema"
+            android:layout="@layout/preference_custom" />
+
+    </PreferenceCategory>
+</PreferenceScreen>

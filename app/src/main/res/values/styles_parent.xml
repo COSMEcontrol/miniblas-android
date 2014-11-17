@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<!--
+    <style name="_SelectorParent" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="list_selector">@drawable/list_selector</item>
+        <item name="menu_selector">@drawable/menu_selector</item>
+    </style>
+-->
+    <style name="miniBlasParent" parent="Theme.AppCompat.Light.DarkActionBar">
+
+        <item name="colorPrimary">@color/miniblas_color</item>
+
+
+    </style>
+
+
+    <style name="miniBlasDarkParent" parent="Theme.AppCompat">
+
+
+    </style>
+
+
+</resources>

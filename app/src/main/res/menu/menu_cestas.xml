@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <item android:id="@+id/estado" android:title="@string/estado" android:icon="@drawable/desconectado" android:showAsAction="ifRoom" android:enabled="false"></item><item android:id="@+id/menu_anadir_cesta" android:title="@string/nuevo" android:icon="@android:drawable/ic_menu_add" android:showAsAction="ifRoom|withText" android:visible="true" />
+    
+    
+    <group android:checkableBehavior="all">
+        <item android:id="@+id/menu_cestas_autoconexion" android:titleCondensed="Autoconexión" android:title="Autoconexión">
+        </item>
+    </group><item android:id="@+id/Acercade" android:title="@string/acercade" android:orderInCategory="1" android:showAsAction="never"></item>
+     
+    
+</menu>

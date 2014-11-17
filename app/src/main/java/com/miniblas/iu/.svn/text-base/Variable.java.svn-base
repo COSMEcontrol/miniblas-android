@@ -1,0 +1,103 @@
+package com.example.miniblas;
+
+import java.util.ArrayList;
+
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodSession.EventCallback;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.ActionMode;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+
+public class Variable extends SherlockActivity {
+
+	public Context yo;
+	public EditText et_variable;
+	public int valor;
+	public int valor_minimo;
+	public int valor_maximo;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		setTheme(R.style.Theme_Sherlock_Light);
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.lyt_variable);		
+		yo = this;
+		et_variable = (EditText) findViewById(R.id.tv_valor);
+		//llamar a la bd para establecer el valor maximo y minimo de la variable
+        
+		//capturar los mensajes de la red y actualizar el valor
+		
+		//cambiar los colores segun valores maximos y minimos
+		if(valor>valor_maximo){
+			et_variable.setTextColor(Color.RED);
+		}
+		else if(valor< valor_minimo){
+			et_variable.setTextColor(Color.CYAN);
+		}
+	}
+	@Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+		case R.id.menu_ajustes_variable:
+			ajustesVariable();
+			return true;
+
+		default:
+			return false;
+		}
+    }
+	
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getSupportMenuInflater();
+		inflater.inflate(R.menu.menu_perfiles, menu);
+		return true;
+	}
+	
+	private void ajustesVariable(){
+		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(yo);
+		LayoutInflater inflater = (LayoutInflater) yo.getSystemService(yo.LAYOUT_INFLATER_SERVICE);
+		final View layout = inflater.inflate(R.layout.lyt_ajustes_variable,null);
+		alertDialogBuilder.setView(layout);
+		//opciones del dialog
+			alertDialogBuilder
+				.setTitle(getResources().getString(R.string.ajustes))
+				.setCancelable(false)
+				.setPositiveButton(getResources().getString(R.string.Guardar),new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						layout.findViewById(R.id.et_valor_variable).toString();
+						layout.findViewById(R.id.et_valor_max).toString();
+						layout.findViewById(R.id.et_valor_min).toString();
+						//guardar valor en la base de datos
+					}
+				  })
+				.setNegativeButton(getResources().getString(R.string.Cancelar),new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						// if this button is clicked, just close
+						// the dialog box and do nothing
+						dialog.cancel();
+					}
+				}); 
+
+		AlertDialog alertDialog = alertDialogBuilder.create();
+		alertDialog.show();
+	}
+}

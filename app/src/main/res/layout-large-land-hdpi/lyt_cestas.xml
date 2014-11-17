@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="horizontal" >
+ 
+<fragment
+    android:id="@+id/CestasListFragmentLandscape"
+    android:layout_width="212dp"
+    android:layout_height="match_parent"
+    class="com.miniblas.iu.landscape.CestasLandsCapeListFragment" >
+    
+</fragment>
+
+	<LinearLayout
+	    android:id="@+id/linearLayoutVariablesYGrafico"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:orientation="vertical" >
+
+	    <fragment
+	        android:id="@+id/VariableListFragmentLandscape"
+	        android:tag="unique_tag"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        class="com.miniblas.iu.landscape.VariablesLandsCapeFragment" />
+
+	   <!--  <fragment
+	        android:id="@+id/GrafLandsCapeListFragment"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        class="com.miniblas.iu.landscape.GrafLandsCapeListFragment" />-->
+	</LinearLayout>
+
+</LinearLayout>
