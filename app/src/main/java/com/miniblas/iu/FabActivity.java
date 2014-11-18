@@ -21,7 +21,7 @@ import android.widget.Toast;
 public class FabActivity extends ThemableActivity {
 	
 	private FloatingActionButton fab; // the floating blue add/paste button
-    private boolean fabDisabled; // flag indicating whether fab should stay hidden while scrolling
+    public boolean fabDisabled = false; // flag indicating whether fab should stay hidden while scrolling
     private FabListener fabListener;
     //private RecyclerView rv ;
     private BaseCab mCab; // the current contextual action bar, saves state throughout fragments
@@ -50,14 +50,9 @@ public class FabActivity extends ThemableActivity {
             }
         });
         */
-        if (savedInstanceState != null) {
-            if (savedInstanceState.containsKey("cab")) {
-                mCab = (BaseCab) savedInstanceState.getSerializable("cab");
-               // mCab.setContext(this);
-            }
-        }
-
-
+        // necesario para que no se vuelva a generar otra vez el fragment
+        if (savedInstanceState != null)
+            return;
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
         // trans.setCustomAnimations(R.anim.frag_enter, R.anim.frag_exit);
@@ -67,12 +62,10 @@ public class FabActivity extends ThemableActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        initFab();
 	}
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        if (mCab != null && mCab.isActive())
-            Log.v("cab", "saving cab");
-            outState.putSerializable("cab", mCab);
         super.onSaveInstanceState(outState);
     }
 
@@ -89,7 +82,13 @@ public class FabActivity extends ThemableActivity {
         } else {
             fab.hide(true);
         }
-        fabDisabled = disable;
+    }
+    public void initFab(){
+        if(fabDisabled){
+            fab.hide(true);
+        }else{
+            fab.show(true);
+        }
     }
     public void toggleFab(boolean hide) {
         if (fabDisabled) fab.hide(false);

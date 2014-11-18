@@ -46,15 +46,14 @@ public class ProfilesElementsFragment extends OrdenableElementsFragment<MiniBlas
         super.onCreate(savedInstanceState);
         AplicacionPrincipal application =  (AplicacionPrincipal) getActivity().getApplication();
         application.inject(this);
-        super.setAdapter(adaptador);
-        setListAdapter(adapter);
+        setAdapter(adaptador);
+        setListAdapter(getAdapter());
         //getListView().setOnItemClickListener(new OnPerfilClickedListener());
-        controller = ProfilesController.getInstance(application);
-        controller.onViewChange(this);
         PerfilCab pc = new PerfilCab();
         //pc.setContext(getActivity());
         ((FabActivity) getActivity()).setCab(pc);
         pc.setFragment(this);
+        controller = ProfilesController.getInstance(application);
     }
 
 
@@ -70,6 +69,7 @@ public class ProfilesElementsFragment extends OrdenableElementsFragment<MiniBlas
                 AlertDialogNuevoPerfil.newInstance(controller,new ArrayList<MiniBlasPerfil>()).show(getFragmentManager(),"");
             }
         });
+        controller.onViewChange(this);
     }
 
     @Override
@@ -158,11 +158,6 @@ public class ProfilesElementsFragment extends OrdenableElementsFragment<MiniBlas
 
             }
         });
-    }
-
-    @Override
-    public void recuperarEstado() {
-
     }
 
     @Override

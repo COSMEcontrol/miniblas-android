@@ -32,7 +32,6 @@ public abstract class BaseController<T extends ISortElement> implements IObserva
         application.addSingleTask(new Runnable() {
             @Override
             public void run() {
-                System.out.println("Recuperando elementos de la bd");
                 vista.showIconLoading();
 //				try {
 //					Thread.sleep(5000);
@@ -40,20 +39,18 @@ public abstract class BaseController<T extends ISortElement> implements IObserva
 //					e.printStackTrace();
 //				}
                 try {
-                    System.out.println("antes de  clearcollection");
                     adapter.clearCollection();
-                    System.out.println("antes de  cargados");
                     adapter.addAll(getElementsToRepository());
                     vista.dismissIconLoading();
                     //actualizar lista
                     vista.refreshList();
-                    System.out.println("elementos cargados");
-                    vista.recuperarEstado();
+                    vista.loadState();
                 } catch (BdException e) {
                     vista.msgErrorGettingElementsInBD();
                     e.printStackTrace();
                     adapter.addAll(new ArrayList<T>());
                 }
+
             }
         });
     }

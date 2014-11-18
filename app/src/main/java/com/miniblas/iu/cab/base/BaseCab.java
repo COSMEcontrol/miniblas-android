@@ -14,26 +14,21 @@ import com.miniblas.iu.fragments.base.OrdenableElementsFragment;
 
 import java.io.Serializable;
 
-public abstract class BaseCab implements AbsListView.MultiChoiceModeListener, Serializable {
+public abstract class BaseCab implements AbsListView.MultiChoiceModeListener {
 
-    public BaseCab() {
-    }
-
-    private transient android.view.ActionMode mActionMode;
-    private transient Activity context;
-    private transient OrdenableElementsFragment fragment;
+    private android.view.ActionMode mActionMode;
+    private  Activity context;
+    private  OrdenableElementsFragment fragment;
 
 
     public BaseCab setContext(Activity context) {
         this.context = context;
-        invalidate();
         return this;
     }
 
     public BaseCab setFragment(OrdenableElementsFragment fragment) {
         this.context = fragment.getActivity();
         this.fragment = fragment;
-        invalidate();
         return this;
     }
 
@@ -55,14 +50,12 @@ public abstract class BaseCab implements AbsListView.MultiChoiceModeListener, Se
     public void invalidate() {
         if (mActionMode != null) mActionMode.invalidate();
     }
-
     public final void finish() {
         if (mActionMode != null) {
             mActionMode.finish();
             mActionMode = null;
         }
     }
-    @SuppressLint("NewApi")
     @Override
     public boolean onCreateActionMode(android.view.ActionMode actionMode, Menu menu) {
         mActionMode = actionMode;
@@ -80,11 +73,9 @@ public abstract class BaseCab implements AbsListView.MultiChoiceModeListener, Se
 
     @Override
     public boolean onActionItemClicked(android.view.ActionMode actionMode, MenuItem menuItem) {
-        finish();
         return true;
     }
 
-    @SuppressLint("NewApi")
     @Override
     public void onDestroyActionMode(android.view.ActionMode actionMode) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)

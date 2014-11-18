@@ -2,25 +2,19 @@ package com.miniblas.iu.fragments.base;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.miniblas.app.AplicacionPrincipal;
 import com.miniblas.app.R;
 import com.miniblas.iu.FabActivity;
-import com.miniblas.iu.alertdialog.AlertDialogNuevoPerfil;
+import com.miniblas.iu.controllers.base.SerializableSparseBooleanArrayContainer;
 import com.miniblas.iu.utils.SeleccionableRendererAdapter;
-import com.miniblas.model.MiniBlasPerfil;
 import com.mobeta.android.dslv.DragSortController;
 import com.mobeta.android.dslv.DragSortListView;
-
-import java.util.ArrayList;
-
-import javax.inject.Inject;
 
 /**
  * Created by alberto on 13/11/14.
@@ -28,10 +22,19 @@ import javax.inject.Inject;
 public abstract class OrdenableElementsFragment<T> extends ListFragment {
 
     public SeleccionableRendererAdapter<T> adapter;
+    public Bundle savedInstance=null;
+    public static final String SELECTED_ELEMENTS = "SELECTED_ELEMENTS";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        System.out.println("Haciendo la vista");
         return provideDropView();
+    }
+    @Override
+    public void onCreate(Bundle _savedInstanceState) {
+        super.onCreate(_savedInstanceState);
+        this.savedInstance=null;
+        this.savedInstance=_savedInstanceState;
     }
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -43,6 +46,32 @@ public abstract class OrdenableElementsFragment<T> extends ListFragment {
         act.attachFabToListView(getListView());
     }
 
+
+    public void loadState(){
+        getActivity().runOnUiThread(new Runnable() {
+            public void run() {
+                if (savedInstance != null) {
+                    getListView().clearChoices();
+                    SerializableSparseBooleanArrayContainer datos = (SerializableSparseBooleanArrayContainer) savedInstance.get(SELECTED_ELEMENTS);
+                    SparseBooleanArray sparseBooleanArrayContainer = datos.getSparseArray();
+                    for (int i = 0; i < adapter.getCount(); i++) {
+                        getListView().setItemChecked(i, sparseBooleanArrayContainer.get(i));
+                    }
+                    ((FabActivity) getActivity()).disableFab(true);
+                }
+            }
+        });
+
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle _savedInstanceState) {
+        super.onSaveInstanceState(_savedInstanceState);
+        SparseBooleanArray sparseBooleanArray = getListView().getCheckedItemPositions();
+        SerializableSparseBooleanArrayContainer sparseBooleanArraySerializable = new SerializableSparseBooleanArrayContainer(sparseBooleanArray);
+        System.out.println(getListView().getCheckedItemPositions().toString());
+        _savedInstanceState.putSerializable(SELECTED_ELEMENTS, sparseBooleanArraySerializable);
+    }
 
     private View provideDropView(){
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -56,7 +85,7 @@ public abstract class OrdenableElementsFragment<T> extends ListFragment {
         controller.setSortEnabled(true);
         controller.setDragInitMode(DragSortController.ON_DOWN);
         controller.setRemoveMode(DragSortController.FLING_REMOVE);
-
+        controller.setBackgroundColor(getResources().getColor(R.color.miniblas_color_status_bar));
         mDslv.setFloatViewManager(controller);
         mDslv.setOnTouchListener(controller);
         mDslv.setDragEnabled(true);
@@ -76,7 +105,7 @@ public abstract class OrdenableElementsFragment<T> extends ListFragment {
     public abstract void setDisconnectIcon();
     public abstract void showIconLoading();
     public abstract void dismissIconLoading();
-    public abstract void recuperarEstado();
+    //public abstract void recuperarEstado();
     public abstract void msgErrorSavingElementsToBD();
     public abstract void msgErrorGettingElementsInBD();
     public abstract void clearSelecction();
