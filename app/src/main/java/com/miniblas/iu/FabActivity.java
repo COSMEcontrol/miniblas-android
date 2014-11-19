@@ -21,7 +21,7 @@ import android.widget.Toast;
 public class FabActivity extends ThemableActivity {
 	
 	private FloatingActionButton fab; // the floating blue add/paste button
-    public boolean fabDisabled = false; // flag indicating whether fab should stay hidden while scrolling
+    private boolean fabDisabled = false; // flag indicating whether fab should stay hidden while scrolling
     private FabListener fabListener;
     //private RecyclerView rv ;
     private BaseCab mCab; // the current contextual action bar, saves state throughout fragments

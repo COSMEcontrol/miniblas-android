@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.miniblas.app"
-    android:versionCode="20"
-    android:versionName="2.0.11 Alpha compilación (11/11/2014)" >
+    package="com.miniblas.app">
 
     <permission
         android:name="com.miniblas.api.v1.provider.READ_PROFILES"
@@ -32,6 +30,21 @@
         </activity>
         <activity
             android:name="com.miniblas.iu.Preferences"/>
+        <provider
+            android:name="com.miniblas.api.v1.provider.PluginProvider"
+            android:authorities="@string/AUTHORITY_CONTENT"
+            android:readPermission="com.miniblas.api.v1.provider.READ_PROFILES"
+            android:exported="true">
+        </provider>
+        <service
+            android:name="com.arcadio.api.v1.service.ConnectionArcadioService"
+            android:process=":arcadio">
+            <intent-filter>
+                <action
+                    android:name="com.arcadio.api.v1.service.IPluginServiceArcadio"/>
+            </intent-filter>
+        </service>
+        <activity android:name="com.arcadio.api.v1.service.StopConnection"/>
     </application>
-
+    <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>
