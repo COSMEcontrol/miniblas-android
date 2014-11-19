@@ -33,11 +33,11 @@ public abstract class BaseController<T extends ISortElement> implements IObserva
             @Override
             public void run() {
                 vista.showIconLoading();
-//				try {
-//					Thread.sleep(5000);
-//				} catch (InterruptedException e) {
-//					e.printStackTrace();
-//				}
+//    			try {
+	//			    Thread.sleep(5000);
+	//			} catch (InterruptedException e) {
+	//				e.printStackTrace();
+	//			}
                 try {
                     adapter.clearCollection();
                     adapter.addAll(getElementsToRepository());
@@ -66,7 +66,6 @@ public abstract class BaseController<T extends ISortElement> implements IObserva
 //						} catch (InterruptedException e1) {
 //							e1.printStackTrace();
 //						}
-                System.out.println("guardandooooooooooooooooooooooooooooo");
                 ArrayList<T> objectsList = new ArrayList<T>();
                 for(int i=0;i<old_adapter.getCount();i++) {
                     T element = (T) old_adapter.getItem(i);
@@ -87,14 +86,12 @@ public abstract class BaseController<T extends ISortElement> implements IObserva
     }
     @Override
     public void OnButtonNewSave(final T element) {
-        System.out.println("Guardando en base controller");
         application.addSingleTask(new Runnable() {
             @Override
             public void run() {
                 element.setOrden(adapter.getCount()+1);
                 adapter.add(element);
                 //actualizar lista
-                System.out.println("onbuttonnewsave singletask en base controller");
                 vista.refreshList();
                 vista.msgButtonNewSave();
                 saveElements();
@@ -105,7 +102,6 @@ public abstract class BaseController<T extends ISortElement> implements IObserva
     @Override
     public void OnButtonNewCancel(T element) {
         vista.msgButtonNewCancel();
-
     }
 
     @Override
@@ -114,10 +110,9 @@ public abstract class BaseController<T extends ISortElement> implements IObserva
             @Override
             public void run() {
                 adapter.remove(element);
-                //adapter.insert(element, perfil.getOrden());
+                adapter.insert(element, element.getOrden());
                 vista.msgButtonEditSave();
                 vista.refreshList();
-                vista.clearSelecction();
             }
         });
 
@@ -125,8 +120,7 @@ public abstract class BaseController<T extends ISortElement> implements IObserva
 
     @Override
     public void OnButtonEditCancel(T element) {
-                vista.msgButtonEditCancel();
-                vista.clearSelecction();
+        vista.msgButtonEditCancel();
     }
 
     public void OnButtonDelete(final List<T> _elementos) {

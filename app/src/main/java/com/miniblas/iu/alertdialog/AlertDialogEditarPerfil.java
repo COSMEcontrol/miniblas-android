@@ -17,9 +17,12 @@ import android.widget.EditText;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.miniblas.app.AplicacionPrincipal;
 import com.miniblas.app.R;
 import com.miniblas.iu.alertdialog.interfaces.IObservadorEditAlertDialog;
+import com.miniblas.iu.controllers.ProfilesController;
 import com.miniblas.model.MiniBlasPerfil;
 import com.miniblas.modules.CheckIpModule;
 
@@ -31,12 +34,13 @@ public class AlertDialogEditarPerfil extends DialogFragment{
     public static final String LISTA_NOMBRE_PERFILES = "LISTA_NOMBRE_PERFILES";
     public static IObservadorEditAlertDialog<MiniBlasPerfil> observador;
     public static MiniBlasPerfil profileSelected;
-    public static ArrayList<String> nameList;
+    public static ArrayList<String> nameList = new ArrayList<String>();
 
-    public static AlertDialogNuevoPerfil newInstance(IObservadorEditAlertDialog<MiniBlasPerfil> _observador, MiniBlasPerfil _profileSelected, List<MiniBlasPerfil> _profiles){
-        AlertDialogNuevoPerfil fragment = new AlertDialogNuevoPerfil();
+    public static AlertDialogEditarPerfil newInstance(IObservadorEditAlertDialog<MiniBlasPerfil> _observador, MiniBlasPerfil _profileSelected, List<MiniBlasPerfil> _profiles){
+        AlertDialogEditarPerfil fragment = new AlertDialogEditarPerfil();
         Bundle args = new Bundle();
        // ArrayList<String> listaNombres = new ArrayList<String>();
+        nameList.clear();
         for(MiniBlasPerfil perfil:_profiles){
             nameList.add(perfil.getNombre());
         }
@@ -48,7 +52,7 @@ public class AlertDialogEditarPerfil extends DialogFragment{
     }
 
 
-    private static Button bt_guardar;
+    private static View bt_guardar;
     @Inject public CheckIpModule checkIpModule;
 
     
@@ -59,8 +63,8 @@ public class AlertDialogEditarPerfil extends DialogFragment{
  
 	private Activity activity;
 	private AplicacionPrincipal application;
-	private AlertDialog.Builder alertBuilder;
-	private AlertDialog alertdialog;
+    private MaterialDialog.Builder alertBuilder;
+    private MaterialDialog alertdialog;
 	
     public static final String STATE_BUTTON_SAVE = "STATE_BUTTON_SAVE";   
     public static final String STATE_NOMBRE = "STATE_NOMBRE";   
@@ -104,17 +108,18 @@ public class AlertDialogEditarPerfil extends DialogFragment{
     }
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-    	
-    	alertBuilder =  new AlertDialog.Builder(activity);
+
+        alertBuilder =  new MaterialDialog.Builder(activity);
     	
 		application =  (AplicacionPrincipal) activity.getApplicationContext();
 		application.inject(this);
 
 		LayoutInflater inflater = (LayoutInflater) activity.getSystemService(activity.LAYOUT_INFLATER_SERVICE);
 		View view = inflater.inflate(R.layout.lyt_editar_perfil,null);
-		alertBuilder.setView(view);
+        alertBuilder.customView(view);
 		ButterKnife.inject(this, view);
-		alertBuilder.setCancelable(false);
+        alertBuilder.positiveText(R.string.Guardar);
+        alertBuilder.negativeText(android.R.string.cancel);
         /*
 		if(savedInstanceState == null){
 			for(int i =0; i<listActivity.getListView().getCheckedItemPositions().size();i++){
@@ -128,29 +133,25 @@ public class AlertDialogEditarPerfil extends DialogFragment{
 		et_nombre.setText(profileSelected.getNombre());
 		et_ip.setText(profileSelected.getIp());
 		et_puerto.setText(String.valueOf(profileSelected.getPuerto()));
-		alertBuilder.setTitle(activity.getResources().getString(R.string.editar_perfil)+" " + profileSelected.getNombre());
-		alertBuilder.setPositiveButton(activity.getResources().getString(R.string.Guardar),new OnClickListener() {
-			
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
+		alertBuilder.title(activity.getResources().getString(R.string.editar_perfil)+" " + profileSelected.getNombre());
+        alertBuilder.callback(new MaterialDialog.Callback() {
+            @Override
+            public void onPositive(MaterialDialog materialDialog) {
                 profileSelected.setIp(et_ip.getText().toString());
-				if(!et_pass.getText().toString().isEmpty())
+                if(!et_pass.getText().toString().isEmpty())
                     profileSelected.setPassword(et_pass.getText().toString());
                 profileSelected.setNombre(et_nombre.getText().toString());
-				if(!et_puerto.getText().toString().isEmpty())
+                if(!et_puerto.getText().toString().isEmpty())
                     profileSelected.setPuerto(Integer.valueOf(et_puerto.getText().toString()));
-			notificarOk(profileSelected);
-				
-			}
-		});
-		alertBuilder.setNegativeButton(activity.getResources().getString(R.string.Cancelar),new OnClickListener() {
-			
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				notificarCancel(null);
-				
-			}
-		});
+                notificarOk(profileSelected);
+            }
+
+            @Override
+            public void onNegative(MaterialDialog materialDialog) {
+                notificarCancel(null);
+            }
+        });
+
 		et_ip.addTextChangedListener(new TextWatcher() {
 
 			
@@ -260,14 +261,14 @@ public class AlertDialogEditarPerfil extends DialogFragment{
 				// TODO Auto-generated method stub
 			}
 		});
-		alertdialog = alertBuilder.create();
+		alertdialog = alertBuilder.build();
         return alertdialog;
 	}
     @Override
     public void onResume() {
          super.onResume();
-         bt_guardar = this.alertdialog.getButton(DialogInterface.BUTTON_POSITIVE);
- 		bt_guardar.setEnabled(bt_state);
+        bt_guardar = this.alertdialog.getActionButton(DialogAction.POSITIVE);
+        bt_guardar.setEnabled(bt_state);;
     }
     public void onSaveInstanceState(Bundle saveInstanceState) {
     	  super.onSaveInstanceState(saveInstanceState);
@@ -301,6 +302,4 @@ public class AlertDialogEditarPerfil extends DialogFragment{
             }).start();
         }
     }
-
-	
 }

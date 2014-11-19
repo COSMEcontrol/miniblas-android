@@ -1,11 +1,17 @@
 package com.miniblas.iu.cab.base;
 
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.Menu;
 
 
 import com.miniblas.app.R;
 import com.miniblas.iu.fragments.base.OrdenableElementsFragment;
+import com.miniblas.model.ISortElement;
+import com.miniblas.model.MiniBlasPerfil;
+
+import java.util.ArrayList;
+
 public abstract class BaseOrdenableElementsCab extends BaseCab {
 
     private android.view.Menu menu;
@@ -68,5 +74,23 @@ public abstract class BaseOrdenableElementsCab extends BaseCab {
              mode.getMenuInflater().inflate(getMenu(), menu);
         }
         getFragment().getAdapter().notifyDataSetChanged();
+    }
+    @Override
+    public boolean onActionItemClicked(android.view.ActionMode mode, android.view.MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_eliminar:
+                ArrayList<ISortElement> objectList = new ArrayList<ISortElement>();
+                SparseBooleanArray sba = getFragment().getListView().getCheckedItemPositions();
+                for(int i =0; i<sba.size();i++){
+                    if (sba.valueAt(i)) {
+                        objectList.add((ISortElement) getFragment().getAdapter().getItem(sba.keyAt(i)));
+                    }
+                }
+                getFragment().getController().OnButtonDelete(objectList);
+                mode.finish();
+                return true;
+            default:
+                return false;
+        }
     }
 }

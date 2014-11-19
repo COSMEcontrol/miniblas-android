@@ -8,26 +8,29 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.miniblas.app.R;
 import com.miniblas.iu.FabActivity;
+import com.miniblas.iu.controllers.base.BaseController;
 import com.miniblas.iu.controllers.base.SerializableSparseBooleanArrayContainer;
 import com.miniblas.iu.utils.SeleccionableRendererAdapter;
+import com.miniblas.model.ISortElement;
 import com.mobeta.android.dslv.DragSortController;
 import com.mobeta.android.dslv.DragSortListView;
 
 /**
  * Created by alberto on 13/11/14.
  */
-public abstract class OrdenableElementsFragment<T> extends ListFragment {
+public abstract class OrdenableElementsFragment<T extends ISortElement> extends ListFragment {
 
-    public SeleccionableRendererAdapter<T> adapter;
-    public Bundle savedInstance=null;
+    private SeleccionableRendererAdapter<T> adapter;
+    private Bundle savedInstance=null;
     public static final String SELECTED_ELEMENTS = "SELECTED_ELEMENTS";
+    private ProgressBar progressBar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        System.out.println("Haciendo la vista");
         return provideDropView();
     }
     @Override
@@ -44,11 +47,12 @@ public abstract class OrdenableElementsFragment<T> extends ListFragment {
         getListView().setMultiChoiceModeListener(((FabActivity) getActivity()).getCab());
         ((DragSortListView) getListView()).setDropListener(new onDropListener(adapter));
         act.attachFabToListView(getListView());
+        progressBar = (ProgressBar) getView().findViewById(android.R.id.progress);
     }
 
 
     public void loadState(){
-        getActivity().runOnUiThread(new Runnable() {
+        this.runOnIuThread(new Runnable() {
             public void run() {
                 if (savedInstance != null) {
                     getListView().clearChoices();
@@ -64,6 +68,22 @@ public abstract class OrdenableElementsFragment<T> extends ListFragment {
 
     }
 
+    public void showIconLoading(){
+        this.runOnIuThread(new Runnable() {
+            @Override
+            public void run() {
+                progressBar.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+    public void dismissIconLoading(){
+        this.runOnIuThread(new Runnable() {
+            @Override
+            public void run() {
+                progressBar.setVisibility(View.INVISIBLE);
+            }
+        });
+    }
     @Override
     public void onSaveInstanceState(Bundle _savedInstanceState) {
         super.onSaveInstanceState(_savedInstanceState);
@@ -75,8 +95,8 @@ public abstract class OrdenableElementsFragment<T> extends ListFragment {
 
     private View provideDropView(){
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        DragSortListView mDslv = (DragSortListView) inflater.inflate(R.layout.lyt_fragment_ordenable, null, false);
-
+        View view = inflater.inflate(R.layout.lyt_fragment_ordenable, null, false);
+        DragSortListView mDslv = (DragSortListView) view.findViewById(android.R.id.list);
         DragSortController controller = new DragSortController(mDslv);
         //determinacion de la imagen que hace que muevas el elemento
         controller.setDragHandleId(R.id.drag_handle);
@@ -89,30 +109,55 @@ public abstract class OrdenableElementsFragment<T> extends ListFragment {
         mDslv.setFloatViewManager(controller);
         mDslv.setOnTouchListener(controller);
         mDslv.setDragEnabled(true);
-        return mDslv;
+
+        return view;
 
     }
+
+
     public SeleccionableRendererAdapter<T> getAdapter(){
         return adapter;
     }
     public void setAdapter(SeleccionableRendererAdapter<T> adapter){
         this.adapter=adapter;
     }
-    public abstract void refreshList();
-   // public abstract void setSubtitle(final String title);
-    public abstract void setTitle(final String title);
+    public void refreshList(){
+            this.runOnIuThread(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.notifyDataSetChanged();
+                }
+            });
+
+    }
+    public void setTitle(final String title) {
+        this.runOnIuThread(new Runnable() {
+            @Override
+            public void run() {
+                getActivity().setTitle(title);
+            }
+        });
+    }
+    /*
+        *Abstract functions, it depend of the view
+     */
     public abstract void setConnectIcon();
     public abstract void setDisconnectIcon();
-    public abstract void showIconLoading();
-    public abstract void dismissIconLoading();
-    //public abstract void recuperarEstado();
     public abstract void msgErrorSavingElementsToBD();
     public abstract void msgErrorGettingElementsInBD();
-    public abstract void clearSelecction();
+
     public abstract void msgButtonNewSave();
     public abstract void msgButtonNewCancel();
     public abstract void msgButtonEditSave();
     public abstract void msgButtonEditCancel();
     public abstract void msgErrorDeleteElementsInBD();
+    public abstract BaseController<T> getController();
 
+
+    private void runOnIuThread(Runnable runnable){
+        if(getActivity()!= null){
+            getActivity().runOnUiThread(runnable);
+
+        }
+    }
 }

@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.miniblas.app.R;
+import com.miniblas.model.base.IOrdenableAdapteeCollection;
 import com.pedrogomez.renderers.AdapteeCollection;
 import com.pedrogomez.renderers.RendererAdapter;
 import com.pedrogomez.renderers.RendererBuilder;
@@ -57,8 +59,7 @@ public class SeleccionableRendererAdapter<T> extends RendererAdapter<T> {
         if(((ListView)parent).getCheckedItemPositions() != null || position == mSelection){
             SparseBooleanArray sparseBooleanArray = ((ListView)parent).getCheckedItemPositions();
             if (sparseBooleanArray.get(position)|| position == mSelection) {
-                v.setBackgroundColor(parent.getResources().getColor(
-                        android.R.color.tab_indicator_text)); // color when selected
+                v.setBackgroundColor(parent.getResources().getColor(R.color.itemSelected)); // color when selected
             }
 
         }
@@ -67,11 +68,9 @@ public class SeleccionableRendererAdapter<T> extends RendererAdapter<T> {
     public void clearCollection(){
         super.getCollection().clear();
     }
-    public AdapteeCollection<T> getCollection() {
-        return getCollection();
-    }
+
     public void insert(T object, int index){
-       // getCollection().add(index, object);
+        ((IOrdenableAdapteeCollection<T>) getCollection()).add(index, object);
     }
 
 }

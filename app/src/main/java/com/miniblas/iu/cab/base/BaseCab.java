@@ -50,8 +50,9 @@ public abstract class BaseCab implements AbsListView.MultiChoiceModeListener {
     public void invalidate() {
         if (mActionMode != null) mActionMode.invalidate();
     }
-    public final void finish() {
+    public void finish() {
         if (mActionMode != null) {
+            System.out.println("Desactivando cabbbbbbbbbbbbbbbbbbbbbbbb");
             mActionMode.finish();
             mActionMode = null;
         }
@@ -68,16 +69,19 @@ public abstract class BaseCab implements AbsListView.MultiChoiceModeListener {
 
     @Override
     public boolean onPrepareActionMode(android.view.ActionMode actionMode, Menu menu) {
+        mActionMode = actionMode;
         return false;
     }
 
     @Override
     public boolean onActionItemClicked(android.view.ActionMode actionMode, MenuItem menuItem) {
+        mActionMode = actionMode;
         return true;
     }
 
     @Override
     public void onDestroyActionMode(android.view.ActionMode actionMode) {
+        mActionMode = actionMode;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             getContext().getWindow().setStatusBarColor(getContext().getResources().getColor(R.color.cabinet_color_darker));
         mActionMode = null;

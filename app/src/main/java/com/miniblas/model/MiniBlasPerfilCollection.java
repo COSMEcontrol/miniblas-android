@@ -1,5 +1,6 @@
 package com.miniblas.model;
 
+import com.miniblas.model.base.IOrdenableAdapteeCollection;
 import com.pedrogomez.renderers.AdapteeCollection;
 
 import java.util.Collection;
@@ -8,7 +9,7 @@ import java.util.List;
 /**
  * Created by alberto on 13/11/14.
  */
-public class MiniBlasPerfilCollection implements AdapteeCollection<MiniBlasPerfil> {
+public class MiniBlasPerfilCollection implements IOrdenableAdapteeCollection<MiniBlasPerfil> {
     private final List<MiniBlasPerfil> perfiles;
 
     public MiniBlasPerfilCollection(List<MiniBlasPerfil> perfiles) {
@@ -47,5 +48,10 @@ public class MiniBlasPerfilCollection implements AdapteeCollection<MiniBlasPerfi
 
     @Override public void clear() {
         perfiles.clear();
+    }
+
+    @Override
+    public void add(int index, MiniBlasPerfil element) {
+        perfiles.add(index,element);
     }
 }

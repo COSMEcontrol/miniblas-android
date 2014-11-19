@@ -21,6 +21,7 @@ import com.miniblas.iu.alertdialog.AlertDialogEditarPerfil;
 import com.miniblas.iu.alertdialog.AlertDialogNuevoPerfil;
 import com.miniblas.iu.cab.PerfilCab;
 import com.miniblas.iu.controllers.ProfilesController;
+import com.miniblas.iu.controllers.base.BaseController;
 import com.miniblas.iu.fragments.base.OrdenableElementsFragment;
 import com.miniblas.iu.fragments.base.onDropListener;
 import com.miniblas.iu.utils.SeleccionableRendererAdapter;
@@ -106,25 +107,7 @@ public class ProfilesElementsFragment extends OrdenableElementsFragment<MiniBlas
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void refreshList() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                adapter.notifyDataSetChanged();
-            }
-        });
-    }
 
-    @Override
-    public void setTitle(final String title) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                getActivity().setTitle(title);
-            }
-        });
-    }
 
     @Override
     public void setConnectIcon() {
@@ -136,29 +119,6 @@ public class ProfilesElementsFragment extends OrdenableElementsFragment<MiniBlas
         //no aplicable
     }
 
-    @Override
-    public void showIconLoading() {
-        runOnUiThread(new Runnable() {
-
-            @Override
-            public void run() {
-                //setProgressBarVisibility(true);
-
-            }
-        });
-    }
-
-    @Override
-    public void dismissIconLoading() {
-        runOnUiThread(new Runnable() {
-
-            @Override
-            public void run() {
-                //setProgressBarVisibility(false);
-
-            }
-        });
-    }
 
     @Override
     public void msgErrorSavingElementsToBD() {
@@ -170,10 +130,6 @@ public class ProfilesElementsFragment extends OrdenableElementsFragment<MiniBlas
 
     }
 
-    @Override
-    public void clearSelecction() {
-        adapter.clearSelection();
-    }
 
     @Override
     public void msgButtonNewSave() {
@@ -233,6 +189,9 @@ public class ProfilesElementsFragment extends OrdenableElementsFragment<MiniBlas
         if(getActivity()!=null){
             getActivity().runOnUiThread(runnable);
         }
+    }
+    public BaseController<MiniBlasPerfil> getController(){
+        return controller;
     }
 
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/menu_eliminar"
-          android:icon="@drawable/content_discard"
+          android:icon="@drawable/ic_action_discard"
           android:title="@string/menu_delete"
           android:showAsAction="ifRoom|withText" />
     

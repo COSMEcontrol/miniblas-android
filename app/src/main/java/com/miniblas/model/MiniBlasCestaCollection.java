@@ -1,5 +1,6 @@
 package com.miniblas.model;
 
+import com.miniblas.model.base.IOrdenableAdapteeCollection;
 import com.pedrogomez.renderers.AdapteeCollection;
 
 import java.util.Collection;
@@ -8,7 +9,7 @@ import java.util.List;
 /**
  * Created by alberto on 13/11/14.
  */
-public class MiniBlasCestaCollection implements AdapteeCollection<MiniBlasCesta> {
+public class MiniBlasCestaCollection implements IOrdenableAdapteeCollection<MiniBlasCesta> {
     private final List<MiniBlasCesta> videos;
 
     public MiniBlasCestaCollection(List<MiniBlasCesta> videos) {
@@ -47,5 +48,11 @@ public class MiniBlasCestaCollection implements AdapteeCollection<MiniBlasCesta>
 
     @Override public void clear() {
         videos.clear();
+    }
+
+
+    @Override
+    public void add(int index, MiniBlasCesta element) {
+        videos.add(index, element);
     }
 }

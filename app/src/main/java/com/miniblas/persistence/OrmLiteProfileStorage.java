@@ -27,7 +27,6 @@ public class OrmLiteProfileStorage implements ProfileStorage{
 	@Override
 	public synchronized void persist(final MiniBlasPerfil _profile) throws BdException{
 		try {
-			Log.v(_profile.toString(), _profile.toString());
 			perfilDao.createOrUpdate(_profile);
 		} catch (SQLException e) {
 			throw new BdException(e.toString());
@@ -38,7 +37,7 @@ public class OrmLiteProfileStorage implements ProfileStorage{
 	public synchronized void persistCollection(final List<MiniBlasPerfil> _collection) throws BdException{
 		for(MiniBlasPerfil elemento : _collection){
 			try {
-				perfilDao.createIfNotExists(elemento);
+				perfilDao.createOrUpdate(elemento);
 			} catch (SQLException e) {
 				throw new BdException(e.toString());
 			}
