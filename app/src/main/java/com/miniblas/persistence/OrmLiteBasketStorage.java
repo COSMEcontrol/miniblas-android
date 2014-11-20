@@ -62,9 +62,9 @@ public class OrmLiteBasketStorage implements BasketStorage{
 		return listaCestas;
 	}
 	@Override
-	public void deleteBasket(MiniBlasCesta _basket) throws BdException {
+	public void deleteBaskets(List<MiniBlasCesta> _baskets) throws BdException {
 		try {
-			basketDao.delete(_basket);
+			basketDao.delete(_baskets);
 		} catch (SQLException e) {
 			throw new BdException(e.toString());
 		}

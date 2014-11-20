@@ -27,7 +27,7 @@ public interface BasketStorage {
 	/**
 	 * Elimina una cesta especificado.
 	 */
-	public void deleteBasket(MiniBlasCesta _basket) throws BdException;
+	public void deleteBaskets(List<MiniBlasCesta> _baskets) throws BdException;
 	
 	public MiniBlasCesta getBasketById(int _id) throws BdException ;
 

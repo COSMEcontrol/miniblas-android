@@ -25,7 +25,7 @@ public interface ItemVariableStorage {
 	/**
 	 * Elimina todos los elementos
 	 */
-	public void deleteItemVariable(MiniBlasItemVariable _itemVariable)
+	public void deleteItemVariables(List<MiniBlasItemVariable> _itemVariable)
 			throws BdException;
 	
 

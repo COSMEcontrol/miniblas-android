@@ -2,31 +2,23 @@ package com.miniblas.iu.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.view.ActionMode;
-import android.util.SparseBooleanArray;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AbsListView;
-import android.widget.ListView;
 import android.widget.Toast;
-
 import com.miniblas.app.AplicacionPrincipal;
 import com.miniblas.app.R;
 import com.miniblas.iu.AcercaDe;
 import com.miniblas.iu.FabActivity;
 import com.miniblas.iu.Preferences;
-import com.miniblas.iu.alertdialog.AlertDialogEditarPerfil;
 import com.miniblas.iu.alertdialog.AlertDialogNuevoPerfil;
 import com.miniblas.iu.cab.PerfilCab;
 import com.miniblas.iu.controllers.ProfilesController;
 import com.miniblas.iu.controllers.base.BaseController;
 import com.miniblas.iu.fragments.base.OrdenableElementsFragment;
-import com.miniblas.iu.fragments.base.onDropListener;
 import com.miniblas.iu.utils.SeleccionableRendererAdapter;
 import com.miniblas.model.MiniBlasPerfil;
-import com.mobeta.android.dslv.DragSortListView;
+
 
 import java.util.ArrayList;
 
@@ -122,12 +114,24 @@ public class ProfilesElementsFragment extends OrdenableElementsFragment<MiniBlas
 
     @Override
     public void msgErrorSavingElementsToBD() {
-
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getActivity(),
+                        getResources().getString(R.string.errorAccessBd), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
     public void msgErrorGettingElementsInBD() {
-
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getActivity(),
+                        getResources().getString(R.string.errorAccessBd), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 

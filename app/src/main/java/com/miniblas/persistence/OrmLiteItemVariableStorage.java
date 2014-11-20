@@ -69,10 +69,10 @@ public class OrmLiteItemVariableStorage implements ItemVariableStorage{
 	}
 
 	@Override
-	public void deleteItemVariable(MiniBlasItemVariable _itemVariable)
+	public void deleteItemVariables(List<MiniBlasItemVariable> _itemVariables)
 			throws BdException {
 		try {
-			itemVariableDao.delete(_itemVariable);
+			itemVariableDao.delete(_itemVariables);
 		} catch (SQLException e) {
 			throw new BdException(e.toString());
 		}

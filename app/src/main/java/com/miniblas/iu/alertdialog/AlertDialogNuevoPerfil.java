@@ -194,7 +194,6 @@ public class AlertDialogNuevoPerfil extends DialogFragment {
          super.onResume();
          bt_guardar = this.alertdialog.getActionButton(DialogAction.POSITIVE);
  		bt_guardar.setEnabled(bt_state);
- 		System.out.println("onresumeeeeeeee");
     }
     public void onSaveInstanceState(Bundle saveInstanceState) {
     	  super.onSaveInstanceState(saveInstanceState);
