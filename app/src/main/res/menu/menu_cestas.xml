@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:miniBlas="http://schemas.android.com/apk/res-auto">>
     
-    <item android:id="@+id/estado" android:title="@string/estado" android:icon="@drawable/desconectado" android:showAsAction="ifRoom" android:enabled="false"></item><item android:id="@+id/menu_anadir_cesta" android:title="@string/nuevo" android:icon="@android:drawable/ic_menu_add" android:showAsAction="ifRoom|withText" android:visible="true" />
+    <item android:id="@+id/estado" android:title="@string/estado" android:icon="@drawable/desconectado" miniBlas:showAsAction="always" android:enabled="false"></item><item android:id="@+id/menu_anadir_cesta" android:title="@string/nuevo" android:icon="@android:drawable/ic_menu_add" miniBlas:showAsAction="never" android:visible="true" />
     
     
     <group android:checkableBehavior="all">

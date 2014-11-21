@@ -37,7 +37,7 @@ public class OrmLiteItemVariableStorage implements ItemVariableStorage{
 			throws BdException {
 		for(MiniBlasItemVariable _variable : _collection){
 			try {
-				itemVariableDao.createIfNotExists(_variable);
+				itemVariableDao.createOrUpdate(_variable);
 			} catch (SQLException e) {
 				throw new BdException(e.toString());
 			}

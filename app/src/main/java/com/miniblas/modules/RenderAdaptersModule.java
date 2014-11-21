@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.miniblas.iu.fragments.BasketsElementsFragment;
 import com.miniblas.iu.fragments.ProfilesElementsFragment;
+import com.miniblas.iu.fragments.VariablesElementsFragment;
 import com.miniblas.iu.utils.SeleccionableRendererAdapter;
 import com.miniblas.model.MiniBlasCestaCollection;
+import com.miniblas.model.MiniBlasItemVariableCollection;
 import com.miniblas.model.MiniBlasPerfilCollection;
 import com.pedrogomez.renderers.Renderer;
 
@@ -33,6 +36,8 @@ import dagger.Provides;
 @Module(injects = {
 		ProfilesElementsFragment.class,
 		AplicacionPrincipal.class,
+        BasketsElementsFragment.class,
+        VariablesElementsFragment.class,
 }, library=true)
 public class RenderAdaptersModule {
 
@@ -55,13 +60,13 @@ public class RenderAdaptersModule {
         final SeleccionableRendererAdapter<MiniBlasCesta> adapter = new SeleccionableRendererAdapter<MiniBlasCesta>(layoutInflater, rendererBuilder, cestaCollection);
         return adapter; 
     }
-    /*
-    @Provides @Named("provideVariablesRendererAdapter") VariablesAdapter provideVariablesRendererAdapter(LayoutInflater layoutInflater, VariableRendererBuilder rendererBuilder) {
-        final List<MiniBlasItemVariable> variablesCollection = new ArrayList<MiniBlasItemVariable>();
-        final VariablesAdapter adapter = new VariablesAdapter(layoutInflater, rendererBuilder, variablesCollection);     
+
+    @Provides SeleccionableRendererAdapter<MiniBlasItemVariable> provideVariablesRendererAdapter(LayoutInflater layoutInflater, VariableRendererBuilder rendererBuilder) {
+        MiniBlasItemVariableCollection itemVariableCollection = new MiniBlasItemVariableCollection(new ArrayList<MiniBlasItemVariable>());
+        final SeleccionableRendererAdapter<MiniBlasItemVariable> adapter = new SeleccionableRendererAdapter<MiniBlasItemVariable>(layoutInflater, rendererBuilder, itemVariableCollection);
         return adapter; 
     }
-    */
+
     /*
     @Provides SeleccionableRendererAdapter<MiniBlasItemVariable> provideNuevaVariableRendererAdapter(LayoutInflater layoutInflater, NewVariableRendererBuilder rendererBuilder) {
         final List<MiniBlasItemVariable> variablesCollection = new ArrayList<MiniBlasItemVariable>();

@@ -208,8 +208,9 @@ public class AplicacionPrincipal extends Application {
 	}
 
 	private List<Object> getModules() {
-		return Arrays.asList(new CheckIpModule(), new RenderAdaptersModule(
-				getBaseContext()));
+		return Arrays.asList(
+                new CheckIpModule(),
+                new RenderAdaptersModule(getBaseContext()));
 	}
 
 	private void initInjection() {

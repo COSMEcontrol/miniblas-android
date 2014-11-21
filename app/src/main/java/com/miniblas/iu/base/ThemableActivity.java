@@ -14,6 +14,7 @@ public class ThemableActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        requestWindowFeature(Window.FEATURE_ACTION_BAR);
         mThemeUtils = new ThemeUtils(this);
         setTheme(mThemeUtils.getCurrent());
         super.onCreate(savedInstanceState);

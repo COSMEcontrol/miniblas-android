@@ -1,10 +1,18 @@
 package com.miniblas.iu.fragments;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.Toast;
 import com.miniblas.app.AplicacionPrincipal;
 import com.miniblas.app.R;
@@ -18,6 +26,7 @@ import com.miniblas.iu.controllers.base.BaseController;
 import com.miniblas.iu.fragments.base.OrdenableElementsFragment;
 import com.miniblas.iu.utils.SeleccionableRendererAdapter;
 import com.miniblas.model.MiniBlasPerfil;
+import com.miniblas.perfistence.ormlite.Constantes;
 
 
 import java.util.ArrayList;
@@ -49,11 +58,11 @@ public class ProfilesElementsFragment extends OrdenableElementsFragment<MiniBlas
         controller = ProfilesController.getInstance(application);
     }
 
-
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
+        (((ActionBarActivity)getActivity()).getSupportActionBar()).setDisplayHomeAsUpEnabled(false);
         FabActivity act = (FabActivity) getActivity();
         act.setTitle(getResources().getString(R.string.lista_perfiles));
         act.setFabListener(new FabActivity.FabListener() {
@@ -63,6 +72,25 @@ public class ProfilesElementsFragment extends OrdenableElementsFragment<MiniBlas
             }
         });
         controller.onViewChange(this);
+        getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Adapter adapter = parent.getAdapter();
+                MiniBlasPerfil profile = (MiniBlasPerfil) adapter.getItem(position);
+                Bundle data = new Bundle();
+                data.putInt(Constantes.PROFILE_ID,profile.getId());
+
+                //getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                getFragmentManager().executePendingTransactions();
+                FragmentTransaction trans = getFragmentManager().beginTransaction();
+                trans.setCustomAnimations(R.anim.left_in, R.anim.left_out,R.anim.right_in, R.anim.right_out);
+                BasketsElementsFragment fragment = new BasketsElementsFragment();
+                fragment.setArguments(data);
+                trans.replace(R.id.container, fragment);
+                trans.addToBackStack("a");
+                trans.commit();
+            }
+        });
     }
 
     @Override

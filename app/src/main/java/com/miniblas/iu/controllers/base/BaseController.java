@@ -109,7 +109,9 @@ public abstract class BaseController<T extends ISortElement> implements IObserva
         application.addSingleTask(new Runnable() {
             @Override
             public void run() {
+                System.out.println("elemento en orden "+ element.getOrden());
                 adapter.remove(element);
+                System.out.println("elemento en orden "+ element.getOrden());
                 adapter.insert(element, element.getOrden());
                 vista.msgButtonEditSave();
                 vista.refreshList();

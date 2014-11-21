@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -95,6 +96,21 @@ public class FabActivity extends ThemableActivity {
         else if (hide) fab.hide(true);
         else fab.show(true);
     }
+    @Override
+    public void onBackPressed(){
+        FragmentManager fm = getSupportFragmentManager();
+        if (fm.getBackStackEntryCount() == 0) {
+            Log.i("MainActivity", "nothing on backstack, calling super");
+            super.onBackPressed();
+        } else {
+           backStackFragment();
+        }
+    }
+    public void backStackFragment(){
+        FragmentManager fm = getSupportFragmentManager();
+        fm.popBackStack();
+    }
+
     public void setFabListener(FabListener _fabListener) {
         this.fabListener = _fabListener;
     }

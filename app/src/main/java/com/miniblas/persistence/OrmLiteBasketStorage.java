@@ -43,7 +43,7 @@ public class OrmLiteBasketStorage implements BasketStorage{
 	public void persistCollection(final List<MiniBlasCesta> _collection) throws BdException{
 		for(MiniBlasCesta basket : _collection){
 			try {
-				basketDao.createIfNotExists(basket);
+				basketDao.createOrUpdate(basket);
 			} catch (SQLException e) {
 				throw new BdException(e.toString());
 			}
