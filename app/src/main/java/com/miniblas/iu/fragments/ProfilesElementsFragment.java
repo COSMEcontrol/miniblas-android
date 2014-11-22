@@ -87,7 +87,7 @@ public class ProfilesElementsFragment extends OrdenableElementsFragment<MiniBlas
                 BasketsElementsFragment fragment = new BasketsElementsFragment();
                 fragment.setArguments(data);
                 trans.replace(R.id.container, fragment);
-                trans.addToBackStack("a");
+                trans.addToBackStack(null);
                 trans.commit();
             }
         });

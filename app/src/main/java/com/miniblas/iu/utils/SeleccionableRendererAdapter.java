@@ -72,5 +72,8 @@ public class SeleccionableRendererAdapter<T> extends RendererAdapter<T> {
     public void insert(T object, int index){
         ((IOrdenableAdapteeCollection<T>) getCollection()).add(index, object);
     }
+    public int indexOf(T element){
+        return ((IOrdenableAdapteeCollection<T>) getCollection()).indexOf(element);
+    }
 
 }

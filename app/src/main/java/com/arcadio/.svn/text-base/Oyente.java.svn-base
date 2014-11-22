@@ -1,0 +1,88 @@
+package com.example.arcadio;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+
+import android.util.Log;
+
+public class Oyente extends Thread{
+	private Conexion conexion;
+	private BufferedReader flujoEntrada = null;
+	private boolean entradaNula = false;
+    private boolean estoyEnMarcha = true;
+    private Telegrama telegramaRecibido;
+    private ItemVariable itemVariable;
+    private String idTelegrama;
+	
+	public Oyente(Conexion _conexion) {
+		this.conexion = _conexion;
+		this.flujoEntrada = _conexion.getFlujoEntrada();
+		this.setDaemon(true);
+	}
+	
+	public void destroy (){
+        this.entradaNula = true;
+        this.estoyEnMarcha = false;
+    }
+	
+	public void run() {
+		String cadena = "";
+		TelegramTypes tipoTelegrama;
+		
+		while( ! entradaNula){
+			try {          
+				cadena = flujoEntrada.readLine();
+				
+				Log.v("Oyente_tel", ">> " + cadena);
+				
+				if(cadena == null){
+                    entradaNula = true;
+                }else{
+                    try{
+                        telegramaRecibido = new Telegrama(cadena);
+                        
+                    }catch (Exception e){
+                        telegramaRecibido = null;
+                    }
+                }
+				
+				if(telegramaRecibido == null) continue;
+				
+				idTelegrama = telegramaRecibido.getIdTelegrama();
+				tipoTelegrama = TelegramTypes.valueOf(idTelegrama.toUpperCase());
+				
+				switch (tipoTelegrama){
+				
+				case LEER: 
+					
+					itemVariable = new ItemVariable(telegramaRecibido.getValorVariable(), telegramaRecibido.getNombreVariable());
+					
+					Log.v("Oyente_LEER",">>: "+itemVariable.getValor() + " " + itemVariable.getValor());
+					
+					break;
+					
+				case PING: 
+					
+					itemVariable = new ItemVariable(telegramaRecibido.getValorVariable(), telegramaRecibido.getNombreVariable());
+					
+					Log.v("Oyente_PING",">>: "+itemVariable.getValor() + " " + itemVariable.getValor());
+					
+					break;
+				
+				case CREAR_CESTA:
+					//notificar cesta creada
+					conexion.notificarEvento(EstadosCosme.RECIBIDA_CESTA, telegramaRecibido);
+				}
+				
+			}catch (IOException ex) {
+				entradaNula = true;
+				conexion.cambiarEstado(EstadosCosme.CONEXION_INTERRUMPIDA);
+			}
+		}
+		
+		if (estoyEnMarcha){
+            conexion.cambiarEstado(EstadosCosme.CONEXION_INTERRUMPIDA);
+        }
+	}
+}
+

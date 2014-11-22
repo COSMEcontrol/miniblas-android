@@ -1,0 +1,25 @@
+package com.example.arcadio;
+
+
+public class Cesta {
+	private String nombre;
+	private int periodoRefresco;
+	
+	public Cesta(String _nombre, int _periodoRefresco) {
+		super();
+		this.nombre = _nombre;
+		this.periodoRefresco = _periodoRefresco;
+	}
+	public String getNombre() {
+		return nombre;
+	}
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+	public double getPeriodoRefresco() {
+		return periodoRefresco;
+	}
+	public void setPeriodoRefresco(int periodoRefresco) {
+		this.periodoRefresco = periodoRefresco;
+	}
+}

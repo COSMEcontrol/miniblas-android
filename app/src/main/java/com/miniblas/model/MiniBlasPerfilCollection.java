@@ -54,4 +54,9 @@ public class MiniBlasPerfilCollection implements IOrdenableAdapteeCollection<Min
     public void add(int index, MiniBlasPerfil element) {
         perfiles.add(index,element);
     }
+
+    @Override
+    public int indexOf(MiniBlasPerfil variable){
+        return perfiles.indexOf(variable);
+    }
 }

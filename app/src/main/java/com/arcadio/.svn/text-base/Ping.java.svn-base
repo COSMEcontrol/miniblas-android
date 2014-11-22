@@ -1,0 +1,59 @@
+package com.example.arcadio;
+
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+
+import android.util.Log;
+
+public class Ping extends Thread{
+	private static final long PERIODO_ENVIO =  2000;
+	private boolean vivo = true;
+	private Conexion conexion;
+	private OutputStreamWriter flujoSalida;
+	private SintaxisTelegrama sintaxisTelegrama;
+	private ArrayList<String> listaVariables;
+	private String tlg;
+	
+	
+	public Ping(Conexion _conexion, SintaxisTelegrama _sintaxisTelegrama, ArrayList<String> _listaVariables) {
+		this.conexion = _conexion;
+		this.flujoSalida = _conexion.getFlujoSalida();
+		this.sintaxisTelegrama = _sintaxisTelegrama;
+		this.listaVariables = _listaVariables;
+	}
+
+	public void run() {
+		int i = 0;
+		
+		if (conexion.getEstado() == EstadosCosme.COMUNICACION_OK) {
+			while(vivo) {
+				i++;
+				try {
+					tlg = sintaxisTelegrama.getTelegrama_pingListaVariables(listaVariables)+"\n";
+					flujoSalida.write(tlg); 
+					flujoSalida.flush();
+					try {
+						this.sleep(PERIODO_ENVIO);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					Log.v("Ping","Enviado ping "+i+" "+tlg);
+				} catch (IOException e) {
+					e.printStackTrace();
+					Log.v("Ping","Enviado ping fallido "+i);
+					conexion.cambiarEstado(EstadosCosme.CONEXION_INTERRUMPIDA);
+				}
+			}
+		}
+	}
+
+	public boolean isVivo() {
+		return vivo;
+	}
+
+	public void destroy() {
+		this.vivo = false;
+	}
+	
+}

@@ -54,4 +54,9 @@ public class MiniBlasCestaCollection implements IOrdenableAdapteeCollection<Mini
     public void add(int index, MiniBlasCesta element) {
         baskets.add(index, element);
     }
+
+    @Override
+    public int indexOf(MiniBlasCesta variable){
+        return baskets.indexOf(variable);
+    }
 }

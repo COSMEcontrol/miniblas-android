@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.miniblas.iu.fragments.BasketsElementsFragment;
+import com.miniblas.iu.fragments.NewVariableElementsFragment;
 import com.miniblas.iu.fragments.ProfilesElementsFragment;
 import com.miniblas.iu.fragments.VariablesElementsFragment;
 import com.miniblas.iu.utils.SeleccionableRendererAdapter;
@@ -38,6 +39,7 @@ import dagger.Provides;
 		AplicacionPrincipal.class,
         BasketsElementsFragment.class,
         VariablesElementsFragment.class,
+        NewVariableElementsFragment.class,
 }, library=true)
 public class RenderAdaptersModule {
 

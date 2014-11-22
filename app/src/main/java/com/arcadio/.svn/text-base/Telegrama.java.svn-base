@@ -1,0 +1,215 @@
+package com.example.arcadio;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
+
+public class Telegrama {
+	private String idCliente;
+	private String idMaquina;
+	private int numPeticion;
+	private BigInteger timeStamp;
+	private String idTelegrama; //idTelegrama equivale al comando del telegrama (segun el)
+	private String nombreCesta;
+	private String nombreVariable;
+	private String valorVariable;
+	private String periodoCesta;
+	private String telegramaCompleto;
+	private ArrayList<ItemVariable> listaVariables = new ArrayList<ItemVariable>();
+	
+	public Telegrama(String _cadena){
+		this.telegramaCompleto = _cadena;
+		cargarTelegrama(telegramaCompleto);
+	}
+	
+	
+	private void cargarTelegrama(String _telegrama){
+		StringTokenizer st = new StringTokenizer(_telegrama);
+		cargarInicioTelegrama(st);
+		cargarRestoTelegrama(st, idTelegrama);
+	}
+	
+
+	private void cargarInicioTelegrama(StringTokenizer _st) {
+		this.idCliente = _st.nextToken();
+		this.idMaquina = _st.nextToken();
+		this.numPeticion = Integer.valueOf(_st.nextToken());
+		this.timeStamp = new BigInteger(_st.nextToken());
+		this.idTelegrama = _st.nextToken();
+	}
+	
+	private void cargarRestoTelegrama(StringTokenizer _st, String _idTelegrama){
+		TelegramTypes tipoTelegrama = TelegramTypes.valueOf(_idTelegrama.toUpperCase());
+		
+		switch(tipoTelegrama) {
+		case LEER: //leer varias variables de un arrayList 
+			
+			while (_st.hasMoreTokens()){
+				nombreVariable = _st.nextToken();
+				valorVariable = _st.nextToken();
+				
+				listaVariables.add(new ItemVariable(nombreVariable, valorVariable));
+			}
+			
+			break;
+		
+		case LEER_UNA_VAR: //leer una sola variable (propio)
+			
+				nombreVariable = _st.nextToken();
+				valorVariable = _st.nextToken();
+				
+			break;
+			
+		case PING:
+			
+			nombreVariable = _st.nextToken();
+			valorVariable = _st.nextToken();
+			
+			break;
+	 
+		case CREAR_CESTA:
+			
+			nombreCesta = _st.nextToken();
+			
+			break;
+			
+		case ELIMINAR_CESTA:
+			
+			nombreCesta = _st.nextToken();
+			
+		case CESTA:
+			
+			// TODO podrian venir varias <var, valor>
+			nombreCesta = _st.nextToken();
+			nombreVariable = _st.nextToken();
+			valorVariable = _st.nextToken();
+			
+			break;
+		
+		case INSERTAR_NOM_CESTA: //a�adir una variable a una cesta concreta
+			
+			nombreCesta = _st.nextToken();
+			nombreVariable = _st.nextToken();
+			
+			break;
+			
+		case INSERTAR_NOMS_CESTA: //a�adir varias variables a una cesta concreta
+			
+			nombreCesta = _st.nextToken();
+			
+			while (_st.hasMoreTokens()){
+				nombreVariable = _st.nextToken();
+				listaVariables.add(new ItemVariable(nombreVariable));
+			}
+			
+			break;
+			
+		//eliminar_nom_cesta
+		
+		case ELIMINAR_NOM_CESTA: //a�adir varias variables a una cesta concreta
+			
+			nombreCesta = _st.nextToken();
+			nombreVariable = _st.nextToken();
+			
+			break;
+			
+		case PERIODO_CESTA: //modificar periodo de una cesta
+			
+			// TODO podrian venir varias <var, valor>
+			nombreCesta = _st.nextToken();
+			periodoCesta = _st.nextToken();
+			
+			break;
+		
+		case LISTA_NOMBRES_CESTA: //variables que contiene una cesta
+			
+			while (_st.hasMoreTokens()){
+				listaVariables.add(new ItemVariable(_st.nextToken()));
+			}
+			
+			break;
+		}
+	}
+	
+	
+	
+	public String getIdCliente() {
+		return idCliente;
+	}
+
+	
+	public void setIdCliente(String _idCliente) {
+		this.idCliente = _idCliente;
+	}
+
+	
+	public String getIdMaquina() {
+		return idMaquina;
+	}
+
+	
+	public void setIdMaquina(String _idMaquina) {
+		this.idMaquina = _idMaquina;
+	}
+
+	
+	public int getNumPeticion() {
+		return numPeticion;
+	}
+
+
+	public String getIdTelegrama(){
+		return idTelegrama;
+	}
+
+	
+	public String getNombreCesta() {
+		return nombreCesta;
+	}
+
+	
+	public void setNombreCesta(String _nombreCesta) {
+		this.nombreCesta = _nombreCesta;
+	}
+
+	
+	public String getNombreVariable() {
+		return nombreVariable;
+	}
+
+	
+	public void setNombreVariable(String _nombreVar) {
+		this.nombreVariable = _nombreVar;
+	}
+
+	
+	public String getTelegramaCompleto() {
+		return telegramaCompleto;
+	}
+
+	
+	public void setTelegramaCompleto(String _telegramaCompleto) {
+		this.telegramaCompleto = _telegramaCompleto;
+	}
+	
+	public BigInteger getTimeStamp() {
+		return timeStamp;
+	}
+
+	public void setTimeStamp(BigInteger _timeStamp) {
+		this.timeStamp = _timeStamp;
+	}
+
+	public String getValorVariable() {
+		return valorVariable;
+	}
+
+	public void setValorVariable(String _valorVariable) {
+		this.valorVariable = _valorVariable;
+	}
+
+	public void setIdTelegrama(String idTelegrama) {
+		this.idTelegrama = idTelegrama;
+	}
+	
+}

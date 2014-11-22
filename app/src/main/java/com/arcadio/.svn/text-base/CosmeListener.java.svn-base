@@ -1,0 +1,28 @@
+/*
+* CosmeListener.java
+*
+* Created on 27 de junio de 2006, 18:23
+*
+* To change this template, choose Tools | Template Manager
+* and open the template in the editor.
+*/
+ 
+package com.example.arcadio;
+
+import java.util.ArrayList;
+ 
+ 
+/**
+*
+* @author fserna
+*/
+public interface CosmeListener {
+   
+    public void notificarRefrescoVariables (String _nombreCesta, ArrayList _listaVariables);
+   
+    public void notificarEstadoConexion (EstadosCosme _estado);
+   
+    public void notificarError (String _txtError);
+    
+    public void notificarEvento(EstadosCosme _codEvento, Telegrama _tlg);
+}

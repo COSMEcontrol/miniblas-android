@@ -1,0 +1,57 @@
+package com.example.arcadio;
+
+public class ItemVariable {
+	private String nombre;
+	private String valor;
+	private String maximo;
+	private String minimo;
+	
+	public ItemVariable(String _nombre, String _valor){
+		this.nombre = _nombre;
+		this.valor = _valor;
+	}
+	
+	public ItemVariable(String _nombre){
+		this.nombre = _nombre;
+	}
+	
+	public String getValor() {
+		return valor;
+	}
+
+	public void setValor(String _valor) {
+		this.valor = _valor;
+	}
+
+	/*public String getValor_txt() {
+		return valor_txt;
+	}
+
+	public void setValor_txt(String valor_txt) {
+		this.valor_txt = valor_txt;
+	}*/	
+	
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String _nombre) {
+		this.nombre = _nombre;
+	}
+
+	public String getMaximo() {
+		return maximo;
+	}
+
+	public void setMaximo(String _maximo) {
+		this.maximo = _maximo;
+	}
+
+	public String getMinimo() {
+		return minimo;
+	}
+
+	public void setMinimo(String _minimo) {
+		this.minimo = _minimo;
+	}
+}

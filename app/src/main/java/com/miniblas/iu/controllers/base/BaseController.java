@@ -21,7 +21,6 @@ public abstract class BaseController<T extends ISortElement> implements IObserva
 
     protected BaseController(AplicacionPrincipal _aplicacionPrincipal){
         this.application=_aplicacionPrincipal;
-        System.out.println("iniciando servicio arcadio");
         application.startService();
     }
 

@@ -132,26 +132,28 @@ public class AplicacionPrincipal extends Application {
 	}
 
 	public void startService() {
-		arcadio = new PluginClientArcadio(this);
-		arcadio.startService(new OnClientStartedListener() {
+        if(arcadio==null) {
+            arcadio = new PluginClientArcadio(this);
+            arcadio.startService(new OnClientStartedListener() {
 
-			@Override
-			public void onClientStopped() {
-				Toast.makeText(getApplicationContext(),
-						"Desconectado del servicio Arcadio", Toast.LENGTH_SHORT)
-						.show();
-				Log.v("Aplicacion ejemplo:-->",
-						"Desconectado del servicio Arcadio");
-			}
+                @Override
+                public void onClientStopped() {
+                    Toast.makeText(getApplicationContext(),
+                            "Desconectado del servicio Arcadio", Toast.LENGTH_SHORT)
+                            .show();
+                    Log.v("Aplicacion ejemplo:-->",
+                            "Desconectado del servicio Arcadio");
+                }
 
-			@Override
-			public void onClientStarted() {
-				Toast.makeText(getApplicationContext(),
-						"Conectado del servicio Arcadio", Toast.LENGTH_SHORT)
-						.show();
-				Log.v("Aplicacion ejemplo:-->", "Conectado al servicio Arcadio");
-			}
-		});
+                @Override
+                public void onClientStarted() {
+                    Toast.makeText(getApplicationContext(),
+                            "Conectado del servicio Arcadio", Toast.LENGTH_SHORT)
+                            .show();
+                    Log.v("Aplicacion ejemplo:-->", "Conectado al servicio Arcadio");
+                }
+            });
+        }
 	}
 
 	public void createBasket(String _nameBasket, int _refreshPeriod){
@@ -170,8 +172,10 @@ public class AplicacionPrincipal extends Application {
 		arcadio.eliminarCesta(_basketName);
 	}
 	public void connect(int _connectionId) {
-		if(estado!=EstadosCosme.COMUNICACION_OK)
-			arcadio.connect(_connectionId, cosmeListener);
+		if(estado!=EstadosCosme.COMUNICACION_OK) {
+            System.out.println("Intentando establecer comunicacion con cosme");
+            arcadio.connect(_connectionId, cosmeListener);
+        }
 	}
 
 	public void disconnect() {

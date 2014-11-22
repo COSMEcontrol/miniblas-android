@@ -1,0 +1,94 @@
+package com.arcadio;
+
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
+import android.util.Log;
+
+public class Mensajero extends Thread{
+//	private Conexion conexion;
+	private BlockingQueue<String> listaTlg;
+	private OutputStreamWriter flujoSalida = null;
+	private boolean estoyVivo = true;
+	
+	public Mensajero(Conexion conexion) {
+//		this.conexion = conexion;
+		this.flujoSalida  = conexion.getFlujoSalida();
+		listaTlg = new LinkedBlockingQueue<String>();
+		this.setDaemon(true);
+	}
+	
+	public void run() {
+        while (this.estoyVivo){
+            while ( ! this.isListaVacia()){
+                String tlg = this.getTlg();
+                this.enviar(tlg);
+            }
+            
+            try{
+                synchronized(this){
+                    this.wait(2000);
+                }
+            } catch (InterruptedException ie){
+               
+            }
+        } 
+    }
+	
+	public void  enviarTelegrama (String _tlg) {
+		 
+        if (_tlg.length() > 5000000/*conexion.getLongMaxTelegrama()*/){
+            //emcos.getEmcosListener().notificarError("ERROR: Se est?ntentando enviar un telegrama de "+_tlg.length()+" bytes.");
+        	//notificar error
+        }else{
+            try {
+                listaTlg.put(_tlg);
+            } catch (InterruptedException ie){
+                ie.printStackTrace();
+            } catch (NullPointerException npe){
+            	npe.printStackTrace();
+            }
+ 
+            this.interrupt();
+        }
+    }
+	
+	private void enviar(String _tlg){
+        /*if (emcos.getMsRetardoTelegramas() != 0){
+            try {
+                sleep(emcos.getMsRetardoTelegramas());
+            } catch (InterruptedException ex) {
+                //ex.printStackTrace();
+            }
+        }*/
+        if (_tlg != null){
+        	try {
+				flujoSalida.write(_tlg+"\n");
+				flujoSalida.flush();
+				Log.v("Mensajero","telegrama enviado: "+_tlg);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+        }
+    }
+	
+	private boolean isListaVacia (){
+        return listaTlg.isEmpty();
+    }
+   
+    private String getTlg (){
+        return (String)listaTlg.poll();
+    }
+ 
+    public void reset()
+    {
+        listaTlg.clear();
+    }
+	
+    public void destroy(){
+        estoyVivo = false;
+        interrupt();
+    }
+}
