@@ -1,7 +1,9 @@
 package com.miniblas.iu.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -26,16 +28,19 @@ import com.miniblas.iu.utils.SeleccionableRendererAdapter;
 import com.miniblas.model.MiniBlasItemVariable;
 import com.miniblas.model.MiniBlasPerfil;
 import com.miniblas.perfistence.ormlite.Constantes;
+import com.mobeta.android.dslv.DragSortController;
+import com.mobeta.android.dslv.DragSortListView;
 
 import java.util.ArrayList;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * Created by alberto on 13/11/14.
  */
 public class NewVariableElementsFragment extends OrdenableElementsFragment<MiniBlasItemVariable> {
-    @Inject
+    @Inject @Named("provideNewVariablesRendererAdapter")
     public SeleccionableRendererAdapter<MiniBlasItemVariable> adaptador;
 
     private NewVariablesController controller;
@@ -86,6 +91,15 @@ public class NewVariableElementsFragment extends OrdenableElementsFragment<MiniB
         controller.saveElements();
 
     }
+    @Override
+    public View provideDropView(){
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.lyt_fragment_no_ordenable, null, false);
+        return view;
+
+    }
+
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);

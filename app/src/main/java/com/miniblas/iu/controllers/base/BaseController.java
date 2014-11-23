@@ -28,6 +28,7 @@ public abstract class BaseController<T extends ISortElement> implements IObserva
         this.vista=_vista;
         adapter = vista.getAdapter();
         loadPreferences();
+        adapter.clearCollection();
         application.addSingleTask(new Runnable() {
             @Override
             public void run() {
@@ -38,7 +39,6 @@ public abstract class BaseController<T extends ISortElement> implements IObserva
 	//				e.printStackTrace();
 	//			}
                 try {
-                    adapter.clearCollection();
                     adapter.addAll(getElementsToRepository());
                     vista.dismissIconLoading();
                     //actualizar lista
@@ -108,9 +108,7 @@ public abstract class BaseController<T extends ISortElement> implements IObserva
         application.addSingleTask(new Runnable() {
             @Override
             public void run() {
-                System.out.println("elemento en orden "+ element.getOrden());
                 adapter.remove(element);
-                System.out.println("elemento en orden "+ element.getOrden());
                 adapter.insert(element, element.getOrden());
                 vista.msgButtonEditSave();
                 vista.refreshList();

@@ -82,9 +82,12 @@ public class NewVariablesController extends BaseController<MiniBlasItemVariable>
             }
         };
         Collections.sort(_variables, comparator);
+        vista.getAdapter().clearCollection();
+        vista.getAdapter().clearSelection();
         vista.getAdapter().addAll(_variables);
+        System.out.println(_variables);
         //consultar base de datos para ver cuales tiene seleccionadas
-        int i;
+        int i=0;
 
         for(MiniBlasItemVariable variable:basket.getVariables()){
             if((i = ((NewVariableElementsFragment)vista).getAdapter().indexOf(variable)) != -1){

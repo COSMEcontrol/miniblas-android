@@ -31,6 +31,8 @@ import com.miniblas.model.MiniBlasCesta;
 import com.miniblas.model.MiniBlasItemVariable;
 import com.miniblas.model.MiniBlasPerfil;
 
+import javax.inject.Named;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -68,15 +70,13 @@ public class RenderAdaptersModule {
         final SeleccionableRendererAdapter<MiniBlasItemVariable> adapter = new SeleccionableRendererAdapter<MiniBlasItemVariable>(layoutInflater, rendererBuilder, itemVariableCollection);
         return adapter; 
     }
-
-    /*
+    @Named("provideNewVariablesRendererAdapter")
     @Provides SeleccionableRendererAdapter<MiniBlasItemVariable> provideNuevaVariableRendererAdapter(LayoutInflater layoutInflater, NewVariableRendererBuilder rendererBuilder) {
-        final List<MiniBlasItemVariable> variablesCollection = new ArrayList<MiniBlasItemVariable>();
-        final SeleccionableRendererAdapter<MiniBlasItemVariable> adapter = new SeleccionableRendererAdapter<MiniBlasItemVariable>(layoutInflater, rendererBuilder, variablesCollection);
+        MiniBlasItemVariableCollection itemVariableCollection = new MiniBlasItemVariableCollection(new ArrayList<MiniBlasItemVariable>());
+        final SeleccionableRendererAdapter<MiniBlasItemVariable> adapter = new SeleccionableRendererAdapter<MiniBlasItemVariable>(layoutInflater, rendererBuilder, itemVariableCollection);
         return adapter; 
     }
 
-*/
     @Provides
     LayoutInflater provideLayoutInflater() {
         return LayoutInflater.from(context);

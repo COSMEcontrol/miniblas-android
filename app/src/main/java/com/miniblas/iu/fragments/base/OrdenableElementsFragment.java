@@ -45,7 +45,9 @@ public abstract class OrdenableElementsFragment<T extends ISortElement> extends 
         FabActivity act = (FabActivity) getActivity();
         getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         getListView().setMultiChoiceModeListener(((FabActivity) getActivity()).getCab());
-        ((DragSortListView) getListView()).setDropListener(new onDropListener(adapter));
+        if(getListView() instanceof DragSortListView){
+            ((DragSortListView) getListView()).setDropListener(new onDropListener(adapter));
+        }
         act.attachFabToListView(getListView());
         progressBar = (ProgressBar) getView().findViewById(android.R.id.progress);
     }
@@ -89,11 +91,10 @@ public abstract class OrdenableElementsFragment<T extends ISortElement> extends 
         super.onSaveInstanceState(_savedInstanceState);
         SparseBooleanArray sparseBooleanArray = getListView().getCheckedItemPositions();
         SerializableSparseBooleanArrayContainer sparseBooleanArraySerializable = new SerializableSparseBooleanArrayContainer(sparseBooleanArray);
-        System.out.println(getListView().getCheckedItemPositions().toString());
         _savedInstanceState.putSerializable(SELECTED_ELEMENTS, sparseBooleanArraySerializable);
     }
 
-    private View provideDropView(){
+    public View provideDropView(){
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.lyt_fragment_ordenable, null, false);
         DragSortListView mDslv = (DragSortListView) view.findViewById(android.R.id.list);
