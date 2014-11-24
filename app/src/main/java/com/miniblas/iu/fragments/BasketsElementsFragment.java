@@ -115,7 +115,7 @@ public class BasketsElementsFragment extends OrdenableElementsFragment<MiniBlasC
         getActivity().getMenuInflater().inflate(R.menu.menu_cestas, menu);
         checkAutoConexion = (MenuItem) menu.findItem(R.id.menu_cestas_autoconexion);
         iconoEstado = (MenuItem) menu.findItem(R.id.estado);
-
+        ((AplicacionPrincipal)getActivity().getApplication()).setIconObserver(controller);
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

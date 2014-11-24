@@ -42,7 +42,8 @@ public class BasketsController extends BaseController<MiniBlasCesta> implements 
         /*******************Conexion a cosme **********************/
         //esta tarea requiere de tienpo para establecer el socket
         application.connect(profile.getId());
-        application.setIconObserver(this);
+
+        System.out.println("onview change.......................");
     }
 
 
@@ -75,6 +76,7 @@ public class BasketsController extends BaseController<MiniBlasCesta> implements 
 
     @Override
     public void OnConnect() {
+        System.out.println("poner el semaforo en verde");
         vista.setConnectIcon();
     }
 

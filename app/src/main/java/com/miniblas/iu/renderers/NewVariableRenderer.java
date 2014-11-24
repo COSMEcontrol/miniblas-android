@@ -37,11 +37,12 @@ public class NewVariableRenderer extends Renderer<MiniBlasItemVariable>{
     TextView tv_nom_variable;
 //    @InjectView(R.id.ch_marcar_perfil)
 //    CheckBox ch_marcar_perfil;
-//    @InjectView(R.id.tv_variable)
-//    TextView tv_variable;
+    @InjectView(R.id.separator)
+    TextView tv_separator;
+    /*
     @InjectView(R.id.drag_handle)
     ImageView iv_image;
-
+*/
     
 	@Override
 	protected void setUpView(View rootView) {
@@ -66,7 +67,7 @@ public class NewVariableRenderer extends Renderer<MiniBlasItemVariable>{
 	public void render() {
 		MiniBlasItemVariable variable = getContent();
 		tv_nom_variable.setText(variable.getNombre());
-		iv_image.setVisibility(View.INVISIBLE);
+		tv_separator.setVisibility(View.GONE);
 		//tv_variable.setText(variable.getValor());
 		
 	}

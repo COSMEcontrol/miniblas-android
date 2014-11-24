@@ -59,7 +59,7 @@ public class AplicacionPrincipal extends Application {
 	private ObservadorVariables listenerObservadorVariables = new ObservadorVariables();
 	private ListaVariablesListener<ArrayList<MiniBlasItemVariable>> listenerListaVariables = new ListaVariablesListener<ArrayList<MiniBlasItemVariable>>();
 	private PluginClientArcadio arcadio;
-	private EstadosCosme estado;
+	private EstadosCosme estado = EstadosCosme.DESCONECTADO;
 	private CosmeListener cosmeListener = new AdapterMiniBlasCosmeListener(
 			new MiniBlasCosmeListener() {
 
@@ -93,6 +93,7 @@ public class AplicacionPrincipal extends Application {
 				public void notificarEstadoConexion(EstadosCosme _estado) {
 					if (_estado == EstadosCosme.COMUNICACION_OK) {
 						estado = EstadosCosme.COMUNICACION_OK;
+                        System.out.println("notificando estado en cosmelistener: "+estado);
 						listenerIconConnection.onConnectNotify();
 					} else {
 						estado = _estado;
@@ -184,8 +185,10 @@ public class AplicacionPrincipal extends Application {
 
 	public void setIconObserver(ObservadorConnectionIcon _observer) {
 		if (listenerIconConnection != null) {
+            System.out.println("Set icon connection...............");
 			this.listenerIconConnection.setObservador(_observer);
 			// notificar el ultimo estado a la nueva vista
+            System.out.println("notificar estado :"+estado);
 			cosmeListener.notificarEstadoConexion(estado);
 		}
 

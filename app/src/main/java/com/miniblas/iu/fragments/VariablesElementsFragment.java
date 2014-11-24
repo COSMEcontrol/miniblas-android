@@ -3,6 +3,7 @@ package com.miniblas.iu.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -76,26 +77,29 @@ public class VariablesElementsFragment extends OrdenableElementsFragment<MiniBla
         int id_basket = extras.getInt(Constantes.BASKET_ID);
         int id_profile = extras.getInt(Constantes.PROFILE_ID);
         controller.onViewChange(this, id_profile, id_basket);
+        (((ActionBarActivity)getActivity()).getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         act.setFabListener(new FabActivity.FabListener() {
             @Override
             public void onFabPressed() {
-                Bundle data = new Bundle();
-                data.putInt(Constantes.PROFILE_ID, controller.getIdProfile());
-                data.putInt(Constantes.BASKET_ID, controller.getBasket().getId());
-                //getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                getFragmentManager().executePendingTransactions();
-                FragmentTransaction trans = getFragmentManager().beginTransaction();
-                trans.setCustomAnimations(R.anim.left_in, R.anim.left_out,R.anim.right_in, R.anim.right_out);
-                NewVariableElementsFragment fragment = new NewVariableElementsFragment();
-                fragment.setArguments(data);
-                setTargetFragment(fragment, REQUEST_CODE);
-                trans.replace(R.id.container, fragment);
-                trans.addToBackStack(null);
-                trans.commit();
+               gotoNewVariableFragment();
             }
         });
     }
-
+    public void gotoNewVariableFragment(){
+        Bundle data = new Bundle();
+        data.putInt(Constantes.PROFILE_ID, controller.getIdProfile());
+        data.putInt(Constantes.BASKET_ID, controller.getBasket().getId());
+        //getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        getFragmentManager().executePendingTransactions();
+        FragmentTransaction trans = getFragmentManager().beginTransaction();
+        trans.setCustomAnimations(R.anim.left_in, R.anim.left_out,R.anim.right_in, R.anim.right_out);
+        NewVariableElementsFragment fragment = new NewVariableElementsFragment();
+        fragment.setArguments(data);
+        setTargetFragment(fragment, REQUEST_CODE);
+        trans.replace(R.id.container, fragment);
+        trans.addToBackStack(null);
+        trans.commit();
+    }
     @Override
     public void onStop() {
         super.onStop();
@@ -132,7 +136,7 @@ public class VariablesElementsFragment extends OrdenableElementsFragment<MiniBla
                 ((FabActivity) getActivity()).backStackFragment();
                 return(true);
             case R.id.menu_anadir_variable:
-                //AlertDialogNuevoPerfil.newInstance(controller,new ArrayList<MiniBlasPerfil>()).show(getFragmentManager(), "");
+                gotoNewVariableFragment();
                 return true;
             case R.id.Acercade:
                 Intent i = new Intent(getActivity(), AcercaDe.class);

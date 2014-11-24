@@ -15,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -66,7 +67,7 @@ public class FabActivity extends ThemableActivity {
         initFab();
 	}
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
     }
 
@@ -91,10 +92,12 @@ public class FabActivity extends ThemableActivity {
             fab.show(true);
         }
     }
+    public void setImageFab(int resource){
+        ImageButton button1=(ImageButton)findViewById(R.id.fab);
+        button1.setImageResource(resource);
+    }
     public void toggleFab(boolean hide) {
-        if (fabDisabled) fab.hide(false);
-        else if (hide) fab.hide(true);
-        else fab.show(true);
+       // fab.
     }
     @Override
     public void onBackPressed(){
@@ -107,6 +110,7 @@ public class FabActivity extends ThemableActivity {
         }
     }
     public void backStackFragment(){
+
         FragmentManager fm = getSupportFragmentManager();
         fm.popBackStack();
     }

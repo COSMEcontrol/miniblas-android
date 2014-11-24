@@ -3,6 +3,7 @@ package com.miniblas.iu.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -46,6 +47,7 @@ public class NewVariableElementsFragment extends OrdenableElementsFragment<MiniB
     private NewVariablesController controller;
     private Menu menu;
     private android.view.ActionMode mode;
+    private FabActivity act;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,13 +65,15 @@ public class NewVariableElementsFragment extends OrdenableElementsFragment<MiniB
         super.onActivityCreated(savedInstanceState);
         getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         setHasOptionsMenu(true);
-        FabActivity act = (FabActivity) getActivity();
-        act.disableFab(true);
+        act = (FabActivity) getActivity();
+//        act.disableFab(true);
         act.setTitle(getResources().getString(R.string.nuevaVariable));
         act.setFabListener(new FabActivity.FabListener() {
             @Override
             public void onFabPressed() {
-               // AlertDialogNuevoPerfil.newInstance(controller,new ArrayList<MiniBlasPerfil>()).show(getFragmentManager(),"");
+                controller.guardarVariables();
+                ((FabActivity) getActivity()).backStackFragment();
+                act.setImageFab(R.drawable.ic_action_content_new);
             }
         });
         getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -80,10 +84,12 @@ public class NewVariableElementsFragment extends OrdenableElementsFragment<MiniB
                 adaptador.notifyDataSetChanged();
             }
         });
+        act.setImageFab(R.drawable.ic_action_save);
         Bundle extras = getArguments();
         int id_basket = extras.getInt(Constantes.BASKET_ID);
         int id_profile = extras.getInt(Constantes.PROFILE_ID);
         controller.onViewChange(this, id_profile, id_basket);
+        (((ActionBarActivity)getActivity()).getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
     }
     @Override
     public void onStop() {
@@ -114,16 +120,17 @@ public class NewVariableElementsFragment extends OrdenableElementsFragment<MiniB
         switch (item.getItemId()) {
             case android.R.id.home:
                 ((FabActivity) getActivity()).backStackFragment();
+                act.setImageFab(R.drawable.ic_action_content_new);
                 return(true);
             case R.id.save_variables:
                 controller.guardarVariables();
                 ((FabActivity) getActivity()).backStackFragment();
+                act.setImageFab(R.drawable.ic_action_content_new);
                 return true;
             default:
                 return false;
         }
     }
-
 
     @Override
     public void setConnectIcon() {
