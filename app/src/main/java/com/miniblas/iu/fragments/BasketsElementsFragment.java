@@ -47,6 +47,7 @@ public class BasketsElementsFragment extends OrdenableElementsFragment<MiniBlasC
     private android.view.ActionMode mode;
     private MenuItem iconoEstado;
     private MenuItem checkAutoConexion;
+    private BasketCab basketCab;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,11 +57,9 @@ public class BasketsElementsFragment extends OrdenableElementsFragment<MiniBlasC
         setAdapter(adaptador);
         setListAdapter(getAdapter());
         //getListView().setOnItemClickListener(new OnPerfilClickedListener());
-        BasketCab basketCab = new BasketCab();
-        //pc.setContext(getActivity());
-        ((FabActivity) getActivity()).setCab(basketCab);
-        basketCab.setFragment(this);
         controller = BasketsController.getInstance(application);
+        basketCab = new BasketCab();
+        basketCab.setFragment(this);
     }
 
 
@@ -101,6 +100,8 @@ public class BasketsElementsFragment extends OrdenableElementsFragment<MiniBlasC
                 trans.commit();
             }
         });
+        basketCab.setListView(getListView());
+        setCabInFragment(basketCab);
     }
 
     @Override

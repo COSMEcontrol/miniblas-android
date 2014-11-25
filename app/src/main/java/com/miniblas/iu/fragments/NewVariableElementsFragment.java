@@ -66,7 +66,7 @@ public class NewVariableElementsFragment extends OrdenableElementsFragment<MiniB
         getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         setHasOptionsMenu(true);
         act = (FabActivity) getActivity();
-//        act.disableFab(true);
+        act.disableFab(false);
         act.setTitle(getResources().getString(R.string.nuevaVariable));
         act.setFabListener(new FabActivity.FabListener() {
             @Override

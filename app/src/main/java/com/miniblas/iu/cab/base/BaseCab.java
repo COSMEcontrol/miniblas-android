@@ -7,6 +7,7 @@ import android.support.v7.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AbsListView;
+import android.widget.ListView;
 
 import com.miniblas.app.R;
 import com.miniblas.iu.FabActivity;
@@ -19,6 +20,7 @@ public abstract class BaseCab implements AbsListView.MultiChoiceModeListener {
     private android.view.ActionMode mActionMode;
     private  Activity context;
     private  OrdenableElementsFragment fragment;
+    private ListView listView;
 
 
     public BaseCab setContext(Activity context) {
@@ -31,7 +33,12 @@ public abstract class BaseCab implements AbsListView.MultiChoiceModeListener {
         this.fragment = fragment;
         return this;
     }
-
+    public void setListView(ListView listView){
+        this.listView = listView;
+    }
+    protected ListView getListView(){
+        return listView;
+    }
     public final boolean isActive() {
         return mActionMode != null;
     }
@@ -52,7 +59,6 @@ public abstract class BaseCab implements AbsListView.MultiChoiceModeListener {
     }
     public void finish() {
         if (mActionMode != null) {
-            System.out.println("Desactivando cabbbbbbbbbbbbbbbbbbbbbbbb");
             mActionMode.finish();
             mActionMode = null;
         }

@@ -7,11 +7,13 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.miniblas.app.R;
 import com.miniblas.iu.FabActivity;
+import com.miniblas.iu.cab.base.BaseCab;
 import com.miniblas.iu.controllers.base.BaseController;
 import com.miniblas.iu.controllers.base.SerializableSparseBooleanArrayContainer;
 import com.miniblas.iu.utils.SeleccionableRendererAdapter;
@@ -45,7 +47,6 @@ public abstract class OrdenableElementsFragment<T extends ISortElement> extends 
         super.onActivityCreated(savedInstanceState);
         FabActivity act = (FabActivity) getActivity();
         getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-        getListView().setMultiChoiceModeListener(((FabActivity) getActivity()).getCab());
         if(getListView() instanceof DragSortListView){
             ((DragSortListView) getListView()).setDropListener(new onDropListener(adapter));
         }
@@ -55,7 +56,10 @@ public abstract class OrdenableElementsFragment<T extends ISortElement> extends 
         progressBar = (ProgressBar) getView().findViewById(android.R.id.progress);
         listView = getListView();
     }
-
+    public void setCabInFragment(BaseCab baseCab){
+        ((FabActivity) getActivity()).setCab(baseCab);
+        getListView().setMultiChoiceModeListener(((FabActivity) getActivity()).getCab());
+    }
 
     public void loadState(){
         this.runOnIuThread(new Runnable() {

@@ -75,6 +75,10 @@ public class FabActivity extends ThemableActivity {
         return mCab;
     }
 
+    public void hideCab(){
+        mCab.finish();
+    }
+
     public void setCab(BaseCab cab) {
         mCab = cab;
     }
@@ -101,12 +105,16 @@ public class FabActivity extends ThemableActivity {
     }
     @Override
     public void onBackPressed(){
-        FragmentManager fm = getSupportFragmentManager();
-        if (fm.getBackStackEntryCount() == 0) {
-            Log.i("MainActivity", "nothing on backstack, calling super");
-            super.onBackPressed();
-        } else {
-           backStackFragment();
+        if(mCab.isActive()){
+            hideCab();
+        }else{
+            FragmentManager fm = getSupportFragmentManager();
+            if (fm.getBackStackEntryCount() == 0) {
+                Log.i("MainActivity", "nothing on backstack, calling super");
+                super.onBackPressed();
+            } else {
+                backStackFragment();
+            }
         }
     }
     public void backStackFragment(){

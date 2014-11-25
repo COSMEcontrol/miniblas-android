@@ -58,7 +58,7 @@ public abstract class SeleccionableElementsFragment<T extends ISortElement> exte
                     for (int i = 0; i < adapter.getCount(); i++) {
                         getListView().setItemChecked(i, sparseBooleanArrayContainer.get(i));
                     }
-                    ((FabActivity) getActivity()).disableFab(true);
+                     ((FabActivity) getActivity()).disableFab(true);
                 }
             }
         });

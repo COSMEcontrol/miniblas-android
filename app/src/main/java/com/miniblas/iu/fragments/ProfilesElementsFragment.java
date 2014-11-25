@@ -43,6 +43,8 @@ public class ProfilesElementsFragment extends OrdenableElementsFragment<MiniBlas
     private ProfilesController controller;
     private android.view.Menu menu;
     private android.view.ActionMode mode;
+    private PerfilCab pc;
+    private ProfilesElementsFragment yo;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,16 +53,17 @@ public class ProfilesElementsFragment extends OrdenableElementsFragment<MiniBlas
         setAdapter(adaptador);
         setListAdapter(getAdapter());
         //getListView().setOnItemClickListener(new OnPerfilClickedListener());
-        PerfilCab pc = new PerfilCab();
+        pc = new PerfilCab();
         //pc.setContext(getActivity());
-        ((FabActivity) getActivity()).setCab(pc);
+        yo = this;
         pc.setFragment(this);
         controller = ProfilesController.getInstance(application);
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
+    public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        System.out.println("onactivity createddddddddddddddddddddddddd..........");
         setHasOptionsMenu(true);
         (((ActionBarActivity)getActivity()).getSupportActionBar()).setDisplayHomeAsUpEnabled(false);
         FabActivity act = (FabActivity) getActivity();
@@ -91,6 +94,8 @@ public class ProfilesElementsFragment extends OrdenableElementsFragment<MiniBlas
                 trans.commit();
             }
         });
+        pc.setListView(getListView());
+        setCabInFragment(pc);
     }
 
     @Override

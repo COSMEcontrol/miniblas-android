@@ -1,14 +1,25 @@
 package com.miniblas.iu.cab.base;
 
+import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.Menu;
+import android.view.View;
+import android.widget.Adapter;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
 
 import com.miniblas.app.R;
+import com.miniblas.iu.FabActivity;
+import com.miniblas.iu.alertdialog.AlertDialogNuevoPerfil;
+import com.miniblas.iu.fragments.BasketsElementsFragment;
 import com.miniblas.iu.fragments.base.OrdenableElementsFragment;
 import com.miniblas.model.ISortElement;
 import com.miniblas.model.MiniBlasPerfil;
+import com.miniblas.perfistence.ormlite.Constantes;
 
 import java.util.ArrayList;
 
@@ -54,7 +65,7 @@ public abstract class BaseOrdenableElementsCab extends BaseCab {
         getContext().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                getFragment().getListView().clearChoices();
+                getListView().clearChoices();
                 getContext().disableFab(false);
                 getFragment().getAdapter().notifyDataSetChanged();
             }
@@ -63,11 +74,11 @@ public abstract class BaseOrdenableElementsCab extends BaseCab {
     @Override
     public void onItemCheckedStateChanged(android.view.ActionMode mode,
                                           int position, long id, boolean checked) {
-        mode.setTitle(getFragment().getListView().getCheckedItemCount() + " " +
+        mode.setTitle( super.getListView().getCheckedItemCount() + " " +
                 getFragment().getActivity().getResources().getString(R.string.elementosSeleccionados));
 
         menu.clear();
-        if (getMultipleElementMenu() != -1 && getFragment().getListView().getCheckedItemCount() > 1){
+        if (getMultipleElementMenu() != -1 &&  super.getListView().getCheckedItemCount() > 1){
             mode.getMenuInflater().inflate(getMultipleElementMenu(), menu);
 
         }else{
@@ -80,7 +91,7 @@ public abstract class BaseOrdenableElementsCab extends BaseCab {
         switch (item.getItemId()) {
             case R.id.menu_eliminar:
                 ArrayList<ISortElement> objectList = new ArrayList<ISortElement>();
-                SparseBooleanArray sba = getFragment().getListView().getCheckedItemPositions();
+                SparseBooleanArray sba =  super.getListView().getCheckedItemPositions();
                 for(int i =0; i<sba.size();i++){
                     if (sba.valueAt(i)) {
                         objectList.add((ISortElement) getFragment().getAdapter().getItem(sba.keyAt(i)));
