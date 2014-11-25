@@ -4,12 +4,11 @@ import android.util.SparseBooleanArray;
 
 import com.miniblas.app.AplicacionPrincipal;
 import com.miniblas.iu.controllers.base.BaseController;
-import com.miniblas.iu.fragments.NewVariableElementsFragment;
-import com.miniblas.iu.fragments.VariablesElementsFragment;
-import com.miniblas.iu.fragments.base.OrdenableElementsFragment;
+import com.miniblas.iu.fragments.NewVariableElementsFragmentCab;
+import com.miniblas.iu.fragments.VariablesElementsFragmentCab;
+import com.miniblas.iu.fragments.base.CabOrdenableElementsFragment;
 import com.miniblas.model.MiniBlasCesta;
 import com.miniblas.model.MiniBlasItemVariable;
-import com.miniblas.model.MiniBlasPerfil;
 import com.miniblas.persistence.BdException;
 
 import java.util.ArrayList;
@@ -40,7 +39,7 @@ public class NewVariablesController extends BaseController<MiniBlasItemVariable>
 
     }
 
-    public void onViewChange(OrdenableElementsFragment _vista, int _id_profile, int _id_basket){
+    public void onViewChange(CabOrdenableElementsFragment _vista, int _id_profile, int _id_basket){
         try {
             basket = application.getBasketStorage().getBasketById(_id_basket);
             basket.setPerfil(application.getProfileStorage().getProfileByid(basket.getPerfil().getId()));
@@ -90,8 +89,8 @@ public class NewVariablesController extends BaseController<MiniBlasItemVariable>
         int i=0;
 
         for(MiniBlasItemVariable variable:basket.getVariables()){
-            if((i = ((NewVariableElementsFragment)vista).getAdapter().indexOf(variable)) != -1){
-                ((NewVariableElementsFragment)vista).addItemSelected(i);
+            if((i = ((NewVariableElementsFragmentCab)vista).getAdapter().indexOf(variable)) != -1){
+                ((NewVariableElementsFragmentCab)vista).addItemSelected(i);
             }
         }
         vista.refreshList();
@@ -122,6 +121,6 @@ public class NewVariablesController extends BaseController<MiniBlasItemVariable>
                 }
             }
         });
-        ((NewVariableElementsFragment)vista).setResultIU(VariablesElementsFragment.RESULT_OK);
+        ((NewVariableElementsFragmentCab)vista).setResultIU(VariablesElementsFragmentCab.RESULT_OK);
     }
 }

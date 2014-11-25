@@ -1,9 +1,7 @@
 package com.miniblas.iu.fragments;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -13,23 +11,20 @@ import android.view.View;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.Toast;
-
 import com.miniblas.app.AplicacionPrincipal;
 import com.miniblas.app.R;
 import com.miniblas.iu.AcercaDe;
 import com.miniblas.iu.FabActivity;
 import com.miniblas.iu.Preferences;
-import com.miniblas.iu.alertdialog.AlertDialogNuevaCesta;
 import com.miniblas.iu.alertdialog.AlertDialogNuevoPerfil;
-import com.miniblas.iu.cab.BasketCab;
-import com.miniblas.iu.controllers.BasketsController;
+import com.miniblas.iu.cab.PerfilCab;
+import com.miniblas.iu.controllers.ProfilesController;
 import com.miniblas.iu.controllers.base.BaseController;
-import com.miniblas.iu.fragments.base.OrdenableElementsFragment;
+import com.miniblas.iu.fragments.base.CabOrdenableElementsFragment;
 import com.miniblas.iu.utils.SeleccionableRendererAdapter;
-import com.miniblas.model.MiniBlasCesta;
-import com.miniblas.model.MiniBlasItemVariable;
 import com.miniblas.model.MiniBlasPerfil;
 import com.miniblas.perfistence.ormlite.Constantes;
+
 
 import java.util.ArrayList;
 
@@ -38,17 +33,15 @@ import javax.inject.Inject;
 /**
  * Created by alberto on 13/11/14.
  */
-public class BasketsElementsFragment extends OrdenableElementsFragment<MiniBlasCesta> {
+public class ProfilesElementsFragmentCab extends CabOrdenableElementsFragment<MiniBlasPerfil> {
     @Inject
-    public SeleccionableRendererAdapter<MiniBlasCesta> adaptador;
+    public SeleccionableRendererAdapter<MiniBlasPerfil> adaptador;
 
-    private BasketsController controller;
-    private Menu menu;
+    private ProfilesController controller;
+    private android.view.Menu menu;
     private android.view.ActionMode mode;
-    private MenuItem iconoEstado;
-    private MenuItem checkAutoConexion;
-    private BasketCab basketCab;
-
+    private PerfilCab pc;
+    private ProfilesElementsFragmentCab yo;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,51 +50,49 @@ public class BasketsElementsFragment extends OrdenableElementsFragment<MiniBlasC
         setAdapter(adaptador);
         setListAdapter(getAdapter());
         //getListView().setOnItemClickListener(new OnPerfilClickedListener());
-        controller = BasketsController.getInstance(application);
-        basketCab = new BasketCab();
-        basketCab.setFragment(this);
+        pc = new PerfilCab();
+        //pc.setContext(getActivity());
+        yo = this;
+        pc.setFragment(this);
+        controller = ProfilesController.getInstance(application);
     }
 
-
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
+    public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        System.out.println("onactivity createddddddddddddddddddddddddd..........");
         setHasOptionsMenu(true);
+        (((ActionBarActivity)getActivity()).getSupportActionBar()).setDisplayHomeAsUpEnabled(false);
         FabActivity act = (FabActivity) getActivity();
-        act.setTitle(getResources().getString(R.string.listaCestas));
+        act.setTitle(getResources().getString(R.string.lista_perfiles));
         act.setFabListener(new FabActivity.FabListener() {
             @Override
             public void onFabPressed() {
-                AlertDialogNuevaCesta.newInstance(controller, new ArrayList<MiniBlasCesta>(), controller.getProfile()).show(getFragmentManager(),"");
+                AlertDialogNuevoPerfil.newInstance(controller,new ArrayList<MiniBlasPerfil>()).show(getFragmentManager(),"");
             }
         });
-        Bundle extras = getArguments();
-        int id_profile = extras.getInt(Constantes.PROFILE_ID);
-        controller.onViewChange(this, id_profile);
-        (((ActionBarActivity)getActivity()).getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        controller.onViewChange(this);
         getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Adapter adapter = parent.getAdapter();
-                MiniBlasCesta basket = (MiniBlasCesta) adapter.getItem(position);
+                MiniBlasPerfil profile = (MiniBlasPerfil) adapter.getItem(position);
                 Bundle data = new Bundle();
-                data.putInt(Constantes.PROFILE_ID,controller.getProfile().getId());
-                data.putInt(Constantes.BASKET_ID, basket.getId());
-                System.out.println("Id del perfil: " + controller.getProfile().getNombre());
-                System.out.println("Nombre cesta: "+ basket.getNombre());
+                data.putInt(Constantes.PROFILE_ID,profile.getId());
+
                 //getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-               // getFragmentManager().executePendingTransactions();
+                getFragmentManager().executePendingTransactions();
                 FragmentTransaction trans = getFragmentManager().beginTransaction();
                 trans.setCustomAnimations(R.anim.left_in, R.anim.left_out,R.anim.right_in, R.anim.right_out);
-                VariablesElementsFragment fragment = new VariablesElementsFragment();
+                BasketsElementsFragmentCab fragment = new BasketsElementsFragmentCab();
                 fragment.setArguments(data);
-                trans.replace(R.id.container,fragment);
+                trans.replace(R.id.container, fragment);
                 trans.addToBackStack(null);
                 trans.commit();
             }
         });
-        basketCab.setListView(getListView());
-        setCabInFragment(basketCab);
+        pc.setListView(getListView());
+        setCabInFragment(pc);
     }
 
     @Override
@@ -113,10 +104,8 @@ public class BasketsElementsFragment extends OrdenableElementsFragment<MiniBlasC
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        getActivity().getMenuInflater().inflate(R.menu.menu_cestas, menu);
-        checkAutoConexion = (MenuItem) menu.findItem(R.id.menu_cestas_autoconexion);
-        iconoEstado = (MenuItem) menu.findItem(R.id.estado);
-        ((AplicacionPrincipal)getActivity().getApplication()).setIconObserver(controller);
+        getActivity().getMenuInflater().inflate(R.menu.menu_perfiles, menu);
+
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -124,11 +113,8 @@ public class BasketsElementsFragment extends OrdenableElementsFragment<MiniBlasC
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
-            case android.R.id.home:
-                ((FabActivity) getActivity()).backStackFragment();
-                return(true);
-            case R.id.menu_anadir_cesta:
-                AlertDialogNuevaCesta.newInstance(controller,new ArrayList<MiniBlasCesta>(), controller.getProfile()).show(getFragmentManager(), "");
+            case R.id.menu_anadir_perfil:
+                AlertDialogNuevoPerfil.newInstance(controller,new ArrayList<MiniBlasPerfil>()).show(getFragmentManager(), "");
                 return true;
             case R.id.Acercade:
                 Intent i = new Intent(getActivity(), AcercaDe.class);
@@ -143,26 +129,16 @@ public class BasketsElementsFragment extends OrdenableElementsFragment<MiniBlasC
         return super.onOptionsItemSelected(item);
     }
 
+
+
     @Override
     public void setConnectIcon() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if(iconoEstado!=null)
-                    iconoEstado.setIcon(R.drawable.conectado);
-            }
-        });
+        //no aplicable
     }
 
     @Override
     public void setDisconnectIcon() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if(iconoEstado!=null)
-                    iconoEstado.setIcon(R.drawable.desconectado);
-            }
-        });
+        //no aplicable
     }
 
 
@@ -195,7 +171,7 @@ public class BasketsElementsFragment extends OrdenableElementsFragment<MiniBlasC
             @Override
             public void run() {
                 Toast.makeText(getActivity(),
-                        getResources().getString(R.string.cestaAñadida), Toast.LENGTH_SHORT).show();
+                        getResources().getString(R.string.perfilGuardado), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -205,7 +181,7 @@ public class BasketsElementsFragment extends OrdenableElementsFragment<MiniBlasC
         runOnUiThread(new Runnable() {
             public void run() {
                 Toast.makeText(getActivity(),
-                        getResources().getString(R.string.cestaDescartada), Toast.LENGTH_SHORT).show();
+                        getResources().getString(R.string.perfilDescartado), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -217,7 +193,7 @@ public class BasketsElementsFragment extends OrdenableElementsFragment<MiniBlasC
             @Override
             public void run() {
                 Toast.makeText(getActivity(),
-                        getResources().getString(R.string.cestaModificada), Toast.LENGTH_SHORT).show();
+                        getResources().getString(R.string.perfilEditado), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -227,7 +203,7 @@ public class BasketsElementsFragment extends OrdenableElementsFragment<MiniBlasC
         runOnUiThread(new Runnable() {
             public void run() {
                 Toast.makeText(getActivity(),
-                        getResources().getString(R.string.cestaNoModificada), Toast.LENGTH_SHORT).show();
+                        getResources().getString(R.string.perfilNoModificado), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -237,7 +213,7 @@ public class BasketsElementsFragment extends OrdenableElementsFragment<MiniBlasC
         runOnUiThread(new Runnable() {
             public void run() {
                 Toast.makeText(getActivity(),
-                        getResources().getString(R.string.errorAccessBd), Toast.LENGTH_SHORT).show();
+                        getResources().getString(R.string.errorDelPerfilBd), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -248,7 +224,7 @@ public class BasketsElementsFragment extends OrdenableElementsFragment<MiniBlasC
             getActivity().runOnUiThread(runnable);
         }
     }
-    public BaseController<MiniBlasCesta> getController(){
+    public BaseController<MiniBlasPerfil> getController(){
         return controller;
     }
 

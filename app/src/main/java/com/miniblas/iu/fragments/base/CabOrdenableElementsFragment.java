@@ -24,7 +24,7 @@ import com.mobeta.android.dslv.DragSortListView;
 /**
  * Created by alberto on 13/11/14.
  */
-public abstract class OrdenableElementsFragment<T extends ISortElement> extends ListFragment {
+public abstract class CabOrdenableElementsFragment<T extends ISortElement> extends ListFragment {
 
     private SeleccionableRendererAdapter<T> adapter;
     private Bundle savedInstance=null;

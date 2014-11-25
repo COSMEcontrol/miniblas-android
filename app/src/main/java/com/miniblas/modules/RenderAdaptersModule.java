@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.miniblas.iu.fragments.BasketsElementsFragment;
-import com.miniblas.iu.fragments.NewVariableElementsFragment;
-import com.miniblas.iu.fragments.ProfilesElementsFragment;
-import com.miniblas.iu.fragments.VariablesElementsFragment;
+import com.miniblas.iu.fragments.BasketsElementsFragmentCab;
+import com.miniblas.iu.fragments.NewVariableElementsFragmentCab;
+import com.miniblas.iu.fragments.ProfilesElementsFragmentCab;
+import com.miniblas.iu.fragments.VariablesElementsFragmentCab;
+import com.miniblas.iu.renderers.SeekVariableRenderer;
+import com.miniblas.iu.renderers.SwitchVariableRenderer;
 import com.miniblas.iu.utils.SeleccionableRendererAdapter;
 import com.miniblas.model.MiniBlasCestaCollection;
 import com.miniblas.model.MiniBlasItemVariableCollection;
@@ -37,11 +39,11 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(injects = {
-		ProfilesElementsFragment.class,
+		ProfilesElementsFragmentCab.class,
 		AplicacionPrincipal.class,
-        BasketsElementsFragment.class,
-        VariablesElementsFragment.class,
-        NewVariableElementsFragment.class,
+        BasketsElementsFragmentCab.class,
+        VariablesElementsFragmentCab.class,
+        NewVariableElementsFragmentCab.class,
 }, library=true)
 public class RenderAdaptersModule {
 
@@ -119,7 +121,11 @@ public class RenderAdaptersModule {
     private List<Renderer<MiniBlasItemVariable>> getPrototypesVariable() {
         List<Renderer<MiniBlasItemVariable>> prototypes = new LinkedList<Renderer<MiniBlasItemVariable>>();
         VariableRenderer variableRenderer = new VariableRenderer(context);
+        SwitchVariableRenderer switchVariableRenderer = new SwitchVariableRenderer(context);
+        SeekVariableRenderer seekvariableRenderer = new SeekVariableRenderer(context);
         prototypes.add(variableRenderer);
+        prototypes.add(seekvariableRenderer);
+        prototypes.add(switchVariableRenderer);
         return prototypes;
     }
     private List<Renderer<MiniBlasItemVariable>> getPrototypesNewVariable() {

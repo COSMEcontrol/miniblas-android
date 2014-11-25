@@ -1,11 +1,8 @@
 package com.miniblas.iu.controllers;
-import java.util.ArrayList;
 import java.util.List;
 import com.miniblas.app.AplicacionPrincipal;
-import com.miniblas.iu.alertdialog.AlertDialogEditarPerfil;
-import com.miniblas.iu.alertdialog.AlertDialogNuevoPerfil;
 import com.miniblas.iu.controllers.base.BaseController;
-import com.miniblas.iu.fragments.base.OrdenableElementsFragment;
+import com.miniblas.iu.fragments.base.CabOrdenableElementsFragment;
 import com.miniblas.model.MiniBlasPerfil;
 import com.miniblas.persistence.BdException;
 
@@ -30,7 +27,7 @@ public class ProfilesController extends BaseController<MiniBlasPerfil> {
 
     }
 
-    public void onViewChange(OrdenableElementsFragment _vista){
+    public void onViewChange(CabOrdenableElementsFragment _vista){
 		super.onViewChange(_vista);
 		if(application.getSettingStorage().getPrefAutoConexion()){
 			int idProfile = application.getSettingStorage().getPrefAutoConexionIdProfile();

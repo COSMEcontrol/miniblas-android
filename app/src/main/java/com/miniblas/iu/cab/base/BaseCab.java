@@ -1,9 +1,7 @@
 package com.miniblas.iu.cab.base;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Build;
-import android.support.v7.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AbsListView;
@@ -11,15 +9,13 @@ import android.widget.ListView;
 
 import com.miniblas.app.R;
 import com.miniblas.iu.FabActivity;
-import com.miniblas.iu.fragments.base.OrdenableElementsFragment;
-
-import java.io.Serializable;
+import com.miniblas.iu.fragments.base.CabOrdenableElementsFragment;
 
 public abstract class BaseCab implements AbsListView.MultiChoiceModeListener {
 
     private android.view.ActionMode mActionMode;
     private  Activity context;
-    private  OrdenableElementsFragment fragment;
+    private CabOrdenableElementsFragment fragment;
     private ListView listView;
 
 
@@ -28,7 +24,7 @@ public abstract class BaseCab implements AbsListView.MultiChoiceModeListener {
         return this;
     }
 
-    public BaseCab setFragment(OrdenableElementsFragment fragment) {
+    public BaseCab setFragment(CabOrdenableElementsFragment fragment) {
         this.context = fragment.getActivity();
         this.fragment = fragment;
         return this;
@@ -43,7 +39,7 @@ public abstract class BaseCab implements AbsListView.MultiChoiceModeListener {
         return mActionMode != null;
     }
 
-    public OrdenableElementsFragment getFragment() {
+    public CabOrdenableElementsFragment getFragment() {
         return fragment;
     }
 

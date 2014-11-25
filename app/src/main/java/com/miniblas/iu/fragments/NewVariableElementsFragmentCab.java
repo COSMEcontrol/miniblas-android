@@ -1,7 +1,6 @@
 package com.miniblas.iu.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
@@ -15,24 +14,13 @@ import android.widget.Toast;
 
 import com.miniblas.app.AplicacionPrincipal;
 import com.miniblas.app.R;
-import com.miniblas.iu.AcercaDe;
 import com.miniblas.iu.FabActivity;
-import com.miniblas.iu.Preferences;
-import com.miniblas.iu.alertdialog.AlertDialogNuevoPerfil;
-import com.miniblas.iu.cab.PerfilCab;
 import com.miniblas.iu.controllers.NewVariablesController;
-import com.miniblas.iu.controllers.ProfilesController;
-import com.miniblas.iu.controllers.VariablesController;
 import com.miniblas.iu.controllers.base.BaseController;
-import com.miniblas.iu.fragments.base.OrdenableElementsFragment;
+import com.miniblas.iu.fragments.base.CabOrdenableElementsFragment;
 import com.miniblas.iu.utils.SeleccionableRendererAdapter;
 import com.miniblas.model.MiniBlasItemVariable;
-import com.miniblas.model.MiniBlasPerfil;
 import com.miniblas.perfistence.ormlite.Constantes;
-import com.mobeta.android.dslv.DragSortController;
-import com.mobeta.android.dslv.DragSortListView;
-
-import java.util.ArrayList;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -40,7 +28,7 @@ import javax.inject.Named;
 /**
  * Created by alberto on 13/11/14.
  */
-public class NewVariableElementsFragment extends OrdenableElementsFragment<MiniBlasItemVariable> {
+public class NewVariableElementsFragmentCab extends CabOrdenableElementsFragment<MiniBlasItemVariable> {
     @Inject @Named("provideNewVariablesRendererAdapter")
     public SeleccionableRendererAdapter<MiniBlasItemVariable> adaptador;
 

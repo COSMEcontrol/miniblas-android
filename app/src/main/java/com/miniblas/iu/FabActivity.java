@@ -4,20 +4,17 @@ import com.melnykov.fab.FloatingActionButton;
 import com.miniblas.app.R;
 import com.miniblas.iu.base.ThemableActivity;
 import com.miniblas.iu.cab.base.BaseCab;
-import com.miniblas.iu.fragments.ProfilesElementsFragment;
+import com.miniblas.iu.fragments.ProfilesElementsFragmentCab;
 
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.Toast;
 
 
 public class FabActivity extends ThemableActivity {
@@ -58,7 +55,7 @@ public class FabActivity extends ThemableActivity {
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
         // trans.setCustomAnimations(R.anim.frag_enter, R.anim.frag_exit);
-        trans.replace(R.id.container, new ProfilesElementsFragment());
+        trans.replace(R.id.container, new ProfilesElementsFragmentCab());
         try {
             trans.commit();
         } catch (Exception e) {

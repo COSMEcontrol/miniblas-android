@@ -7,9 +7,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Adapter;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -18,26 +15,19 @@ import com.miniblas.app.R;
 import com.miniblas.iu.AcercaDe;
 import com.miniblas.iu.FabActivity;
 import com.miniblas.iu.Preferences;
-import com.miniblas.iu.alertdialog.AlertDialogNuevoPerfil;
-import com.miniblas.iu.cab.PerfilCab;
-import com.miniblas.iu.controllers.ProfilesController;
 import com.miniblas.iu.controllers.VariablesController;
 import com.miniblas.iu.controllers.base.BaseController;
-import com.miniblas.iu.fragments.base.OrdenableElementsFragment;
+import com.miniblas.iu.fragments.base.CabOrdenableElementsFragment;
 import com.miniblas.iu.utils.SeleccionableRendererAdapter;
-import com.miniblas.model.MiniBlasCesta;
 import com.miniblas.model.MiniBlasItemVariable;
-import com.miniblas.model.MiniBlasPerfil;
 import com.miniblas.perfistence.ormlite.Constantes;
-
-import java.util.ArrayList;
 
 import javax.inject.Inject;
 
 /**
  * Created by alberto on 13/11/14.
  */
-public class VariablesElementsFragment extends OrdenableElementsFragment<MiniBlasItemVariable> {
+public class VariablesElementsFragmentCab extends CabOrdenableElementsFragment<MiniBlasItemVariable> {
     @Inject
     public SeleccionableRendererAdapter<MiniBlasItemVariable> adaptador;
 
@@ -93,7 +83,7 @@ public class VariablesElementsFragment extends OrdenableElementsFragment<MiniBla
         getFragmentManager().executePendingTransactions();
         FragmentTransaction trans = getFragmentManager().beginTransaction();
         trans.setCustomAnimations(R.anim.left_in, R.anim.left_out,R.anim.right_in, R.anim.right_out);
-        NewVariableElementsFragment fragment = new NewVariableElementsFragment();
+        NewVariableElementsFragmentCab fragment = new NewVariableElementsFragmentCab();
         fragment.setArguments(data);
         setTargetFragment(fragment, REQUEST_CODE);
         trans.replace(R.id.container, fragment);
@@ -104,6 +94,10 @@ public class VariablesElementsFragment extends OrdenableElementsFragment<MiniBla
     public void onStop() {
         super.onStop();
         controller.saveElements();
+
+    }
+    @Override
+    public void loadState(){
 
     }
     @Override

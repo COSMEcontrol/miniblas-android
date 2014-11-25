@@ -2,7 +2,7 @@ package com.miniblas.iu.controllers;
 
 import com.miniblas.app.AplicacionPrincipal;
 import com.miniblas.iu.controllers.base.BaseController;
-import com.miniblas.iu.fragments.base.OrdenableElementsFragment;
+import com.miniblas.iu.fragments.base.CabOrdenableElementsFragment;
 import com.miniblas.model.MiniBlasCesta;
 import com.miniblas.model.MiniBlasPerfil;
 import com.miniblas.persistence.BdException;
@@ -32,7 +32,7 @@ public class BasketsController extends BaseController<MiniBlasCesta> implements 
 
     }
 
-    public void onViewChange(OrdenableElementsFragment _vista, int _id_profile){
+    public void onViewChange(CabOrdenableElementsFragment _vista, int _id_profile){
         try {
             profile = application.getProfileStorage().getProfileByid(_id_profile);
         } catch (BdException e) {

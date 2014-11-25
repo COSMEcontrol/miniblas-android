@@ -3,7 +3,7 @@ package com.miniblas.iu.controllers.base;
 import com.miniblas.app.AplicacionPrincipal;
 import com.miniblas.iu.alertdialog.interfaces.IObservadorEditAlertDialog;
 import com.miniblas.iu.alertdialog.interfaces.IObservadorNewAlertDialog;
-import com.miniblas.iu.fragments.base.OrdenableElementsFragment;
+import com.miniblas.iu.fragments.base.CabOrdenableElementsFragment;
 import com.miniblas.iu.utils.SeleccionableRendererAdapter;
 import com.miniblas.model.ISortElement;
 import com.miniblas.persistence.BdException;
@@ -13,7 +13,7 @@ import java.util.List;
 
 
 public abstract class BaseController<T extends ISortElement> implements IObservadorNewAlertDialog<T>, IObservadorEditAlertDialog<T> {
-    protected OrdenableElementsFragment<T> vista;
+    protected CabOrdenableElementsFragment<T> vista;
     private SeleccionableRendererAdapter<T> adapter;
     protected AplicacionPrincipal application;
 
@@ -24,7 +24,7 @@ public abstract class BaseController<T extends ISortElement> implements IObserva
         application.startService();
     }
 
-    public void onViewChange(OrdenableElementsFragment<T> _vista){
+    public void onViewChange(CabOrdenableElementsFragment<T> _vista){
         this.vista=_vista;
         adapter = vista.getAdapter();
         loadPreferences();
