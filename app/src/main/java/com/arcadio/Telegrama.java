@@ -1,377 +1,1088 @@
 package com.arcadio;
 
-import java.math.BigInteger;
+import com.arcadio.api.v1.service.CosmeStates;
+import com.arcadio.common.ItemVariable;
+import com.arcadio.common.NamesList;
+import com.arcadio.common.NumericVariable;
+import com.arcadio.common.TextVariable;
+import com.arcadio.common.VariablesList;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.io.StreamTokenizer;
+import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.StringTokenizer;
 
-import com.arcadio.exceptions.TelegramTypesException;
-import com.arcadio.modelo.ItemVariable;
+/**
+ * @author fserna, Alberto Azuara García 03/12/2014
+ */
 
-public class Telegrama {
-	private String idCliente;
-	private String idMaquina;
-	private int numPeticion;
-	private BigInteger timeStamp;
-	private String idTelegrama; //idTelegrama equivale al comando del telegrama (segun el)
-	private String nombreCesta;
-	private String nombreVariable;
-	private String valorVariable;
-	private String periodoCesta;
-	private String telegramaCompleto;
-	private String esNumerica;
-	//private String mensajeError;
-//	private boolean hayError;
-//	private String variableAEliminar;
-	private ArrayList<ItemVariable> listaVariables = new ArrayList<ItemVariable>();
-	private ArrayList<CosmeError> listaErrores;
-	private ItemVariable variable;
-	
-	private String idHexa1 = "__Ox";
-	private String idHexa2 = "0x"; 
-	private Double valorNumerico;
-	
-	
-	public Telegrama(String _cadena) throws TelegramTypesException{
-		this.telegramaCompleto = _cadena;
-//		hayError=false;
-		listaErrores = new ArrayList<CosmeError>();
-		cargarTelegrama(telegramaCompleto);
-	}
-	
-	
-	private void cargarTelegrama(String _telegrama) throws TelegramTypesException{
-		StringTokenizer st = new StringTokenizer(_telegrama);
-		cargarInicioTelegrama(st);
-		cargarRestoTelegrama(st, idTelegrama);
-	}
-	
+public class Telegrama implements Serializable{
 
-	private void cargarInicioTelegrama(StringTokenizer _st) {
-		this.idCliente = _st.nextToken();
-		this.idMaquina = _st.nextToken();
-		this.numPeticion = Integer.valueOf(_st.nextToken());
-		this.timeStamp = new BigInteger(_st.nextToken());
-		this.idTelegrama = _st.nextToken();
-	}
-	
-	private void cargarRestoTelegrama(StringTokenizer _st, String _idTelegrama) throws TelegramTypesException{
-		try{
-			TelegramTypes tipoTelegrama = TelegramTypes.valueOf(_idTelegrama.toUpperCase());
-			listaVariables.clear();
-			switch(tipoTelegrama) {
-			
-			case LEER: //leer varias variables de un arrayList
-				while (_st.hasMoreTokens()){
-					nombreVariable = _st.nextToken();
-					valorVariable = _st.nextToken();
-					listaVariables.add(new ItemVariable(nombreVariable, valorVariable));
+	private final String CONSTANTE_BLOQUEO = "sync";
+	private final String CONSTANTE_NOBLOQUEO = "no_sync";
+	private final String ESCRIBIR = "escribir";
+	private final String ESCRIBIR_BLOQUEO = "escribir_bloqueo";
+	private final String LEER = "leer";
+	private final String LEER_BLOQUEO = "leer_bloqueo";
+	private final String STATUS = "status";
+	private final String LOG = "log";
+	private final String INFO_VARIABLE = "info_nombre";
+	private final String LISTA_NOMBRES = "lista_nombres";
+	private final String NOMBRE_CESTA = "nombre_cesta";
+	private final String CESTA = "cesta";
+	private final String LISTA_NOMBRES_TIPO = "lista_nombres_tipo";
+
+	// private final int NUM_SIN_VARIABLES = 4; //número de tokens en peticiones
+	//  private final int NUM_SIN_VARIABLES_INFO = 5; //número de tokens en peticiones en info_variable
+
+	private String telegrama; // contiene el telegrama completo
+	private TelegramTypes idTelegrama = TelegramTypes.NULL;  // contiene un código asociado a cada
+	//tipo de telegrama, definidos en TiposTelegrama
+	private String id_cliente;
+	private String id_sistema;
+	private long timestamp;
+	private int num_peticion;
+	private boolean tlgSincrono = false; // indica si el telegrama es CON (true) o SIN (false) bloqueo
+	private String comando;
+	private VariablesList listaVariables = new VariablesList();
+	private VariablesList listaVariablesDeTipo = new VariablesList();
+	private NamesList listaTiposNombres = new NamesList();  // se usa para el tlg "is_numeric". Contiene una serie de parejas: nombre/ int|real|non
+	//private ArrayList cestasLeidas = new ArrayList();
+	private boolean valido = true;
+	private boolean esPeticion = false; //si false, telegrama respuesta
+	private String nombreCesta = "";
+	private String nombreInstancia = "???";
+	private String nombreClase = "???";
+	private String txtStatus = "";
+	private String nombreTipo = "";
+	private boolean eco = false;
+	private CosmeStates evento;
+	private String prefijo;
+
+	//  private boolean signo_menos;
+
+	private ArrayList<String> mensajesError = new ArrayList(); // contiene los mensajes de error que pueda contener este telegrama
+
+
+	private String tipoVariable;
+
+	private String nombreMuestreador;
+	private int numMuestrasMuestreador = 0;
+	private String pathFicheroTexto = "";
+	private String contenidoFicheroTexto = "";
+	private int indexChunk = -1;
+	private ArrayList<Double> valoresMuestreador = new ArrayList();
+	private TelegramaTokenizer tt;
+	//    private int indexPrimerNombre = 1;  // en el tlg "sublista_nombres", el primer
+	// valor es un entero que indica que índice tiene el primer nombre recibido.
+
+	private String MARCA_FIN_LISTA_NOMBRES = "...";  // en el telegrma "lista_nombres",
+	// un nombre con este valor indica que
+	// todavía faltan mas por enviar
+
+	private boolean listaNombresCompleta = true;  // indica si ya se han recibido  todos
+	// los nombres de los tlgs "lista_nombres"
+	// se pondrá a false cuando se reciban
+	// tlgs de ese tipo con un nombre
+	// que sea: "..."
+
+	private boolean listaTiposCompleta = true;  // indica si ya se han recibido  todos
+	// los nombres de los tlgs "lista_tipos"
+	// se pondrá a false cuando se reciban
+	// tlgs de ese tipo con un nombre
+	// que sea: "..."
+
+	private boolean listaNombresTipoCompleta = true;  // indica si ya se han recibido  todos
+	// los nombres de los tlgs "lista_nombresTipo"
+	// se pondrá a false cuando se reciban
+	// tlgs de ese tipo con un nombre
+	// que sea: "..."
+
+
+	/** */
+	public Telegrama(String el_telegrama_completo){
+
+		this.idTelegrama = TelegramTypes.ERROR; // solución neurótica preventiva
+
+		this.telegrama = this.extraerErrores(el_telegrama_completo);
+
+		this.telegrama = el_telegrama_completo;
+		this.tt = new TelegramaTokenizer(telegrama);
+
+		if(tt != null){
+			//identificación de tokens
+			tt.nextToken();
+			this.id_cliente = tt.getString();
+			tt.nextToken();
+			this.id_sistema = tt.getString();
+
+			tt.nextToken();
+			this.num_peticion = tt.getInt();
+
+			if(tt.nextToken() == TelegramaTokenizer.NUMBER){
+				this.timestamp = tt.getInt();
+				this.esPeticion = false;
+
+				tt.nextToken();
+			}else{
+				this.esPeticion = true;
+			}
+
+			this.comando = tt.getString();  // este token puede ser la indicación sync/no_sync, o el comando (en versiones antiguas)
+
+			if((this.comando.equals(CONSTANTE_BLOQUEO)) || (this.comando.equals(CONSTANTE_NOBLOQUEO))){
+				if(this.comando.equals(CONSTANTE_BLOQUEO)){
+					this.tlgSincrono = true;
+				}else{
+					this.tlgSincrono = false;
 				}
-				break;
-			
-	//		case LEER_UNA_VAR: //leer una sola variable (propio)
-	//			
-	//				nombreVariable = _st.nextToken();
-	//				valorVariable = _st.nextToken();
-	//				
-	//			break;
-				
-			case PING:
-				
-				nombreVariable = _st.nextToken();
-				valorVariable = _st.nextToken();
-				
-				break;
-		 
-			case CREAR_CESTA:
-				nombreCesta = _st.nextToken();
-				periodoCesta = _st.nextToken();
-				//unicamente se notifica el error
-				if(_st.nextToken("\"").contains("___ERROR___")){
-					listaErrores.add(new CosmeError(nombreCesta, _st.nextToken()));
+
+				tt.nextToken();
+				if(tt != null){
+					this.comando = tt.getString();
 				}
-				break;		
-	//		case ELIMINAR_CESTA:
-	//			
-	//			nombreCesta = _st.nextToken();	
-			case CESTA:
-				try{
-				nombreCesta = _st.nextToken();
-				while (_st.hasMoreTokens()){
-					nombreVariable = _st.nextToken();
-					valorVariable = _st.nextToken();
-					if (!nombreVariable.equals("___ERROR___")){
-						if (valorVariable.startsWith(idHexa2)){
-							valorNumerico = obtenerValorNumericoIdHexa2(valorVariable);
-							listaVariables.add(ItemVariable.createInstance(nombreVariable, String.valueOf(valorNumerico)));
-						}
-						else if(valorVariable.startsWith(idHexa1)){
-							valorNumerico = obtenerValorNumericoIdHexa1(valorVariable);
-							listaVariables.add(ItemVariable.createInstance(nombreVariable, String.valueOf(valorNumerico)));
-						}
-						else{
-							listaVariables.add(ItemVariable.createInstance(nombreVariable, valorVariable));
-						}
+			}else{
+				// el telegrama no lleva indicación sync||no_sync (por compatibilida pre  31-8-2010)
+				this.tlgSincrono = false;
+			}
+
+        /*
+		String aux = telegramaTroceado.nextToken();
+
+       //comando o respuesta (las respuestas contienen un timestamp)
+        try{
+            this.timestamp = Double.valueOf(aux).longValue();
+            this.comando = telegramaTroceado.nextToken();
+
+        }catch(java.lang.NumberFormatException e){
+            //es comando hacia el servidor o maquina ms-dos sin timestamp
+            this.esPeticion = true;
+            this.comando = aux;
+        }
+        */
+
+
+			if(this.comando.equals(CESTA)){
+				this.idTelegrama = TelegramTypes.CESTA;
+				this.tratarPeticionCesta();
+
+
+			}else if(this.comando.equals(ESCRIBIR)){
+				this.idTelegrama = TelegramTypes.ESCRIBIR;
+
+			}else if(this.comando.equals(ESCRIBIR_BLOQUEO)){
+				this.idTelegrama = TelegramTypes.ESCRIBIR_BLOQUEO;
+
+
+			}else if(this.comando.compareTo(LEER) == 0){
+				this.idTelegrama = TelegramTypes.LEER;
+				this.tratarPeticionLeer();
+
+			}else if(this.comando.compareTo("ping") == 0){
+				this.idTelegrama = TelegramTypes.PING;
+				this.tratarPeticionLeer();
+			}else if(this.comando.compareTo(LEER_BLOQUEO) == 0){
+				this.idTelegrama = TelegramTypes.LEER_BLOQUEO;
+				this.tratarPeticionLeerSincronizado();
+			}else if(this.comando.compareTo("is_numeric") == 0){
+				this.idTelegrama = TelegramTypes.IS_NUMERIC;
+
+				while(tt.nextToken() != TelegramaTokenizer.EOF){
+					String nombre = tt.getString();
+					if(tt.nextToken() != TelegramaTokenizer.EOF){
+						this.listaTiposNombres.add(nombre, tt.getString());
 					}
-					else if(valorVariable.startsWith("\"") && !valorVariable.endsWith("\"")){
-						while (_st.hasMoreTokens()) {
-							valorVariable = valorVariable + " " + _st.nextToken();					
-							if (valorVariable.endsWith("\"")){
-								break;
+				} // while
+			}else if(this.comando.compareTo(LOG) == 0){
+				this.idTelegrama = TelegramTypes.LOG;
+				this.tratarPeticionLog();
+			}else if(this.comando.compareTo(STATUS) == 0){
+				this.idTelegrama = TelegramTypes.STATUS;
+				this.tratarPeticionStatus();
+			}else if(this.comando.compareTo(INFO_VARIABLE) == 0){
+				this.idTelegrama = TelegramTypes.INFO_VARIABLE;
+				//this.tratarPeticionInfoVariable();
+			}else if(this.comando.equals(NOMBRE_CESTA)){
+				this.idTelegrama = TelegramTypes.NOMBRE_CESTA;
+				//this.tratarPeticionNombreCesta();
+			}else if(this.comando.equals("periodo_cesta")){
+				this.idTelegrama = TelegramTypes.PERIODO_CESTA;
+			}else if(this.comando.equals(LISTA_NOMBRES)){
+				this.idTelegrama = TelegramTypes.LISTA_NOMBRES;
+				this.tratarPeticionListaNombres();
+			}else if(this.comando.equals("lista_nombres_nivel")){
+				this.idTelegrama = TelegramTypes.LISTA_NOMBRES_NIVEL;
+				this.tratarPeticionListaNombresNivel();
+			}else if(this.comando.equals("lista_tipos")){
+				this.idTelegrama = TelegramTypes.LISTA_TIPOS;
+				this.tratarPeticionTipos();
+			}else if(this.comando.equals("insertar_nom_cesta")){
+				//if(this.comando.equals("bi")){
+				this.idTelegrama = TelegramTypes.ECHO;
+			}else if(this.comando.equals("eliminar_nom_cesta")){
+				//if(this.comando.equals("be")){
+				this.idTelegrama = TelegramTypes.ECHO;
+			}else if(this.comando.equals("crear_cesta")){
+				this.idTelegrama = TelegramTypes.ECHO;
+			}else if(this.comando.equals("eliminar_cesta")){
+				this.idTelegrama = TelegramTypes.ECHO;
+			}else
+
+
+/*
+		if (this.comando.equals("sublista_nombres")){
+            this.idTelegrama = TelegramTypes.SUBLISTA_NOMBRES;
+            this.tratarPeticionSubListaNombres();
+        }else
+  */
+				if(this.comando.equals(LISTA_NOMBRES_TIPO)){
+					this.idTelegrama = TelegramTypes.LISTA_NOMBRES_TIPO;
+					this.tratarPeticionNombresTipos();
+				}else
+/*
+		if (this.comando.equals("sublista_nombres_tipo")){
+            this.idTelegrama = TelegramTypes.SUBLISTA_NOMBRES_TIPO;
+            this.tratarPeticionSubListaNombresTipos();
+        }else
+   */
+
+
+					if(this.comando.equals("lista_nombres_cesta")){
+						this.idTelegrama = TelegramTypes.LISTA_NOMBRES_CESTA;
+						this.tratarPeticionCestaCompleta();
+					}else
+
+
+						// es el eco del tlg
+						if(this.comando.equals("crear_muestreador")){
+							this.idTelegrama = TelegramTypes.CREAR_MUESTREADOR;
+
+							if(tt.nextToken() != TelegramaTokenizer.EOF){
+								this.nombreMuestreador = tt.getString();
 							}
-						}
-						String [] parser = valorVariable.split("'");			
-						listaErrores.add(new CosmeError(parser[1], "\""+parser[2]));			
-					}
+						}else if(this.comando.equals("muestreando")){
+							this.idTelegrama = TelegramTypes.MUESTREANDO;
+
+							if(tt.nextToken() != TelegramaTokenizer.EOF){
+								this.nombreMuestreador = tt.getString();
+
+								tt.nextToken();
+								this.numMuestrasMuestreador = tt.getInt();
+							}
+						}else
+        /*
+        if (this.comando.equals("muestreo_terminado")){
+            this.idTelegrama = TelegramTypes.MUESTREO_TERMINADO;
+
+            if (tt.nextToken() != TelegramaTokenizer.EOF){
+                  this.nombreMuestreador = tt.getString();
+            }
+
+            if (tt.nextToken() != TelegramaTokenizer.EOF){
+                  this.numMuestrasMuestreador = tt.getInt();
+            }
+        }else
+        */
+							if(this.comando.equals("get_datos_muestreador")){
+								this.idTelegrama = TelegramTypes.GET_DATOS_MUESTREADOR;
+								if(tt.nextToken() != TelegramaTokenizer.EOF){
+									this.nombreMuestreador = tt.getString();
+								}
+								if(tt.nextToken() != TelegramaTokenizer.EOF){
+									this.indexChunk = tt.getInt();
+								}
+								while(tt.nextToken() != TelegramaTokenizer.EOF){
+									double valor = tt.getDouble();
+									this.valoresMuestreador.add(valor);
+								}
+							}else if(this.comando.equals("habilitar_muestreador")){
+								this.idTelegrama = TelegramTypes.HABILITAR_MUESTREADOR;
+							}else if(this.comando.equals("deshabilitar_muestreador")){
+								this.idTelegrama = TelegramTypes.DESHABILITAR_MUESTREADOR;
+							}else if(this.comando.equals("eliminar_muestreador")){
+								this.idTelegrama = TelegramTypes.ELIMINAR_MUESTREADOR;
+							}else
+
+
+							/**
+							 * El telegrama recibido es de tipo "tipo_nombre".
+							 */
+								if(this.comando.equals("tipo_nombre")){
+									this.idTelegrama = TelegramTypes.TIPO_NOMBRE;
+									this.nombreClase = "???";
+									if(tt.nextToken() != TelegramaTokenizer.EOF){
+										this.nombreInstancia = tt.getString();
+										if(tt.nextToken() != TelegramaTokenizer.EOF){
+											this.nombreClase = tt.getString();
+										}
+									}
+								}else if(this.comando.equals("lista_nombres_configurables")){
+									this.idTelegrama = TelegramTypes.LISTA_NOMBRES_CONFIGURABLES;
+								}else
+
+
+            /*if (this.comando.equals("insertar_nom_cesta")){
+            this.idTelegrama = TelegramTypes.LISTA_NOMBRES_CONFIGURABLES;
+        }else */
+
+
+
+									if(this.comando.equals("lista_nombres_configurables_reservados")){
+										this.idTelegrama = TelegramTypes.LISTA_NOMBRES_CONFIGURABLES_RESERVADOS;
+									}else
+
+
+										// SOLICITAR_FICHERO_TEXTO
+										if(this.comando.equals("solicitar_fichero_texto")){
+											this.idTelegrama = TelegramTypes.SOLICITAR_FICHERO_TEXTO;
+
+											if(tt.nextToken() != TelegramaTokenizer.EOF){
+												this.nombreInstancia = tt.getString();
+											}
+											if(tt.nextToken() != TelegramaTokenizer.EOF){
+												this.pathFicheroTexto = tt.getString();
+											}
+
+											if(!this.esPeticion){
+												int i = el_telegrama_completo.indexOf(this.pathFicheroTexto);
+
+												if(i != -1){
+													int longitud = this.pathFicheroTexto.length();
+													int offset = i + longitud + 1;
+													System.out.println("offset: " + offset + " (" + el_telegrama_completo.length() + ")");
+													this.contenidoFicheroTexto = el_telegrama_completo.substring(offset);
+												}
+											}
+
+
+											/// NOTIFICAR_EVENTO
+										}
+			if(this.comando.equals("notificar_evento")){
+				this.idTelegrama = TelegramTypes.NOTIFICAR_EVENTO;
+
+				String txt_evento;
+
+				if(tt.nextToken() != TelegramaTokenizer.EOF){
+					txt_evento = tt.getString();
+					evento = CosmeStates.valueOf(txt_evento);
 				}
-				}catch (Exception e) {
-					System.out.println(nombreVariable);
-					System.out.println(valorVariable);
-					_st.nextToken();
-					
-				}
-			break;
-			
-			case INSERTAR_NOM_CESTA: //a�adir una variable a una cesta concreta	
-				nombreCesta = _st.nextToken();
-				nombreVariable = _st.nextToken();
-			break;
-	//			
-	//		case INSERTAR_NOMS_CESTA: //a�adir varias variables a una cesta concreta
-	//			
-	//			nombreCesta = _st.nextToken();
-	//			
-	//			while (_st.hasMoreTokens()){
-	//				nombreVariable = _st.nextToken();
-	//				listaVariables.add(new ItemVariable(nombreVariable));
-	//			}
-	//			
-	//			break;
-				
-			//eliminar_nom_cesta
-	//		
-	//		case ELIMINAR_NOM_CESTA: //a�adir varias variables a una cesta concreta
-	//			
-	//			nombreCesta = _st.nextToken();
-	//			nombreVariable = _st.nextToken();
-	//			
-	//			break;
-				
-			case PERIODO_CESTA: //modificar periodo de una cesta
-				nombreCesta = _st.nextToken();
-				periodoCesta = _st.nextToken();
-				while (_st.hasMoreTokens()){
-					nombreVariable = _st.nextToken();
-					listaVariables.add(new ItemVariable(nombreVariable));
-				}
-				periodoCesta = _st.nextToken();
-				break;
-			
-			case LISTA_NOMBRES_CESTA: //variables que contiene una cesta
-				while (_st.hasMoreTokens()){
-					listaVariables.add(new ItemVariable(_st.nextToken()));
-				}
-				break;
-				
-			case LISTA_NOMBRES:
-				listaVariables.clear();
-				while (_st.hasMoreTokens()){
-					String variable = _st.nextToken();
-					if (!variable.equals("...")) {
-						listaVariables.add(new ItemVariable(variable));
-					}
-				}
-				break;
-			case IS_NUMERIC:
-				nombreVariable = _st.nextToken();
-				esNumerica = _st.nextToken();
-				variable = new ItemVariable(nombreVariable,valorVariable);
-				break;
-			
-			case ESCRIBIR:
-				nombreVariable = _st.nextToken();
-				valorVariable = _st.nextToken();
-				if(_st.nextToken("\"").contains("___ERROR___")){
-					listaErrores.add(new CosmeError(nombreVariable, _st.nextToken()));
-				}
-				break;
-			default:
-				throw new TelegramTypesException(_idTelegrama);
+			}else if(this.comando.equals("project_stop")){
+				this.idTelegrama = TelegramTypes.PROJECT_STOP;
 			}
-		}catch(IllegalArgumentException e){
-			e.printStackTrace();
-		}
-	}
-	
-	
-	private Double obtenerValorNumericoIdHexa1(String valorVariable){
-		
-		double valorVariableNumerica;
-		
-		if (valorVariable.indexOf("p") != -1){ //si la "p" esta dentro de la cadena, retorna -1 si no está dentro de la cadena
-			valorVariableNumerica = Double.longBitsToDouble(Long.valueOf( //longBitsToDouble --> pasar de hexadec. a double 
-					valorVariable.substring(idHexa1.length() + 1), 16)); //Long.valueOf --> retorna una instancia de Long
-											//ej:  __0x010330304040440 substring coge "010330304040440"
-			return valorVariableNumerica;								//convierte este nº --> 010330304040440 a double
-		
-		}else{
-				valorVariableNumerica = -1 //si no contiene la p (entonces es negativo) y multiplica el nº por -1
-				* Double.longBitsToDouble(Long.valueOf(
-						valorVariable.substring(idHexa1.length() + 1),16));
-				
-				return valorVariableNumerica;
-		}	
-	}
-	
-	private Double obtenerValorNumericoIdHexa2(String valorVariable){
-		
-		double valorVariableNumerica;
-		
-		valorVariable= valorVariable.substring(idHexa2.length());
-		int signo = 1;
-
-		if (valorVariable.charAt(0) > '7') { //charAt --> si el primer caracter de sval es > 7
-			switch (valorVariable.toLowerCase().charAt(0)) {
-			case '8':
-				valorVariable = "0" + valorVariable.substring(1);
-				break;
-			case '9':
-				valorVariable = "1" + valorVariable.substring(1);
-				break;
-			case 'a':
-				valorVariable = "2" + valorVariable.substring(1);
-				break;
-			case 'b':
-				valorVariable = "3" + valorVariable.substring(1);
-				break;
-			case 'c':
-				valorVariable = "4" + valorVariable.substring(1);
-				break;
-			case 'd':
-				valorVariable = "5" + valorVariable.substring(1);
-				break;
-			case 'e':
-				valorVariable = "6" + valorVariable.substring(1);
-				break;
-			case 'f':
-				valorVariable = "7" + valorVariable.substring(1);
-				break;
-			}
-			signo = -1;
-		}
-		
-		valorVariableNumerica = signo
-				* Double.longBitsToDouble(Long.valueOf(valorVariable, 16));
-		
-		return valorVariableNumerica;		
-	}
-	
-	public String getIdCliente() {
-		return idCliente;
-	}
-
-	
-	public void setIdCliente(String _idCliente) {
-		this.idCliente = _idCliente;
-	}
-
-	
-	public String getIdMaquina() {
-		return idMaquina;
-	}
-
-	
-	public void setIdMaquina(String _idMaquina) {
-		this.idMaquina = _idMaquina;
-	}
-
-	
-	public int getNumPeticion() {
-		return numPeticion;
-	}
 
 
-	public String getIdTelegrama(){
-		return idTelegrama;
+		} // if tt!=null
+
+	} // Constructor
+
+	/**
+	 *
+	 */
+	public String getTxt_Telegrama(){
+		return telegrama;
 	}
 
-	
-	public String getNombreCesta() {
-		return nombreCesta;
-	}
-
-	
-	public void setNombreCesta(String _nombreCesta) {
-		this.nombreCesta = _nombreCesta;
-	}
-
-	
-	public String getNombreVariable() {
-		return nombreVariable;
-	}
-
-	
-	public void setNombreVariable(String _nombreVar) {
-		this.nombreVariable = _nombreVar;
-	}
-
-	
-	public String getTelegramaCompleto() {
-		return telegramaCompleto;
-	}
-
-	
-	public void setTelegramaCompleto(String _telegramaCompleto) {
-		this.telegramaCompleto = _telegramaCompleto;
-	}
-	
-	public BigInteger getTimeStamp() {
-		return timeStamp;
-	}
-
-	public void setTimeStamp(BigInteger _timeStamp) {
-		this.timeStamp = _timeStamp;
-	}
-
-	public String getValorVariable() {
-		return valorVariable;
-	}
-
-	public void setValorVariable(String _valorVariable) {
-		this.valorVariable = _valorVariable;
-	}
-
-	public void setIdTelegrama(String idTelegrama) {
-		this.idTelegrama = idTelegrama;
-	}
-	
-	
-	public ArrayList<ItemVariable> getListaVariables() {
+	/**
+	 *
+	 */
+	public VariablesList getListaVariables(){
+		// your code here
 		return listaVariables;
 	}
-	
-//	public boolean isNumeric(){
-//		return !this.esNumerica.equals("non");
-//	}
-//	public String getEsNumerica(){
-//		return this.esNumerica;
-//	}
 
-
-	public ArrayList<CosmeError> getListaErrores() {
-		return listaErrores;
+	public NamesList getListaTiposNombres(){
+		return this.listaTiposNombres;
 	}
 
 
-	public ItemVariable getVariable() {
-		return variable;
+	/**
+	 *
+	 */
+	public String getIDCliente(){
+		return id_cliente;
+	}
+
+	/**
+	 *
+	 */
+	public String getIDSistema(){
+		return id_sistema;
+	}
+
+	/**
+	 *
+	 */
+	public int getNumPeticion(){
+		return num_peticion;
+	}
+
+	/**
+	 *
+	 */
+	public String getPeticion(){
+		return comando;
+	}
+
+	public String getNombreCesta(){
+		return this.nombreCesta;
+	}
+
+	/**
+	 *
+	 */
+	public String toString(){
+		return this.telegrama;
+	}
+
+	/**
+	 *
+	 */
+	public String leerTodo(){
+		String s = id_cliente + "/" + id_sistema + "/" + num_peticion + "/" + comando + "//";
+		for(ItemVariable v : listaVariables.getList()){
+			s = s + v.toString() + "//";
+		}
+		return s;
 	}
 
 
+	/**
+	 * Devuvleve la variable cuyo nombre se indica
+	 */
+	public ItemVariable getVariable(String _variableABuscar){
+		ItemVariable v = (ItemVariable) this.listaVariables.getVariable(_variableABuscar);
+
+		return v;
+	}
+
+	/**
+	 *
+	 */
+	public boolean isValido(){
+		return valido;
+	}
+
+	/**
+	 * Procesa los telegramas LEER
+	 *
+	 * @return Rellena la variable "listaVariables" con los nombres y valores recibidos en el telegrama.
+	 */
+	public void tratarPeticionLeer(){
+
+		while(tt.nextToken() != TelegramaTokenizer.EOF){
+			String nombre = tt.getString();
+			ItemVariable iv = null;
+
+			if(tt.nextToken() != TelegramaTokenizer.EOF){
+				if(tt.getType() == TelegramaTokenizer.NUMBER){
+					double v = tt.getDouble();
+					iv = new NumericVariable(nombre, v);
+				}else{
+
+					iv = new TextVariable(nombre, tt.getString());
+				}
+				listaVariables.add(iv);
+
+
+			} // if 2º token de la pareja
+		} // while
+
+
+	} // tratarPeticionLeer
+
+
+	/**
+	 * Procesa los telegramas LEER_SINCRONIZADO
+	 *
+	 * @return Rellena la variable "listaVariables" con los nombres y valores recibidos en el telegrama.
+	 */
+	public void tratarPeticionLeerSincronizado(){
+
+		this.tratarPeticionLeer();
+
+		// Desbloquear XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+	} // tratarPeticionLeerSincronziado
+
+	/**
+	 *
+	 */
+	public void tratarPeticionEscribir(){
+
+    /*    if(this.esPeticion()){
+            //tratamos petici?n
+
+//            while(telegramaTroceado.hasMoreTokens()){
+//                String var = telegramaTroceado.nextToken();
+//                String valor = telegramaTroceado.nextToken();
 //
-//	public boolean getHayError() {
-//		return hayError;
-//	}
+//                if(valor.substring(0,1).compareTo("_")==0){
+//                    //hexadecimal
+//                    lista_parametros.anadir(var,((Double)(Double.longBitsToDouble
+//                            (Long.valueOf(valor.substring(4),16)))).doubleValue());
+//
+//                }else{
+//                    //decimal
+//                    try{
+//                        double valorDouble = Double.valueOf(valor).doubleValue();
+//                        lista_parametros.anadir
+//                                (var,valorDouble);
+//                    }catch(java.lang.NumberFormatException e){
+//                        lista_parametros.anadir(var,valor);
+//                    }
+//                }
+//            }
 
-	
-	
+        }else{
+            //tratamos respuesta
+            listaVariables.anadir
+                    (new ItemVariable
+                    ("escribir",this.reconstruirMensaje(telegramaTroceado)));
+        }*/
+	}
+
+	/**
+	 *
+	 */
+	public void tratarPeticionLog(){
+	}
+
+	/**
+	 *
+	 */
+	public void tratarPeticionStatus(){
+		if(!this.esPeticion){
+			if(tt.nextToken() != TelegramaTokenizer.TEXT){
+				this.txtStatus = tt.getString();
+
+			}
+
+		}
+	}
+
+	/**
+	 *
+	 */
+	public void tratarPeticionListaVariables(){
+		if(!this.esPeticion()){
+			//tratamos respuesta
+			while(tt.nextToken() != TelegramaTokenizer.EOF){
+				String s = tt.getString();
+				listaVariables.add(s);
+			}
+		}
+	}
+
+
+	/**
+	 *
+	 */
+	public void tratarPeticionListaNombres(){
+		if(!this.esPeticion()){
+			//tratamos respuesta
+
+			while(tt.nextToken() != TelegramaTokenizer.EOF){
+				String s = tt.getString();
+
+				if(s.equals(this.MARCA_FIN_LISTA_NOMBRES)){
+					this.listaNombresCompleta = false;
+				}else{
+					listaVariables.add(s);
+				}
+			}
+
+		}
+	}
+
+
+	/**
+	 *
+	 */
+	public void tratarPeticionListaNombresNivel(){
+		if(!this.esPeticion()){
+			//tratamos respuesta
+			tt.nextToken();
+			this.prefijo = tt.getString();
+
+			while(tt.nextToken() != TelegramaTokenizer.EOF){
+				String s = tt.getString();
+
+				if(s.equals(this.MARCA_FIN_LISTA_NOMBRES)){
+					this.listaNombresCompleta = false;
+				}else{
+					if(!prefijo.equals(".")){
+						s = prefijo + s;
+					}
+					listaVariables.add(s);
+				}
+			}
+
+		}
+	}
+
+/*
+    public void tratarPeticionSubListaNombres(){
+        //if(!this.esPeticion()){
+            //tratamos respuesta
+            if (tt.nextToken() != TelegramaTokenizer.EOF){
+                this.indexPrimerNombre = Integer.valueOf(tt.getString()).intValue();
+            }
+
+            while (tt.nextToken() != TelegramaTokenizer.EOF){
+                String s = tt.getString();
+                listaVariables.anadir(s);
+            }
+        //}
+    }
+ * */
+
+
+	/**
+	 *
+	 */
+	public void tratarPeticionInfoVariable(){
+	}
+
+	/**
+	 *  Reconstruye un mensaje que fue troceado en Tokens. La reconstrucci?n es
+	 *  hasta el final del StringTokenizer.
+	 */
+/*    public String reconstruirMensaje(StringTokenizer st){
+        String mensaje = "";
+        while (telegramaTroceado.hasMoreTokens()) {
+            //Reconstru?mos el mensaje de log
+            mensaje = mensaje + " " + telegramaTroceado.nextToken();
+        }
+
+        return mensaje;
+    }*/
+
+	/**
+	 *
+	 */
+	public boolean esPeticion(){
+		return this.esPeticion;
+	}
+
+	/**
+	 * elimina del telegrama informacion de error para aprovechar
+	 * información útil
+	 *//*
+    private String depurarErrores(String s) {
+        String cadenaDepurada = "";
+        String cadena ="";
+        StringTokenizer st = new StringTokenizer(s);
+        while(st.hasMoreTokens()){
+            cadena=st.nextToken();
+            if(cadena.compareToIgnoreCase("___ERROR___")==0){
+                while(st.hasMoreTokens()){
+                    st.nextToken();
+                }
+            }else{
+                cadenaDepurada = cadenaDepurada + " " + cadena;
+            }
+        }
+        return cadenaDepurada.substring(1);
+    }*/
+
+  /*  private void tratarPeticionNombreCesta() {
+
+    }
+    */
+
+
+    /*
+    private void rellenarListaVariables (StringTokenizer st){
+
+        while(st.hasMoreTokens()){
+            String nombre = st.nextToken();
+            String valor = "";
+            if (st.hasMoreTokens()){
+                valor = st.nextToken();
+
+
+                //analizar tipo de valor, hexadecimal, decimal o texto
+                if(valor.startsWith("__Ox")){
+                    //respuesta hexadecimal
+
+                    if(valor.indexOf("n") != -1)
+                        signo_menos = true;
+                    else signo_menos = false;
+
+                    String ss = valor.substring(5);
+                    try {
+                        double valorFiltrado =Double.longBitsToDouble(Long.valueOf(ss,16));
+                        if (signo_menos)
+                            valorFiltrado = valorFiltrado*(-1);
+                        //c.addVariable(new ItemVariable(variable,valorFiltrado),false);
+                        listaVariables.anadir(new ItemVariable (nombre, valorFiltrado));
+
+                    } catch (NumberFormatException e) {
+                        valor = "Formato double incorrecto";
+                    }
+
+                }else if(valor.startsWith(String.valueOf('"'))){
+                    //respuesta texto, una o más palabras
+                    String cadena = "";
+                    while(!valor.endsWith(String.valueOf('"'))){
+                        cadena = cadena+" "+valor;
+                        valor = st.nextToken();
+                    }
+                    cadena = cadena+" "+valor;
+                    StringTokenizer stValor = new StringTokenizer(cadena,String.valueOf('"'));
+                    stValor.nextToken();
+                    if(stValor.hasMoreTokens()){
+                        valor = stValor.nextToken();
+                        if(valor==null){
+                            //c.addVariable(new ItemVariable(variable,new String("-")),false);
+                            listaVariables.anadir(new ItemVariable (nombre, "-"));
+
+                        }else{
+                            //c.addVariable(new ItemVariable(variable,valor),false);
+                            listaVariables.anadir(new ItemVariable (nombre, valor));
+
+                        }
+
+                    }
+
+                }else if(valor.codePointAt(0)>=65&valor.codePointAt(0)<=90){
+                    //respuesta texto sin comillas
+                    //this.lista_parametros.anadir(variable,valor);
+                    //c.addVariable(new ItemVariable(variable,valor),false);
+                    listaVariables.anadir(new ItemVariable (nombre, valor));
+
+
+                }else{
+                    //respuesta decimal
+                    try{
+                        //this.lista_parametros.anadir(variable,Double.valueOf(valor).doubleValue());
+                        //c.addVariable(new ItemVariable(variable,Double.valueOf(valor).doubleValue()),false);
+                        listaVariables.anadir(new ItemVariable (nombre, Double.valueOf(valor).doubleValue()));
+
+                    }catch(java.lang.NumberFormatException e){
+                        //c.addVariable(new ItemVariable(variable,Double.valueOf(0.0).doubleValue()),false);
+                        listaVariables.anadir(new ItemVariable (nombre, Double.valueOf(0.0).doubleValue()));
+                    }
+                }
+            } // if (valor != "")
+        } // while
+    } // rellenarListaVariables
+    */
+
+   /*
+    public ArrayList getCestasLeidas(){
+        return cestasLeidas;
+    }
+    */
+	private void tratarPeticionCesta(){
+		if(!this.esPeticion){
+			//<cliente> <sistema> <num_peticion> <tiempo_sistema> cesta <nombre_cesta> <nombre_variable> <valor> ...
+
+
+			this.idTelegrama = TelegramTypes.CESTA;
+
+			tt.nextToken();
+			this.nombreCesta = tt.getString();
+
+			while(tt.nextToken() != TelegramaTokenizer.EOF){
+				String nombre = tt.getString();
+				ItemVariable iv = null;
+
+				if(tt.nextToken() != TelegramaTokenizer.EOF){
+					if(tt.getType() == TelegramaTokenizer.NUMBER){
+						double v = tt.getDouble();
+						iv = new NumericVariable(nombre, v);
+					}else{
+
+						iv = new TextVariable(nombre, tt.getString());
+					}
+					listaVariables.add(iv);
+
+
+				} // if 2º token de la pareja
+			} // while
+
+
+		} // if esPeticion
+	} // cesta
+
+	public boolean esEco(){
+		return eco;
+	}
+
+
+	private void tratarPeticionTipos(){
+		if(!this.esPeticion()){
+			while(tt.nextToken() != TelegramaTokenizer.EOF){
+				String s = tt.getString();
+
+				if(s.equals(this.MARCA_FIN_LISTA_NOMBRES)){
+					this.listaTiposCompleta = false;
+				}else{
+					listaVariables.add(s);
+				}
+			}
+		}
+
+	}
+
+	private void tratarPeticionNombresTipos(){
+
+
+		if(!this.esPeticion()){
+			//Guardamos el tipo
+
+			if(tt.nextToken() != TelegramaTokenizer.EOF){
+				this.tipoVariable = tt.getString();
+			}
+
+			while(tt.nextToken() != TelegramaTokenizer.EOF){
+				String s = tt.getString();
+				if(s.equals(this.MARCA_FIN_LISTA_NOMBRES)){
+					this.listaNombresTipoCompleta = false;
+				}else{
+					this.listaVariablesDeTipo.add(s);
+				}
+			}
+		}
+	}
+
+/*
+    private void tratarPeticionSubListaNombresTipos() {
+
+
+            if (tt.nextToken() != TelegramaTokenizer.EOF){
+                this.tipoVariable = tt.getString();
+            }
+
+            if (tt.nextToken() != TelegramaTokenizer.EOF){
+                this.indexPrimerNombre = Integer.valueOf(tt.getString()).intValue();
+            }
+
+             while (tt.nextToken() != TelegramaTokenizer.EOF){
+                String s = tt.getString();
+                this.listaVariablesDeTipo.anadir(s);
+            }
+    }*/
+
+	public String getTipoVariable(){
+		return tipoVariable;
+	}
+
+	private void tratarPeticionCestaCompleta(){
+
+		while(tt.nextToken() != TelegramaTokenizer.EOF){
+			this.listaVariables.add(tt.getString());
+		}
+	}
+
+
+	private String extraerErrores(String _tlgOriginal){
+		if(_tlgOriginal.indexOf("___ERROR___") != -1){
+			String tlgSinErrores = "";
+			StreamTokenizer st = new StreamTokenizer(new StringReader(_tlgOriginal));
+			st.ordinaryChars('0', '9');
+			st.wordChars('0', '9');
+			st.wordChars('_', '_');
+			try{
+				while(st.nextToken() != st.TT_EOF){
+					if(st.ttype == st.TT_WORD){
+						if(st.sval.equals("___ERROR___")){
+							st.nextToken();
+							mensajesError.add(st.sval);
+						}else{
+							tlgSinErrores += st.sval + " ";
+						}
+					}
+				} // while
+			}catch(IOException ex){
+				ex.printStackTrace();
+			}
+			return tlgSinErrores;
+		}else{
+			return _tlgOriginal;
+		}
+
+	}
+
+
+    /*
+    private String extraerErrores (String _tlgOriginal){
+        String tlgSinErrores ="";
+        int indexError = 0;
+        int indexInicioBusqueda = 0;
+        int indexPrimeraComilla = -1;
+        int indexSegundaComilla = -1;
+
+        do{
+            if (indexInicioBusqueda < _tlgOriginal.length()){
+                indexError = _tlgOriginal.indexOf("___ERROR___",indexInicioBusqueda);
+            }else{
+                indexError = -1;
+            }
+
+            if (indexError != -1){
+                tlgSinErrores = tlgSinErrores+_tlgOriginal.substring(indexInicioBusqueda,indexError-1);
+                indexPrimeraComilla = indexError +13;
+                for (int i=indexPrimeraComilla; i<_tlgOriginal.length();i++){
+                    if (_tlgOriginal.charAt(i)=='\"'){
+                        indexSegundaComilla = i;
+                        break;
+                    }
+                }
+
+                String msgError = _tlgOriginal.substring(indexPrimeraComilla, indexSegundaComilla);
+                this.mensajesError.add(msgError); // añade el mensaje al arraylist
+
+            }else{
+                tlgSinErrores = tlgSinErrores+_tlgOriginal.substring(indexInicioBusqueda,_tlgOriginal.length());
+            }
+
+
+            indexInicioBusqueda = indexSegundaComilla+1;
+        }while(indexError != -1);
+
+        return tlgSinErrores;
+    }
+     */
+
+	public boolean contieneErrores(){
+		boolean contieneErrores = true;
+
+		if(mensajesError.size() > 0){
+			contieneErrores = true;
+		}else{
+			contieneErrores = false;
+		}
+		return contieneErrores;
+	}
+
+	public ArrayList<String> getMensajesError(){
+		return mensajesError;
+	}
+
+	public String getNombreMuestreador(){
+		return nombreMuestreador;
+	}
+
+	public int getNumMuestrasMuestreador(){
+		return numMuestrasMuestreador;
+	}
+
+	public int getIndexChunk(){
+		return indexChunk;
+	}
+
+	public void setIndexChunk(int indexChunk){
+		this.indexChunk = indexChunk;
+	}
+
+	public ArrayList<Double> getValoresMuestreador(){
+		return this.valoresMuestreador;
+	}
+
+    /*
+    private double convertirADouble (String _txt){
+        boolean signo_menos = false;
+        double valor = Double.NaN;
+
+        if(_txt.startsWith("__Ox")){
+            if(_txt.indexOf("n") != -1){
+                signo_menos = true;
+            } else {
+                signo_menos = false;
+            }
+
+            String ss = _txt.substring(5);
+            try {
+                valor =Double.longBitsToDouble(Long.valueOf(ss,16));
+                if (signo_menos){
+                    valor = valor*(-1);
+                }
+
+            } catch (NumberFormatException e) {
+                valor = Double.NaN;
+            }
+
+        }
+
+        return valor;
+    }
+*/
+
+
+	public String getNombreClase(){
+		return nombreClase;
+	}
+
+	public String getNombreInstancia(){
+		return nombreInstancia;
+	}
+
+	public String getStatus(){
+		return txtStatus;
+	}
+
+	public String getNombreTipo(){
+		return nombreTipo;
+	}
+
+	public VariablesList getListaVariablesDeTipo(){
+		return listaVariablesDeTipo;
+	}
+
+	public TelegramTypes getIdTelegrama(){
+		return this.idTelegrama;
+	}
+
+	public String getPathFicheroTexto(){
+		return pathFicheroTexto;
+	}
+
+	public String getContenidoFicheroTexto(){
+		return contenidoFicheroTexto;
+	}
+
+	public CosmeStates getEvento(){
+		return this.evento;
+	}
+
+  /*  public int getIndexPrimerNombre (){
+        return this.indexPrimerNombre;
+    }
+*/
+
+
+	/*
+		Permite saber si ya se han recibido todos los nombres
+		mientras sea falso deberá de enviarse otro tlg "lista_nombres"
+	 */
+	public boolean isListaNombresCompleta(){
+		return this.listaNombresCompleta;
+	}
+
+	/*
+		Permite saber si ya se han recibido todos los nombres de tipos
+		mientras sea falso deberá de enviarse otro tlg "lista_tipo"
+	 */
+	public boolean isListaTiposCompleta(){
+		return this.listaTiposCompleta;
+	}
+
+	/*
+		Permite saber si ya se han recibido todos los nombres de tipos
+		mientras sea falso deberá de enviarse otro tlg "lista_tipo"
+	 */
+	public boolean isListaNombresTipoCompleta(){
+		return this.listaNombresTipoCompleta;
+	}
+
+	public String getPrefijo(){
+		return this.prefijo;
+	}
+
+	protected boolean isTlgSincrono(){
+		return this.tlgSincrono;
+	}
 }

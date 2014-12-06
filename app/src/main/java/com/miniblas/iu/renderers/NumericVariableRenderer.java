@@ -1,5 +1,5 @@
 package com.miniblas.iu.renderers;
 
-public class NumericVariableRenderer {
+public class NumericVariableRenderer{
 
 }

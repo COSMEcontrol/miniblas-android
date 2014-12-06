@@ -1,7 +1,5 @@
 package com.miniblas.perfistence.ormlite;
 
-import java.sql.SQLException;
-
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -14,11 +12,13 @@ import com.miniblas.model.MiniBlasCesta;
 import com.miniblas.model.MiniBlasItemVariable;
 import com.miniblas.model.MiniBlasPerfil;
 
+import java.sql.SQLException;
+
 /**
  * Database helper class used to manage the creation and upgrading of your database. This class also usually provides
  * the DAOs used by the other classes.
  */
-public class DBHelper extends OrmLiteSqliteOpenHelper {
+public class DBHelper extends OrmLiteSqliteOpenHelper{
 
 	// name of the database file for your application -- change to something appropriate for your app
 	private static final String DATABASE_NAME = "bd_miniblas.db";
@@ -29,9 +29,9 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
 	private Dao<MiniBlasPerfil, Integer> perfilDao;
 	private Dao<MiniBlasCesta, Integer> cestaDao;
 	private Dao<MiniBlasItemVariable, Integer> variableDao;
-	
 
-	public DBHelper(Context context) {
+
+	public DBHelper(Context context){
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
 
@@ -40,13 +40,13 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
 	 * the tables that will store your data.
 	 */
 	@Override
-	public void onCreate(SQLiteDatabase db, ConnectionSource connectionSource) {
-		try {
+	public void onCreate(SQLiteDatabase db, ConnectionSource connectionSource){
+		try{
 			Log.i(DBHelper.class.getName(), "onCreate");
 			TableUtils.createTable(connectionSource, MiniBlasPerfil.class);
 			TableUtils.createTable(connectionSource, MiniBlasCesta.class);
 			TableUtils.createTable(connectionSource, MiniBlasItemVariable.class);
-		} catch (SQLException e) {
+		}catch(SQLException e){
 			Log.e(DBHelper.class.getName(), "Can't create database", e);
 			throw new RuntimeException(e);
 		}
@@ -57,37 +57,37 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
 	 * the various data to match the new version number.
 	 */
 	@Override
-	public void onUpgrade(SQLiteDatabase db, ConnectionSource connectionSource, int oldVersion, int newVersion) {
-		try {
+	public void onUpgrade(SQLiteDatabase db, ConnectionSource connectionSource, int oldVersion, int newVersion){
+		try{
 			Log.i(DBHelper.class.getName(), "onUpgrade");
 			TableUtils.dropTable(connectionSource, MiniBlasPerfil.class, true);
 			TableUtils.dropTable(connectionSource, MiniBlasCesta.class, true);
 			TableUtils.dropTable(connectionSource, MiniBlasItemVariable.class, true);
 			// after we drop the old databases, we create the new ones
 			onCreate(db, connectionSource);
-		} catch (SQLException e) {
+		}catch(SQLException e){
 			Log.e(DBHelper.class.getName(), "Can't drop databases", e);
 			throw new RuntimeException(e);
 		}
 	}
 
 	public Dao<MiniBlasPerfil, Integer> getPerfilDao() throws SQLException{
-		if (perfilDao == null){
+		if(perfilDao == null){
 			perfilDao = getDao(MiniBlasPerfil.class);
 		}
 		return perfilDao;
 	}
-	
-	
+
+
 	public Dao<MiniBlasCesta, Integer> getCestaDao() throws SQLException{
-		if (cestaDao == null){
+		if(cestaDao == null){
 			cestaDao = getDao(MiniBlasCesta.class);
 		}
 		return cestaDao;
 	}
-	
+
 	public Dao<MiniBlasItemVariable, Integer> getVariableDao() throws SQLException{
-		if (variableDao == null){
+		if(variableDao == null){
 			variableDao = getDao(MiniBlasItemVariable.class);
 		}
 		return variableDao;
@@ -97,7 +97,7 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
 	 * Close the database connections and clear any cached DAOs.
 	 */
 	@Override
-	public void close() {
+	public void close(){
 		super.close();
 		variableDao = null;
 		cestaDao = null;

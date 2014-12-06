@@ -3,6 +3,7 @@ package com.miniblas.model.base;
 /**
  * Created by alberto on 19/11/14.
  */
+
 import com.pedrogomez.renderers.AdapteeCollection;
 
 
@@ -13,9 +14,10 @@ import com.pedrogomez.renderers.AdapteeCollection;
  *
  * @author Alberto Azuara García.
  */
-public interface IOrdenableAdapteeCollection<T> extends AdapteeCollection<T> {
-    public void add(int index,T element);
-    public int indexOf(T variable);
+public interface IOrdenableAdapteeCollection <T> extends AdapteeCollection<T>{
+	public void add(int index, T element);
+
+	public int indexOf(T variable);
 }
 
 

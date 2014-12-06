@@ -1,33 +1,35 @@
 package com.miniblas.iu.controllers;
-import java.util.List;
+
 import com.miniblas.app.AplicacionPrincipal;
 import com.miniblas.iu.controllers.base.BaseController;
 import com.miniblas.iu.fragments.base.CabOrdenableElementsFragment;
 import com.miniblas.model.MiniBlasPerfil;
 import com.miniblas.persistence.BdException;
 
-public class ProfilesController extends BaseController<MiniBlasPerfil> {
+import java.util.List;
 
-   // private ProfilesFragment profilesView;
-   public static ProfilesController instance;
+public class ProfilesController extends BaseController<MiniBlasPerfil>{
 
-    public static ProfilesController getInstance(AplicacionPrincipal _aplicacionPrincipal){
-        if(instance == null) {
-            instance = new ProfilesController(_aplicacionPrincipal);
-        }
-        return instance;
-    }
+	// private ProfilesFragment profilesView;
+	public static ProfilesController instance;
 
-    private ProfilesController(AplicacionPrincipal _aplicacionPrincipal){
-        super(_aplicacionPrincipal);
-    }
+	public static ProfilesController getInstance(AplicacionPrincipal _aplicacionPrincipal){
+		if(instance == null){
+			instance = new ProfilesController(_aplicacionPrincipal);
+		}
+		return instance;
+	}
 
-    @Override
-    public void resetController() {
+	private ProfilesController(AplicacionPrincipal _aplicacionPrincipal){
+		super(_aplicacionPrincipal);
+	}
 
-    }
+	@Override
+	public void resetController(){
 
-    public void onViewChange(CabOrdenableElementsFragment _vista){
+	}
+
+	public void onViewChange(CabOrdenableElementsFragment _vista){
 		super.onViewChange(_vista);
 		if(application.getSettingStorage().getPrefAutoConexion()){
 			int idProfile = application.getSettingStorage().getPrefAutoConexionIdProfile();
@@ -36,29 +38,29 @@ public class ProfilesController extends BaseController<MiniBlasPerfil> {
 	}
 
 
-    @Override
-    protected void loadPreferences(){
-		application.addGlobalTask(new Runnable() {
+	@Override
+	protected void loadPreferences(){
+		application.addGlobalTask(new Runnable(){
 			@Override
-			public void run() {
+			public void run(){
 				MiniBlasPerfil.CONTRASEÑA_POR_DEFECTO = application.getSettingStorage().getPrefDefaultPassword();
 				MiniBlasPerfil.PUERTO_POR_DEFECTO = application.getSettingStorage().getPrefDefaultPort();
 			}
 		});
 	}
 
-    @Override
-    protected List<MiniBlasPerfil> getElementsToRepository() throws com.miniblas.persistence.BdException {
-        return application.getProfileStorage().getProfilesOrdered();
-    }
+	@Override
+	protected List<MiniBlasPerfil> getElementsToRepository() throws com.miniblas.persistence.BdException{
+		return application.getProfileStorage().getProfilesOrdered();
+	}
 
-    @Override
-    protected void saveElementsToRepository(List<MiniBlasPerfil> _elements) throws com.miniblas.persistence.BdException {
-        application.getProfileStorage().persistCollection(_elements);
-    }
+	@Override
+	protected void saveElementsToRepository(List<MiniBlasPerfil> _elements) throws com.miniblas.persistence.BdException{
+		application.getProfileStorage().persistCollection(_elements);
+	}
 
-    @Override
-    protected void deleteElements(List<MiniBlasPerfil> elements) throws BdException {
-        application.getProfileStorage().deleteProfiles(elements);
-    }
+	@Override
+	protected void deleteElements(List<MiniBlasPerfil> elements) throws BdException{
+		application.getProfileStorage().deleteProfiles(elements);
+	}
 }

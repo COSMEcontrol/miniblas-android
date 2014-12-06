@@ -5,14 +5,14 @@ package com.miniblas.persistence;
  */
 public class BdException extends Exception{
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public BdException(){
-        super();
-    }
+	public BdException(){
+		super();
+	}
 
-    public BdException(String message) {
-        super(message);
-    }
+	public BdException(String message){
+		super(message);
+	}
 }
 
