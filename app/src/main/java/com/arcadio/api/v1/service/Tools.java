@@ -44,11 +44,17 @@ public class Tools{
 		List<MiniBlasPerfil> profileList = perfilDao.query(preparedQuery);
 		Log.v("Tengo listas", "tengo listas");
 		if(profileList.size() > 1){
-			throw new ErrorProfile("ConnectionArcadioService ----> Error, encontrado " + "mas de un perfil con ID pedido " + String.valueOf(id));
+			throw new ErrorProfile("ToolsConnectionArcadioService ----> Error, encontrado " + "mas de un perfil con ID pedido " + String.valueOf(id));
 
 		}else{
 			Log.v("Tools->>Rescatado datos de la base de datos", profileList.toString());
-			return profileList.get(0);
+			if(profileList==null){
+				throw new ErrorProfile("ToolsConnectionArcadioService ----> Error, profile list null");
+			}else if(profileList.isEmpty()){
+				throw new ErrorProfile("ToolsConnectionArcadioService ----> Error, profile list empty");
+			}else{
+				return profileList.get(0);
+			}
 		}
 	}
 

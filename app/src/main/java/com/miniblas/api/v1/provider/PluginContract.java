@@ -6,7 +6,6 @@ import android.provider.BaseColumns;
 
 public class PluginContract{
 
-	public static final String PERMISSION_OPEN_SESSIONS = "com.sonelli.juicessh.api.v1.permission.OPEN_SESSIONS";
 
 	public static final class Profiles implements BaseColumns{
 

@@ -80,5 +80,9 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="cancel_conexion">Cancelar conexión</string>
+    <string name="contectadoConCosme">Conectado a servidor COSME</string>
+    <string name="ip_notification">IP:</string>
+
 
 </resources>

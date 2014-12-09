@@ -61,7 +61,6 @@ public class ProfilesElementsFragmentCab extends CabOrdenableElementsFragment<Mi
 	@Override
 	public void onActivityCreated(final Bundle savedInstanceState){
 		super.onActivityCreated(savedInstanceState);
-		System.out.println("onactivity createddddddddddddddddddddddddd..........");
 		setHasOptionsMenu(true);
 		(((ActionBarActivity) getActivity()).getSupportActionBar()).setDisplayHomeAsUpEnabled(false);
 		FabActivity act = (FabActivity) getActivity();
@@ -79,7 +78,7 @@ public class ProfilesElementsFragmentCab extends CabOrdenableElementsFragment<Mi
 				Adapter adapter = parent.getAdapter();
 				MiniBlasPerfil profile = (MiniBlasPerfil) adapter.getItem(position);
 				Bundle data = new Bundle();
-				data.putInt(Constantes.PROFILE_ID, profile.getId());
+				data.putInt(Constantes.PROFILE_TABLE_NAME, profile.getId());
 
 				//getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 				getFragmentManager().executePendingTransactions();

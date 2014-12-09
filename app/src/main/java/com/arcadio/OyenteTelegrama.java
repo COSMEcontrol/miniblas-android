@@ -153,7 +153,6 @@ public class OyenteTelegrama extends Thread{
 				conexion.setNumUltimoTelegramaRecibido(telegramaRecibido.getNumPeticion());
 			}
 		}
-
 		switch(telegramaRecibido.getIdTelegrama()){
 			// <editor-fold defaultstate="collapsed" desc=" LEER ">
 			case LEER:
@@ -212,7 +211,6 @@ public class OyenteTelegrama extends Thread{
 						lv.add(iv);
 					}
 				}
-
 				if(!telegramaRecibido.esEco()){
 					String prefijoCesta = telegramaRecibido.getNombreCesta();
 					int index = telegramaRecibido.getNombreCesta().indexOf(Bag.BASKET_NAME_SEPARATOR);
@@ -220,7 +218,6 @@ public class OyenteTelegrama extends Thread{
 					if(index != -1){
 						prefijoCesta = prefijoCesta.substring(0, index);
 					}
-
 					emcosListener.onDataReceived(prefijoCesta, telegramaRecibido.getListaVariables());
 				}
 

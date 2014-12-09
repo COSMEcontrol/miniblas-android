@@ -90,6 +90,7 @@
     <orderEntry type="library" exported="" name="renderers-1.2" level="project" />
     <orderEntry type="library" exported="" name="floatingactionbutton-1.0.7" level="project" />
     <orderEntry type="library" exported="" name="javax.inject-1" level="project" />
+    <orderEntry type="library" exported="" name="arcadioLibrary-0.4.980002" level="project" />
     <orderEntry type="library" exported="" name="guava-15.0" level="project" />
     <orderEntry type="library" exported="" name="ormlite-android-4.48" level="project" />
     <orderEntry type="library" exported="" name="ormlite-core-4.48" level="project" />
@@ -99,7 +100,6 @@
     <orderEntry type="library" exported="" name="support-annotations-21.0.2" level="project" />
     <orderEntry type="library" exported="" name="systembartint-1.0.3" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-21.0.0" level="project" />
-    <orderEntry type="library" exported="" name="arcadioLibrary-0.4.6" level="project" />
     <orderEntry type="library" exported="" name="ormlite-content-provider-library-1.0.4" level="project" />
     <orderEntry type="library" exported="" name="dagger-compiler-1.2.2" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-21.0.2" level="project" />

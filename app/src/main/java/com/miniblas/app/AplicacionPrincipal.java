@@ -66,12 +66,10 @@ public class AplicacionPrincipal extends Application{
 
 		@Override
 		public void onStateChange(CosmeStates _state){
+			estado = _state;
 			if(_state == CosmeStates.COMMUNICATION_OK){
-				estado = CosmeStates.COMMUNICATION_OK;
-				System.out.println("notificando estado en cosmelistener: " + estado);
 				listenerIconConnection.onConnectNotify();
-			}else{
-				estado = _state;
+			}else if (_state == CosmeStates.COMMUNICATION_IMPOSSIBLE || _state == CosmeStates.CONNECTION_INTERRUPTED|| _state == CosmeStates.COMMUNICATION_TIMEOUT || _state == CosmeStates.CONNEXION_IMPOSSIBLE){
 				listenerIconConnection.onDisconnectNotify();
 			}
 			/*
@@ -128,22 +126,16 @@ public class AplicacionPrincipal extends Application{
 	}
 
 	public void connect(int _connectionId){
-		if(estado != CosmeStates.COMMUNICATION_OK){
-			System.out.println("Intentando establecer comunicacion con cosme");
+		if(!arcadio.isConnected()){
+			System.out.println("Intentando establecer comunicacion con cosme con perfil: "+_connectionId);
 			arcadio.connect(_connectionId, cosmeListener);
 		}
 	}
 
-	public void disconnect(){
-		arcadio.disconnect();
-	}
-
 	public void setIconObserver(ObservadorConnectionIcon _observer){
 		if(listenerIconConnection != null){
-			System.out.println("Set icon connection...............");
 			this.listenerIconConnection.setObservador(_observer);
 			// notificar el ultimo estado a la nueva vista
-			System.out.println("notificar estado :" + estado);
 			cosmeListener.onStateChange(estado);
 		}
 

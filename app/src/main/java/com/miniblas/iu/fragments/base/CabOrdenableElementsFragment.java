@@ -66,14 +66,17 @@ public abstract class CabOrdenableElementsFragment <T extends ISortElement> exte
 	public void loadState(){
 		this.runOnIuThread(new Runnable(){
 			public void run(){
-				if(savedInstance != null){
+				if(savedInstance != null && listView != null){
 					getListView().clearChoices();
 					SerializableSparseBooleanArrayContainer datos = (SerializableSparseBooleanArrayContainer) savedInstance.get(SELECTED_ELEMENTS);
 					SparseBooleanArray sparseBooleanArrayContainer = datos.getSparseArray();
-					for(int i = 0; i < adapter.getCount(); i++){
-						listView.setItemChecked(i, sparseBooleanArrayContainer.get(i));
+					if(sparseBooleanArrayContainer != null){
+						for(int i = 0; i < adapter.getCount(); i++){
+							listView.setItemChecked(i, sparseBooleanArrayContainer.get(i));
+						}
+
+						((FabActivity) getActivity()).disableFab(true);
 					}
-					((FabActivity) getActivity()).disableFab(true);
 				}
 			}
 		});

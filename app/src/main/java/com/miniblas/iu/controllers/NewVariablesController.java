@@ -47,7 +47,13 @@ public class NewVariablesController extends BaseController<MiniBlasItemVariable>
 			e.printStackTrace();
 		}
 		super.onViewChange(_vista);
-		application.getArcadioService().requestNamesList();
+		try{
+			application.getArcadioService().requestNamesList();
+		}catch(com.arcadio.api.v1.service.exceptions.ServiceDisconnectedArcadioException e){
+			e.printStackTrace();
+		}catch(com.arcadio.api.v1.service.exceptions.NoConnectedArcadioException e){
+			e.printStackTrace();
+		}
 		vista.showIconLoading();
 	}
 

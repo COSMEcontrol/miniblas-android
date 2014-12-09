@@ -63,11 +63,6 @@ public class FabActivity extends ThemableActivity{
 		initFab();
 	}
 
-	@Override
-	public void onSaveInstanceState(Bundle outState){
-		super.onSaveInstanceState(outState);
-	}
-
 	public BaseCab getCab(){
 		return mCab;
 	}
@@ -107,7 +102,7 @@ public class FabActivity extends ThemableActivity{
 
 	@Override
 	public void onBackPressed(){
-		if(mCab.isActive()){
+		if(mCab != null && mCab.isActive()){
 			hideCab();
 		}else{
 			FragmentManager fm = getSupportFragmentManager();

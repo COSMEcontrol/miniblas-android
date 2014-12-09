@@ -64,8 +64,10 @@ public class VariablesElementsFragmentCab extends CabOrdenableElementsFragment<M
 		act.setTitle(getResources().getString(R.string.listaVariables));
 		//act.disableFab(true);
 		Bundle extras = getArguments();
-		int id_basket = extras.getInt(Constantes.BASKET_ID);
-		int id_profile = extras.getInt(Constantes.PROFILE_ID);
+		int id_basket = extras.getInt(Constantes.BASKET_TABLE_NAME);
+		int id_profile = extras.getInt(Constantes.PROFILE_TABLE_NAME);
+		System.out.println("Id del perfil en variables: " + id_profile);
+		System.out.println("Nombre cesta en variables: " + id_basket);
 		controller.onViewChange(this, id_profile, id_basket);
 		(((ActionBarActivity) getActivity()).getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 		act.setFabListener(new FabActivity.FabListener(){
@@ -86,7 +88,7 @@ public class VariablesElementsFragmentCab extends CabOrdenableElementsFragment<M
 		trans.setCustomAnimations(R.anim.left_in, R.anim.left_out, R.anim.right_in, R.anim.right_out);
 		NewVariableElementsFragmentCab fragment = new NewVariableElementsFragmentCab();
 		fragment.setArguments(data);
-		setTargetFragment(fragment, REQUEST_CODE);
+		//setTargetFragment(fragment, REQUEST_CODE);
 		trans.replace(R.id.container, fragment);
 		trans.addToBackStack(null);
 		trans.commit();

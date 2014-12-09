@@ -71,7 +71,7 @@ public class BasketsElementsFragmentCab extends CabOrdenableElementsFragment<Min
 			}
 		});
 		Bundle extras = getArguments();
-		int id_profile = extras.getInt(Constantes.PROFILE_ID);
+		int id_profile = extras.getInt(Constantes.PROFILE_TABLE_NAME);
 		controller.onViewChange(this, id_profile);
 		(((ActionBarActivity) getActivity()).getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 		getListView().setOnItemClickListener(new AdapterView.OnItemClickListener(){
@@ -80,10 +80,10 @@ public class BasketsElementsFragmentCab extends CabOrdenableElementsFragment<Min
 				Adapter adapter = parent.getAdapter();
 				MiniBlasCesta basket = (MiniBlasCesta) adapter.getItem(position);
 				Bundle data = new Bundle();
-				data.putInt(Constantes.PROFILE_ID, controller.getProfile().getId());
-				data.putInt(Constantes.BASKET_ID, basket.getId());
-				System.out.println("Id del perfil: " + controller.getProfile().getNombre());
-				System.out.println("Nombre cesta: " + basket.getNombre());
+				data.putInt(Constantes.PROFILE_TABLE_NAME, controller.getProfile().getId());
+				data.putInt(Constantes.BASKET_TABLE_NAME, basket.getId());
+				System.out.println("Id del perfil: " + controller.getProfile().getId());
+				System.out.println("Nombre cesta: " + basket.getId());
 				//getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 				// getFragmentManager().executePendingTransactions();
 				FragmentTransaction trans = getFragmentManager().beginTransaction();

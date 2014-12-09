@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.arcadio;
 
 
@@ -10,7 +5,7 @@ import com.arcadio.common.ItemVariable;
 import com.arcadio.common.VariablesList;
 
 /**
- * @author fserna
+ * @author fserna, Alberto Azuara García
  */
 public class Watchdog extends Thread{
 
@@ -46,10 +41,7 @@ public class Watchdog extends Thread{
 				if(emcos.isConnected()){
 					emcos.ping(lv);
 				}else if(emcos.isReconexionActivada()){
-					System.out.println("Probando a reconectar...");
-
 					emcos.conectar(true);
-
 					System.out.println("Reconectado!");
 				}
 			}

@@ -35,6 +35,15 @@ public class ProfilesController extends BaseController<MiniBlasPerfil>{
 			int idProfile = application.getSettingStorage().getPrefAutoConexionIdProfile();
 			//vista.goToBasketsIU(idProfile);
 		}
+		try{
+			if(application.getArcadioService().isConnected()){
+				application.getArcadioService().disconnect();
+			}
+		}catch(com.arcadio.api.v1.service.exceptions.NoConnectedArcadioException e){
+			e.printStackTrace();
+		}catch(com.arcadio.api.v1.service.exceptions.ServiceDisconnectedArcadioException e){
+			e.printStackTrace();
+		}
 	}
 
 

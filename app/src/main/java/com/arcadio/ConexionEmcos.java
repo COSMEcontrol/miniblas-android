@@ -48,7 +48,7 @@ public class ConexionEmcos{
 	private BufferedReader in;
 
 	private Socket socket;
-	private boolean sslActivado = true;
+	//private boolean sslActivado = true;
 	private OyenteTelegrama oyente;
 	private String host;
 	private int puerto;
@@ -99,9 +99,9 @@ public class ConexionEmcos{
 	 */
 	public ConexionEmcos(CosmeListener _emcosListener, String _contrasenaPasarela, String _host, int _puerto) throws CosmeException{
 
-		sslActivado = false;
+		//sslActivado = false;
 		this.emcosListener = _emcosListener;
-		this.setMsRetardoTelegramas(this.msRetardoTelegramas);
+		this.setMsRetardoTelegramas(0);
 
 
 		host = _host;
@@ -123,13 +123,9 @@ public class ConexionEmcos{
 	public ConexionEmcos(CosmeListener _emcosListener, String _contrasenaPasarela, String _host, int _puerto, boolean deb) throws CosmeException{
 		this.debug = deb;
 
-		sslActivado = false;
+		//sslActivado = false;
 		this.emcosListener = _emcosListener;
 		this.setMsRetardoTelegramas(0);
-
-		String hostTarget = "";
-		int puertoTarget = 0;
-
 
 		host = _host;
 		puerto = _puerto;
@@ -144,9 +140,9 @@ public class ConexionEmcos{
 		this.puerto = _puerto;
 		this.contrasenaPasarela = _contrasenaPasarela;
 
-		sslActivado = false;
+		//sslActivado = false;
 		this.emcosListener = _emcosListener;
-		this.setMsRetardoTelegramas(this.msRetardoTelegramas);
+		this.setMsRetardoTelegramas(0);
 
 	}
 
@@ -274,27 +270,16 @@ public class ConexionEmcos{
 	private void conectar(String _host, int _puerto, String _contrasenaPasarela) throws CosmeException{
 		String errorMsg = null;
 
-		System.out.println("Cambiando estados...");
-
 		cambiarEstado(CosmeStates.DISCONNECTED);
-
-		System.out.println("Estado [1/2]");
 
 		cambiarEstado(CosmeStates.TRYING_COMMUNICATION);
 
-		System.out.println("Estado [2/2]");
-
 		try{
-
-			System.out.println("Creando socket...");
 			socket = new Socket(_host, _puerto);
 			socket.setSoTimeout(getSocketTimeout());
-			System.out.println("Socket creado [1/2]");
 
 			setCanalDeSalida(new PrintWriter(socket.getOutputStream()));
 			setCanalEntrada(new BufferedReader(new InputStreamReader(socket.getInputStream())));
-			System.out.println("Socket creado [2/2]");
-
 
 			// hay socket activo, ahora buscamos la comunicación...
 			PrintWriter outChannel = getCanalDeSalida();
@@ -416,7 +401,7 @@ public class ConexionEmcos{
 		}
 	}
 
-	// </editor-fold>
+
 	private void printIfDebug(String _text){
 		if(debug){
 			System.out.println(_text);

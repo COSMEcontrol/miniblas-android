@@ -8,7 +8,7 @@ import java.io.Serializable;
 public class SerializableSparseBooleanArrayContainer implements Serializable{
 
 	private static final long serialVersionUID = 393662066105575556L;
-	private SparseBooleanArray mSparseArray;
+	private SparseBooleanArray mSparseArray = new SparseBooleanArray();
 
 	public SerializableSparseBooleanArrayContainer(SparseBooleanArray mDataArray){
 		this.mSparseArray = mDataArray;
@@ -24,13 +24,18 @@ public class SerializableSparseBooleanArrayContainer implements Serializable{
 
 	private void writeObject(java.io.ObjectOutputStream out) throws IOException{
 		out.writeLong(serialVersionUID);
-		int sparseArraySize = mSparseArray.size();
+		int sparseArraySize = 0;
+		if(mSparseArray != null){
+			sparseArraySize = mSparseArray.size();
+		}
 		out.write(sparseArraySize);
-		for(int i = 0; i < sparseArraySize; i++){
-			int key = mSparseArray.keyAt(i);
-			out.writeInt(key);
-			boolean value = mSparseArray.get(key);
-			out.writeBoolean(value);
+		if(mSparseArray != null){
+			for(int i = 0; i < sparseArraySize; i++){
+				int key = mSparseArray.keyAt(i);
+				out.writeInt(key);
+				boolean value = mSparseArray.get(key);
+				out.writeBoolean(value);
+			}
 		}
 	}
 

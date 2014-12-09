@@ -37,7 +37,7 @@ import java.util.concurrent.Executors;
 public class ConnectionArcadioService extends Service{
 
 	//(sessionId, sessionKey);
-	private HashMap<Integer, Session> sessions;
+	private HashMap<Integer, Session> sessions = new HashMap<Integer, Session>();
 	private Context context = this;
 	private Toast error_sessionId;
 	private Toast error_sessionKey;
@@ -154,12 +154,11 @@ public class ConnectionArcadioService extends Service{
 						iSessionStartedListener.onSessionStarted(session.getSessionId(), session.getSessionKeyString());
 						//conexion.conectar(true);
 						if(conexion.getEstado() == CosmeStates.COMMUNICATION_OK){
-							//							Log.v("",String.valueOf(session.getSessionId()));
 							int sdk = android.os.Build.VERSION.SDK_INT;
 							if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN){
-								notify_deprecated("Conectado a servidor COSME", "IP: " + perfil.getIp(), session.getSessionId());
+								notify_deprecated(getString(com.miniblas.app.R.string.contectadoConCosme), getString(com.miniblas.app.R.string.ip_notification)+ perfil.getIp(), session.getSessionId());
 							}else{
-								notify_api16("Conectado a servidor COSME", "IP: " + perfil.getIp(), session.getSessionId(), session.getSessionKeyString());
+								notify_api16(getString(com.miniblas.app.R.string.contectadoConCosme), getString(com.miniblas.app.R.string.ip_notification)+ perfil.getIp(), session.getSessionId(), session.getSessionKeyString());
 							}
 						}
 					}catch(SQLException e1){
@@ -190,7 +189,7 @@ public class ConnectionArcadioService extends Service{
 						e.printStackTrace();
 					}
 				}
-			});
+			}).start();
 
 		}
 
@@ -206,7 +205,7 @@ public class ConnectionArcadioService extends Service{
 						sessions.put(session.getSessionId(), session);
 						//notificar al cliente con su identificacion
 						iSessionStartedListener.onSessionStarted(session.getSessionId(), session.getSessionKeyString());
-						conexion.conectar(true);
+						//conexion.conectar(true);
 						if(conexion.getEstado() == CosmeStates.COMMUNICATION_OK){
 							//							Log.v("",String.valueOf(session.getSessionId()));
 							int sdk = android.os.Build.VERSION.SDK_INT;
@@ -223,7 +222,7 @@ public class ConnectionArcadioService extends Service{
 						e.printStackTrace();
 					}
 				}
-			});
+			}).start();
 		}
 
 		@Override
@@ -288,6 +287,9 @@ public class ConnectionArcadioService extends Service{
 					try{
 						ConexionEmcos conexionEmcos = Tools.getConexion(sessionId, sessionKey, sessions);
 						conexionEmcos.desconectar();
+						NotificationManager mNotifyMgr =
+								(NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+						mNotifyMgr.cancel(sessionId);
 					}catch(SessionNotFound e){
 						e.printStackTrace();
 						//generar un error en el listener indicando que con encuentra la session
@@ -665,9 +667,8 @@ public class ConnectionArcadioService extends Service{
 
 	@Override
 	public void onCreate(){
-		sessions = new HashMap<Integer, Session>();
-		error_sessionId = Toast.makeText(context, "ArcadioService -> Error entrada sessionId no encontrada", Toast.LENGTH_SHORT);
-		error_sessionKey = Toast.makeText(context, "ArcadioService -> Error entrada sessionKey incorrecta", Toast.LENGTH_SHORT);
+		error_sessionId = Toast.makeText(context, "ConnectionArcadioService -> Error entrada sessionId no encontrada", Toast.LENGTH_SHORT);
+		error_sessionKey = Toast.makeText(context, "ConnectionArcadioService -> Error entrada sessionKey incorrecta", Toast.LENGTH_SHORT);
 	}
 
 	@Override
@@ -729,7 +730,7 @@ public class ConnectionArcadioService extends Service{
 		intent.putExtra(SESSION_ID, mNotificationId);
 		PendingIntent pending = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 		mBuilder.setContentIntent(pending);
-		mBuilder.addAction(android.R.drawable.ic_delete, "Cancelar conexión", pending); // 4.1 +
+		mBuilder.addAction(android.R.drawable.ic_delete, getString(R.string.cancel_conexion), pending); // 4.1 +
 
 
 		mBuilder.setContentIntent(resultPendingIntent);
