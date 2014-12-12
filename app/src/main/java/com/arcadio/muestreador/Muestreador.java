@@ -9,7 +9,7 @@
 
 package com.arcadio.muestreador;
 
-import com.arcadio.ConexionEmcos;
+import com.arcadio.CosmeConnector;
 import com.arcadio.CosmeListener;
 import com.arcadio.api.v1.service.CosmeStates;
 
@@ -19,7 +19,7 @@ public class Muestreador{
 
 
 	private CosmeListener app;
-	private ConexionEmcos emcos;
+	private CosmeConnector emcos;
 
 
 	private String nombre = "M"; // el prefijo del nombre del muestreador es
@@ -42,7 +42,7 @@ public class Muestreador{
 	/**
 	 * Creates a new instance of Muestreador
 	 */
-	public Muestreador(CosmeListener _app, ConexionEmcos _emcos, String _nombreVariableAMuestrear, String _nombreVariableDisparo, int _numMuestras, int _msMuestreo){
+	public Muestreador(CosmeListener _app, CosmeConnector _emcos, String _nombreVariableAMuestrear, String _nombreVariableDisparo, int _numMuestras, int _msMuestreo){
 		this.app = _app;
 		this.emcos = _emcos;
 		this.variableMuestreada = _nombreVariableAMuestrear;

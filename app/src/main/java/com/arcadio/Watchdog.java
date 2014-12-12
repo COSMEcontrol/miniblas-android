@@ -9,12 +9,12 @@ import com.arcadio.common.VariablesList;
  */
 public class Watchdog extends Thread{
 
-	private ConexionEmcos emcos;
+	private CosmeConnector emcos;
 	private boolean estoyVivo = true;
 	private int periodo = 2000; // 2" por defecto
 
 
-	public Watchdog(ConexionEmcos _emcos){
+	public Watchdog(CosmeConnector _emcos){
 		this.emcos = _emcos;
 		this.estoyVivo = true;
 		this.start();
@@ -24,7 +24,7 @@ public class Watchdog extends Thread{
 	 * @param _emcos
 	 * @param _periodoMs Periodo con el que se env�an telegramas de ping.
 	 */
-	public Watchdog(ConexionEmcos _emcos, int _periodoMs){
+	public Watchdog(CosmeConnector _emcos, int _periodoMs){
 		this.emcos = _emcos;
 		setPeriod(_periodoMs);
 		this.estoyVivo = true;

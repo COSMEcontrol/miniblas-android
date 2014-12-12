@@ -18,9 +18,9 @@ public class SintaxisTelegrama{
 
 	private final int LONG_MAX_TELEGRAMA = 8000;
 	private int numPeticion = 0;
-	private ConexionEmcos conexion;
+	private CosmeConnector conexion;
 
-	public SintaxisTelegrama(ConexionEmcos _conexion){
+	public SintaxisTelegrama(CosmeConnector _conexion){
 		this.conexion = _conexion;
 	}
 

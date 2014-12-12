@@ -2,13 +2,14 @@ package com.miniblas.iu.controllers;
 
 import com.miniblas.app.AplicacionPrincipal;
 import com.miniblas.iu.controllers.base.BaseController;
+import com.miniblas.iu.fragments.ProfilesElementsFragmentCab;
 import com.miniblas.iu.fragments.base.CabOrdenableElementsFragment;
 import com.miniblas.model.MiniBlasPerfil;
 import com.miniblas.persistence.BdException;
 
 import java.util.List;
 
-public class ProfilesController extends BaseController<MiniBlasPerfil>{
+public class ProfilesController extends BaseController<MiniBlasPerfil> implements ConnectionListener.IObservadorConnection{
 
 	// private ProfilesFragment profilesView;
 	public static ProfilesController instance;
@@ -31,10 +32,7 @@ public class ProfilesController extends BaseController<MiniBlasPerfil>{
 
 	public void onViewChange(CabOrdenableElementsFragment _vista){
 		super.onViewChange(_vista);
-		if(application.getSettingStorage().getPrefAutoConexion()){
-			int idProfile = application.getSettingStorage().getPrefAutoConexionIdProfile();
-			//vista.goToBasketsIU(idProfile);
-		}
+		application.setConnectionObserver(this);
 		try{
 			if(application.getArcadioService().isConnected()){
 				application.getArcadioService().disconnect();
@@ -71,5 +69,20 @@ public class ProfilesController extends BaseController<MiniBlasPerfil>{
 	@Override
 	protected void deleteElements(List<MiniBlasPerfil> elements) throws BdException{
 		application.getProfileStorage().deleteProfiles(elements);
+	}
+
+	@Override
+	public void OnConnect(){
+		vista.showIconLoading();
+		if(application.getSettingStorage().getPrefAutoConexion()){
+			int idProfile = application.getSettingStorage().getPrefAutoConexionIdProfile();
+			((ProfilesElementsFragmentCab) vista).gotoBagFragment(idProfile);
+		}
+		vista.dismissIconLoading();
+	}
+
+	@Override
+	public void OnDisconnect(){
+
 	}
 }

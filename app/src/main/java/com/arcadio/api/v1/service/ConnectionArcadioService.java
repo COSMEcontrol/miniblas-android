@@ -17,7 +17,7 @@ import android.os.RemoteException;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
-import com.arcadio.ConexionEmcos;
+import com.arcadio.CosmeConnector;
 import com.arcadio.common.ItemVariable;
 import com.arcadio.common.NamesList;
 import com.arcadio.common.VariablesList;
@@ -53,8 +53,8 @@ public class ConnectionArcadioService extends Service{
 				@Override
 				public void run(){
 					try{
-						ConexionEmcos conexionEmcos = Tools.getConexion(sessionId, sessionKey, sessions);
-						conexionEmcos.insertarNombre(_bagName, _name);
+						CosmeConnector cosmeConnector = Tools.getConexion(sessionId, sessionKey, sessions);
+						cosmeConnector.insertarNombre(_bagName, _name);
 					}catch(SessionNotFound e){
 						e.printStackTrace();
 						//generar un error en el listener indicando que con encuentra la session
@@ -76,8 +76,8 @@ public class ConnectionArcadioService extends Service{
 				@Override
 				public void run(){
 					try{
-						ConexionEmcos conexionEmcos = Tools.getConexion(sessionId, sessionKey, sessions);
-						conexionEmcos.insertarNombres(_bagName, _names);
+						CosmeConnector cosmeConnector = Tools.getConexion(sessionId, sessionKey, sessions);
+						cosmeConnector.insertarNombres(_bagName, _names);
 					}catch(SessionNotFound e){
 						e.printStackTrace();
 						//generar un error en el listener indicando que con encuentra la session
@@ -95,10 +95,10 @@ public class ConnectionArcadioService extends Service{
 		@Override
 		public void blockingRead(final int sessionId, final String sessionKey, String _name, int _timeout) throws RemoteException{
 			try{
-				ConexionEmcos conexionEmcos = Tools.getConexion(sessionId, sessionKey, sessions);
+				CosmeConnector cosmeConnector = Tools.getConexion(sessionId, sessionKey, sessions);
 				VariablesList variablesList = new VariablesList();
 				variablesList.add(_name);
-				conexionEmcos.leerBloqueo(variablesList, _timeout);
+				cosmeConnector.leerBloqueo(variablesList, _timeout);
 			}catch(SessionNotFound e){
 				e.printStackTrace();
 				//generar un error en el listener indicando que con encuentra la session
@@ -118,8 +118,8 @@ public class ConnectionArcadioService extends Service{
 		public void blockingWrite(final int sessionId, final String sessionKey, final String _name, final double _value, final int _timeout) throws RemoteException{
 
 			try{
-				ConexionEmcos conexionEmcos = Tools.getConexion(sessionId, sessionKey, sessions);
-				conexionEmcos.modificarVariableBloqueo(_name, _value, _timeout);
+				CosmeConnector cosmeConnector = Tools.getConexion(sessionId, sessionKey, sessions);
+				cosmeConnector.modificarVariableBloqueo(_name, _value, _timeout);
 			}catch(SessionNotFound e){
 				e.printStackTrace();
 				//generar un error en el listener indicando que con encuentra la session
@@ -141,13 +141,13 @@ public class ConnectionArcadioService extends Service{
 
 		@Override
 		public void connect1(final int sessionId, final ISessionStartedListener iSessionStartedListener, final ICosmeListener iCosmeListener) throws RemoteException{
-			new Thread(new Runnable(){
+			addGlobalTask(new Runnable(){
 
 				@Override
 				public void run(){
 					try{
 						MiniBlasPerfil perfil = Tools.getProfileById(context, sessionId);
-						ConexionEmcos conexion = new ConexionEmcos(new AdapterCosmeListener(iCosmeListener), perfil.getPassword(), perfil.getIp(), perfil.getPuerto(), true);
+						CosmeConnector conexion = new CosmeConnector(new AdapterCosmeListener(iCosmeListener), perfil.getPassword(), perfil.getIp(), perfil.getPuerto(), true);
 						Session session = new Session(iSessionStartedListener, conexion);
 						sessions.put(session.getSessionId(), session);
 						//notificar al cliente con su identificacion
@@ -189,18 +189,18 @@ public class ConnectionArcadioService extends Service{
 						e.printStackTrace();
 					}
 				}
-			}).start();
+			});
 
 		}
 
 		@Override
 		public void connect2(final ISessionStartedListener iSessionStartedListener, final ICosmeListener iCosmeListener, final String _password, final String _host, final int _port) throws RemoteException{
-			new Thread(new Runnable(){
+			addGlobalTask(new Runnable(){
 
 				@Override
 				public void run(){
 					try{
-						ConexionEmcos conexion = new ConexionEmcos(new AdapterCosmeListener(iCosmeListener), _password, _host, _port, true);
+						CosmeConnector conexion = new CosmeConnector(new AdapterCosmeListener(iCosmeListener), _password, _host, _port, true);
 						Session session = new Session(iSessionStartedListener, conexion);
 						sessions.put(session.getSessionId(), session);
 						//notificar al cliente con su identificacion
@@ -222,7 +222,7 @@ public class ConnectionArcadioService extends Service{
 						e.printStackTrace();
 					}
 				}
-			}).start();
+			});
 		}
 
 		@Override
@@ -232,8 +232,8 @@ public class ConnectionArcadioService extends Service{
 				@Override
 				public void run(){
 					try{
-						ConexionEmcos conexionEmcos = Tools.getConexion(sessionId, sessionKey, sessions);
-						conexionEmcos.crearCesta(_bagName, 0);
+						CosmeConnector cosmeConnector = Tools.getConexion(sessionId, sessionKey, sessions);
+						cosmeConnector.crearCesta(_bagName, 0);
 					}catch(SessionNotFound e){
 						e.printStackTrace();
 						//generar un error en el listener indicando que con encuentra la session
@@ -262,8 +262,8 @@ public class ConnectionArcadioService extends Service{
 				@Override
 				public void run(){
 					try{
-						ConexionEmcos conexionEmcos = Tools.getConexion(sessionId, sessionKey, sessions);
-						conexionEmcos.borrarCesta(_bagName);
+						CosmeConnector cosmeConnector = Tools.getConexion(sessionId, sessionKey, sessions);
+						cosmeConnector.borrarCesta(_bagName);
 					}catch(SessionNotFound e){
 						e.printStackTrace();
 						//generar un error en el listener indicando que con encuentra la session
@@ -285,8 +285,8 @@ public class ConnectionArcadioService extends Service{
 				@Override
 				public void run(){
 					try{
-						ConexionEmcos conexionEmcos = Tools.getConexion(sessionId, sessionKey, sessions);
-						conexionEmcos.desconectar();
+						CosmeConnector cosmeConnector = Tools.getConexion(sessionId, sessionKey, sessions);
+						cosmeConnector.desconectar();
 						NotificationManager mNotifyMgr =
 								(NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 						mNotifyMgr.cancel(sessionId);
@@ -307,8 +307,8 @@ public class ConnectionArcadioService extends Service{
 		@Override
 		public int getBagPeriod(final int sessionId, final String sessionKey, final String _bagName) throws RemoteException{
 			try{
-				ConexionEmcos conexionEmcos = Tools.getConexion(sessionId, sessionKey, sessions);
-				return conexionEmcos.getPeriodoCesta(_bagName);
+				CosmeConnector cosmeConnector = Tools.getConexion(sessionId, sessionKey, sessions);
+				return cosmeConnector.getPeriodoCesta(_bagName);
 			}catch(SessionNotFound e){
 				e.printStackTrace();
 				//generar un error en el listener indicando que con encuentra la session
@@ -326,8 +326,8 @@ public class ConnectionArcadioService extends Service{
 		@Override
 		public List<String> getBags(int sessionId, String sessionKey) throws RemoteException{
 			try{
-				ConexionEmcos conexionEmcos = Tools.getConexion(sessionId, sessionKey, sessions);
-				return new ArrayList<String>(conexionEmcos.getCestas());
+				CosmeConnector cosmeConnector = Tools.getConexion(sessionId, sessionKey, sessions);
+				return new ArrayList<String>(cosmeConnector.getCestas());
 			}catch(SessionNotFound e){
 				e.printStackTrace();
 				//generar un error en el listener indicando que con encuentra la session
@@ -343,8 +343,8 @@ public class ConnectionArcadioService extends Service{
 		@Override
 		public long getPingLatencyMs(int sessionId, String sessionKey) throws RemoteException{
 			try{
-				ConexionEmcos conexionEmcos = Tools.getConexion(sessionId, sessionKey, sessions);
-				return conexionEmcos.getPingTime();
+				CosmeConnector cosmeConnector = Tools.getConexion(sessionId, sessionKey, sessions);
+				return cosmeConnector.getPingTime();
 			}catch(SessionNotFound e){
 				e.printStackTrace();
 				//generar un error en el listener indicando que con encuentra la session
@@ -360,8 +360,8 @@ public class ConnectionArcadioService extends Service{
 		@Override
 		public ItemVariable getVariable(int sessionId, String sessionKey, String _name) throws RemoteException{
 			try{
-				ConexionEmcos conexionEmcos = Tools.getConexion(sessionId, sessionKey, sessions);
-				return conexionEmcos.getVariable(_name);
+				CosmeConnector cosmeConnector = Tools.getConexion(sessionId, sessionKey, sessions);
+				return cosmeConnector.getVariable(_name);
 			}catch(SessionNotFound e){
 				e.printStackTrace();
 				//generar un error en el listener indicando que con encuentra la session
@@ -377,8 +377,8 @@ public class ConnectionArcadioService extends Service{
 		@Override
 		public List<ItemVariable> getVariables(int sessionId, String sessionKey, List<String> _names) throws RemoteException{
 			try{
-				ConexionEmcos conexionEmcos = Tools.getConexion(sessionId, sessionKey, sessions);
-				return conexionEmcos.getVariables(_names);
+				CosmeConnector cosmeConnector = Tools.getConexion(sessionId, sessionKey, sessions);
+				return cosmeConnector.getVariables(_names);
 			}catch(SessionNotFound e){
 				e.printStackTrace();
 				//generar un error en el listener indicando que con encuentra la session
@@ -394,8 +394,8 @@ public class ConnectionArcadioService extends Service{
 		@Override
 		public String getVersion(int sessionId, String sessionKey) throws RemoteException{
 			try{
-				ConexionEmcos conexionEmcos = Tools.getConexion(sessionId, sessionKey, sessions);
-				return conexionEmcos.getVersion();
+				CosmeConnector cosmeConnector = Tools.getConexion(sessionId, sessionKey, sessions);
+				return cosmeConnector.getVersion();
 			}catch(SessionNotFound e){
 				e.printStackTrace();
 				//generar un error en el listener indicando que con encuentra la session
@@ -411,8 +411,8 @@ public class ConnectionArcadioService extends Service{
 		@Override
 		public boolean isConnected(int sessionId, String sessionKey) throws RemoteException{
 			try{
-				ConexionEmcos conexionEmcos = Tools.getConexion(sessionId, sessionKey, sessions);
-				return conexionEmcos.isConnected();
+				CosmeConnector cosmeConnector = Tools.getConexion(sessionId, sessionKey, sessions);
+				return cosmeConnector.isConnected();
 			}catch(SessionNotFound e){
 				e.printStackTrace();
 				//generar un error en el listener indicando que con encuentra la session
@@ -432,8 +432,8 @@ public class ConnectionArcadioService extends Service{
 				@Override
 				public void run(){
 					try{
-						ConexionEmcos conexionEmcos = Tools.getConexion(sessionId, sessionKey, sessions);
-						conexionEmcos.eliminarNombre(_bagName, _name);
+						CosmeConnector cosmeConnector = Tools.getConexion(sessionId, sessionKey, sessions);
+						cosmeConnector.eliminarNombre(_bagName, _name);
 					}catch(SessionNotFound e){
 						e.printStackTrace();
 						//generar un error en el listener indicando que con encuentra la session
@@ -455,8 +455,8 @@ public class ConnectionArcadioService extends Service{
 				@Override
 				public void run(){
 					try{
-						ConexionEmcos conexionEmcos = Tools.getConexion(sessionId, sessionKey, sessions);
-						conexionEmcos.setPeriodoCesta(_bagName, _ms);
+						CosmeConnector cosmeConnector = Tools.getConexion(sessionId, sessionKey, sessions);
+						cosmeConnector.setPeriodoCesta(_bagName, _ms);
 					}catch(SessionNotFound e){
 						e.printStackTrace();
 						//generar un error en el listener indicando que con encuentra la session
@@ -478,7 +478,7 @@ public class ConnectionArcadioService extends Service{
 				@Override
 				public void run(){
 					try{
-						ConexionEmcos conexionEmcos = Tools.getConexion(sessionId, sessionKey, sessions);
+						CosmeConnector cosmeConnector = Tools.getConexion(sessionId, sessionKey, sessions);
 						// conexionEmcos.pin
 					}catch(SessionNotFound e){
 						e.printStackTrace();
@@ -501,8 +501,8 @@ public class ConnectionArcadioService extends Service{
 				@Override
 				public void run(){
 					try{
-						ConexionEmcos conexionEmcos = Tools.getConexion(sessionId, sessionKey, sessions);
-						conexionEmcos.lecturaPuntual(variablesList);
+						CosmeConnector cosmeConnector = Tools.getConexion(sessionId, sessionKey, sessions);
+						cosmeConnector.lecturaPuntual(variablesList);
 					}catch(SessionNotFound e){
 						e.printStackTrace();
 						//generar un error en el listener indicando que con encuentra la session
@@ -524,8 +524,8 @@ public class ConnectionArcadioService extends Service{
 				@Override
 				public void run(){
 					try{
-						ConexionEmcos conexionEmcos = Tools.getConexion(sessionId, sessionKey, sessions);
-						conexionEmcos.waitUltimoTelegrama(Long.valueOf(_msTimeout));
+						CosmeConnector cosmeConnector = Tools.getConexion(sessionId, sessionKey, sessions);
+						cosmeConnector.waitUltimoTelegrama(Long.valueOf(_msTimeout));
 					}catch(SessionNotFound e){
 						e.printStackTrace();
 						//generar un error en el listener indicando que con encuentra la session
@@ -553,8 +553,8 @@ public class ConnectionArcadioService extends Service{
 				@Override
 				public void run(){
 					try{
-						ConexionEmcos conexionEmcos = Tools.getConexion(sessionId, sessionKey, sessions);
-						conexionEmcos.modificarVariable(_name, _value);
+						CosmeConnector cosmeConnector = Tools.getConexion(sessionId, sessionKey, sessions);
+						cosmeConnector.modificarVariable(_name, _value);
 					}catch(SessionNotFound e){
 						e.printStackTrace();
 						//generar un error en el listener indicando que con encuentra la session
@@ -576,8 +576,8 @@ public class ConnectionArcadioService extends Service{
 				@Override
 				public void run(){
 					try{
-						ConexionEmcos conexionEmcos = Tools.getConexion(sessionId, sessionKey, sessions);
-						conexionEmcos.modificarVariable(_name, _value);
+						CosmeConnector cosmeConnector = Tools.getConexion(sessionId, sessionKey, sessions);
+						cosmeConnector.modificarVariable(_name, _value);
 					}catch(SessionNotFound e){
 						e.printStackTrace();
 						//generar un error en el listener indicando que con encuentra la session
@@ -599,8 +599,8 @@ public class ConnectionArcadioService extends Service{
 				@Override
 				public void run(){
 					try{
-						ConexionEmcos conexionEmcos = Tools.getConexion(sessionId, sessionKey, sessions);
-						conexionEmcos.modificarVariable(_names);
+						CosmeConnector cosmeConnector = Tools.getConexion(sessionId, sessionKey, sessions);
+						cosmeConnector.modificarVariable(_names);
 					}catch(SessionNotFound e){
 						e.printStackTrace();
 						//generar un error en el listener indicando que con encuentra la session
@@ -618,8 +618,8 @@ public class ConnectionArcadioService extends Service{
 		@Override
 		public NamesList getNamesList(int sessionId, String sessionKey) throws RemoteException{
 			try{
-				ConexionEmcos conexionEmcos = Tools.getConexion(sessionId, sessionKey, sessions);
-				return conexionEmcos.getNombresExistentes();
+				CosmeConnector cosmeConnector = Tools.getConexion(sessionId, sessionKey, sessions);
+				return cosmeConnector.getNombresExistentes();
 			}catch(SessionNotFound e){
 				e.printStackTrace();
 				//generar un error en el listener indicando que con encuentra la session
@@ -639,8 +639,8 @@ public class ConnectionArcadioService extends Service{
 				@Override
 				public void run(){
 					try{
-						ConexionEmcos conexionEmcos = Tools.getConexion(sessionId, sessionKey, sessions);
-						conexionEmcos.solicitarListaNombres();
+						CosmeConnector cosmeConnector = Tools.getConexion(sessionId, sessionKey, sessions);
+						cosmeConnector.solicitarListaNombres();
 					}catch(SessionNotFound e){
 						e.printStackTrace();
 						//generar un error en el listener indicando que con encuentra la session

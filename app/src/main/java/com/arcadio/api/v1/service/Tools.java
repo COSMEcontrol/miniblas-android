@@ -3,7 +3,7 @@ package com.arcadio.api.v1.service;
 import android.content.Context;
 import android.util.Log;
 
-import com.arcadio.ConexionEmcos;
+import com.arcadio.CosmeConnector;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.PreparedQuery;
@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Tools{
-	public static ConexionEmcos getConexion(int sessionId, String sessionKey, HashMap<Integer, Session> sessions) throws SessionNotFound, IncorrectSessionKey{
+	public static CosmeConnector getConexion(int sessionId, String sessionKey, HashMap<Integer, Session> sessions) throws SessionNotFound, IncorrectSessionKey{
 		Session session = sessions.get(sessionId);
 		if(session == null){
 			throw new SessionNotFound("ConnectionArcadioService --> sessionId " + sessionId + " not found.");

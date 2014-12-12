@@ -17,7 +17,7 @@ import java.util.ArrayList;
  * @author fserna, Alberto Azuara García 03/12/2014
  */
 
-public class Telegrama implements Serializable{
+public class Telegram implements Serializable{
 
 	private final String CONSTANTE_BLOQUEO = "sync";
 	private final String CONSTANTE_NOBLOQUEO = "no_sync";
@@ -101,7 +101,7 @@ public class Telegrama implements Serializable{
 
 
 	/** */
-	public Telegrama(String el_telegrama_completo){
+	public Telegram(String el_telegrama_completo){
 
 		this.idTelegrama = TelegramTypes.ERROR; // solución neurótica preventiva
 

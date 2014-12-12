@@ -10,7 +10,7 @@
 package com.arcadio.ctp;
 
 
-import com.arcadio.ConexionEmcos;
+import com.arcadio.CosmeConnector;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -25,7 +25,7 @@ public class ControlTelegramasPerdidos extends Thread{
 
 	private HashMap<Integer, ItemTlgPerdido> telegramasPendientes = new HashMap();
 
-	private ConexionEmcos emcos;
+	private CosmeConnector emcos;
 
 	private boolean ctpEnMarcha = true;
 
@@ -33,7 +33,7 @@ public class ControlTelegramasPerdidos extends Thread{
 	/**
 	 * Creates a new instance of ControlTelegramasPerdidos
 	 */
-	public ControlTelegramasPerdidos(ConexionEmcos _emcos){
+	public ControlTelegramasPerdidos(CosmeConnector _emcos){
 		this.emcos = _emcos;
 
 

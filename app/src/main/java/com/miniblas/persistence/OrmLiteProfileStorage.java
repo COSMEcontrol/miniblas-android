@@ -45,7 +45,7 @@ public class OrmLiteProfileStorage implements ProfileStorage{
 	}
 
 	@Override
-	public synchronized MiniBlasPerfil getProfileByid(int _id) throws BdException{
+	public synchronized MiniBlasPerfil getProfileById(int _id) throws BdException{
 		MiniBlasPerfil perfil = null;
 		try{
 			perfil = (MiniBlasPerfil) perfilDao.queryForId(_id);

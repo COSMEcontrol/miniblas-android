@@ -75,8 +75,8 @@ public class NewVariableElementsFragmentCab extends CabOrdenableElementsFragment
 		});
 		act.setImageFab(R.drawable.ic_action_save);
 		Bundle extras = getArguments();
-		int id_basket = extras.getInt(Constantes.BASKET_ID);
-		int id_profile = extras.getInt(Constantes.PROFILE_ID);
+		int id_basket = extras.getInt(Constantes.BASKET_TABLE_NAME);
+		int id_profile = extras.getInt(Constantes.PROFILE_TABLE_NAME);
 		controller.onViewChange(this, id_profile, id_basket);
 		(((ActionBarActivity) getActivity()).getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 	}
@@ -232,7 +232,9 @@ public class NewVariableElementsFragmentCab extends CabOrdenableElementsFragment
 		runOnUiThread(new Runnable(){
 			@Override
 			public void run(){
-				getListView().setItemChecked(_position, true);
+				if(getView() != null){
+					getListView().setItemChecked(_position, true);
+				}
 			}
 		});
 	}

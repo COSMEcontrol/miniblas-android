@@ -48,7 +48,7 @@ public class VariablesController extends BaseController<MiniBlasItemVariable> im
 		}
 		try{
 			basket = application.getBasketStorage().getBasketById(_id_basket);
-			basket.setPerfil(application.getProfileStorage().getProfileByid(basket.getPerfil().getId()));
+			basket.setPerfil(application.getProfileStorage().getProfileById(basket.getPerfil().getId()));
 		}catch(BdException e){
 			e.printStackTrace();
 		}
@@ -66,7 +66,6 @@ public class VariablesController extends BaseController<MiniBlasItemVariable> im
 			}
 			super.onViewChange(_vista);
 		}
-		application.setIconObserver(this);
 	}
 
 	@Override
@@ -129,7 +128,7 @@ public class VariablesController extends BaseController<MiniBlasItemVariable> im
 		//		for(MiniBlasItemVariable itemVariable:_listaVariables){
 		//			vista.getAdapter().setItemByKey(itemVariable.getNombre(), element);
 		//		}
-		System.out.println(_listaVariables);
+		//System.out.println(_listaVariables);
 		vista.refreshList();
 	}
 

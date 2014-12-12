@@ -28,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
-public class ConexionEmcos{
+public class CosmeConnector{
 	// <editor-fold defaultstate="collapsed" desc=" Vars ">
 
 	//    private static final Logger logger = Logger.getLogger(ConexionEmcos.class);
@@ -97,7 +97,7 @@ public class ConexionEmcos{
 	 * @param _puerto
 	 * @throws CosmeException
 	 */
-	public ConexionEmcos(CosmeListener _emcosListener, String _contrasenaPasarela, String _host, int _puerto) throws CosmeException{
+	public CosmeConnector(CosmeListener _emcosListener, String _contrasenaPasarela, String _host, int _puerto) throws CosmeException{
 
 		//sslActivado = false;
 		this.emcosListener = _emcosListener;
@@ -120,8 +120,9 @@ public class ConexionEmcos{
 	 * @param deb
 	 * @throws CosmeException
 	 */
-	public ConexionEmcos(CosmeListener _emcosListener, String _contrasenaPasarela, String _host, int _puerto, boolean deb) throws CosmeException{
-		this.debug = deb;
+	public CosmeConnector(CosmeListener _emcosListener, String _contrasenaPasarela, String _host, int _puerto, boolean deb) throws CosmeException{
+		//cambiar
+		this.debug = false;
 
 		//sslActivado = false;
 		this.emcosListener = _emcosListener;
@@ -133,7 +134,7 @@ public class ConexionEmcos{
 		this.conectar(host, puerto, contrasenaPasarela);
 	}
 
-	public ConexionEmcos(boolean _reconectar, CosmeListener _emcosListener, String _contrasenaPasarela, String _host, int _puerto){
+	public CosmeConnector(boolean _reconectar, CosmeListener _emcosListener, String _contrasenaPasarela, String _host, int _puerto){
 
 		this.reconexionActivada = _reconectar;
 		this.host = _host;
@@ -390,15 +391,15 @@ public class ConexionEmcos{
 		//modificado 06/12/2014
 
 		// Propaga el nuevo estado al CosmeListener
-		if(this.estado != _nuevoEstado){ //modificado 06/12/2014
-			this.estado = _nuevoEstado;
-			if(this.estado == CosmeStates.CONNECTION_INTERRUPTED || this.estado == CosmeStates.DISCONNECTED){
-				this.estoyConectado = false;
-			}else if(this.estado == CosmeStates.COMMUNICATION_OK){
-				this.estoyConectado = true;
-			}
-			emcosListener.onStateChange(this.estado);
+
+		this.estado = _nuevoEstado;
+		if(this.estado == CosmeStates.CONNECTION_INTERRUPTED || this.estado == CosmeStates.DISCONNECTED){
+			this.estoyConectado = false;
+		}else if(this.estado == CosmeStates.COMMUNICATION_OK){
+			this.estoyConectado = true;
 		}
+		emcosListener.onStateChange(this.estado);
+
 	}
 
 
@@ -436,7 +437,7 @@ public class ConexionEmcos{
 	 */
 	private void enviarTelegrama(String _txtTlg){
 		System.out.println(Thread.currentThread().getClass().getName());
-		Telegrama tlg = new Telegrama(_txtTlg);
+		Telegram tlg = new Telegram(_txtTlg);
 
 		if(tlg != null){
 			if(ctp != null){
@@ -1993,7 +1994,7 @@ public class ConexionEmcos{
 		}
 
 
-		if(_enabled == true){
+		if(_enabled == true && this.watchdog == null){
 			// Threads cannot be reused, so we create a new one.
 			// Period has been recovered if already existed
 			this.watchdog = new Watchdog(this, watchdogPeriod);

@@ -12,6 +12,7 @@ import android.widget.EditText;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.miniblas.app.AplicacionPrincipal;
 import com.miniblas.app.R;
 import com.miniblas.iu.alertdialog.interfaces.IObservadorNewAlertDialog;
 import com.miniblas.model.MiniBlasCesta;
@@ -200,27 +201,27 @@ public class AlertDialogNuevaCesta extends DialogFragment{
 
 	public void notificarOK(final MiniBlasCesta data){
 		if(observador != null){
-			new Thread(new Runnable(){
+			AplicacionPrincipal.getInstance().addGlobalTask(new Runnable(){
 
 				@Override
 				public void run(){
 					observador.OnButtonNewSave(data);
 				}
-			}).start();
+			});
 		}
 
 	}
 
 	public void notificarCancel(final MiniBlasCesta data){
 		if(observador != null){
-			new Thread(new Runnable(){
+			AplicacionPrincipal.getInstance().addGlobalTask(new Runnable(){
 
 				@Override
 				public void run(){
 					observador.OnButtonNewCancel(data);
 
 				}
-			}).start();
+			});
 		}
 	}
 

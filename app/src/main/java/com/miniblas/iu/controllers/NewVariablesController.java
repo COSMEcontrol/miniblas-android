@@ -2,6 +2,10 @@ package com.miniblas.iu.controllers;
 
 import android.util.SparseBooleanArray;
 
+import com.arcadio.api.v1.service.CosmeStates;
+import com.arcadio.api.v1.service.exceptions.NoConnectedArcadioException;
+import com.arcadio.api.v1.service.exceptions.ServiceDisconnectedArcadioException;
+import com.arcadio.common.NamesList;
 import com.miniblas.app.AplicacionPrincipal;
 import com.miniblas.iu.controllers.base.BaseController;
 import com.miniblas.iu.fragments.NewVariableElementsFragmentCab;
@@ -16,7 +20,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class NewVariablesController extends BaseController<MiniBlasItemVariable> implements ListaVariablesListener.ObservadorListaVariables<ArrayList<MiniBlasItemVariable>>{
+public class NewVariablesController extends BaseController<MiniBlasItemVariable> implements ObservadorState.IObservadorState{
 
 	// private ProfilesFragment profilesView;
 	public static NewVariablesController instance;
@@ -31,7 +35,6 @@ public class NewVariablesController extends BaseController<MiniBlasItemVariable>
 
 	private NewVariablesController(AplicacionPrincipal _aplicacionPrincipal){
 		super(_aplicacionPrincipal);
-		application.setListaNombresObserver(this);
 	}
 
 	@Override
@@ -42,7 +45,7 @@ public class NewVariablesController extends BaseController<MiniBlasItemVariable>
 	public void onViewChange(CabOrdenableElementsFragment _vista, int _id_profile, int _id_basket){
 		try{
 			basket = application.getBasketStorage().getBasketById(_id_basket);
-			basket.setPerfil(application.getProfileStorage().getProfileByid(basket.getPerfil().getId()));
+			basket.setPerfil(application.getProfileStorage().getProfileById(basket.getPerfil().getId()));
 		}catch(BdException e){
 			e.printStackTrace();
 		}
@@ -55,6 +58,9 @@ public class NewVariablesController extends BaseController<MiniBlasItemVariable>
 			e.printStackTrace();
 		}
 		vista.showIconLoading();
+		application.deleteAllStateObservers();
+		application.setStateObserver(this);
+		System.out.println("Estableciendo state observer");
 	}
 
 
@@ -75,32 +81,6 @@ public class NewVariablesController extends BaseController<MiniBlasItemVariable>
 	@Override
 	protected void deleteElements(List<MiniBlasItemVariable> elements) throws BdException{
 		//application.getVariableStorage().deleteItemVariables(elements);
-	}
-
-	@Override
-	public void OnReceivedVariablesList(ArrayList<MiniBlasItemVariable> _variables){
-		Comparator<MiniBlasItemVariable> comparator = new Comparator<MiniBlasItemVariable>(){
-
-			@Override
-			public int compare(MiniBlasItemVariable lhs, MiniBlasItemVariable rhs){
-				return rhs.getNombre().compareTo(lhs.getNombre());
-			}
-		};
-		Collections.sort(_variables, comparator);
-		vista.getAdapter().clearCollection();
-		vista.getAdapter().clearSelection();
-		vista.getAdapter().addAll(_variables);
-		System.out.println(_variables);
-		//consultar base de datos para ver cuales tiene seleccionadas
-		int i = 0;
-
-		for(MiniBlasItemVariable variable : basket.getVariables()){
-			if((i = ((NewVariableElementsFragmentCab) vista).getAdapter().indexOf(variable)) != -1){
-				((NewVariableElementsFragmentCab) vista).addItemSelected(i);
-			}
-		}
-		vista.refreshList();
-		vista.dismissIconLoading();
 	}
 
 	public void guardarVariables(){
@@ -129,5 +109,48 @@ public class NewVariablesController extends BaseController<MiniBlasItemVariable>
 			}
 		});
 		((NewVariableElementsFragmentCab) vista).setResultIU(VariablesElementsFragmentCab.RESULT_OK);
+	}
+
+	@Override
+	public void onNotifyNewState(CosmeStates _state){
+		try{
+			System.out.println("Recibido estado :" + _state);
+			if(_state == CosmeStates.NAMES_LIST_RECEIVED){
+				NamesList namesList = null;
+				try{
+					namesList = application.getArcadioService().getNamesList();
+				}catch(ServiceDisconnectedArcadioException e){
+					e.printStackTrace();
+				}catch(NoConnectedArcadioException e){
+					e.printStackTrace();
+				}
+				ArrayList<MiniBlasItemVariable> variablesList = new ArrayList<>();
+				for(String variable : namesList.getNameList()){
+					variablesList.add(new MiniBlasItemVariable(variable));
+				}
+				Comparator<MiniBlasItemVariable> comparator = new Comparator<MiniBlasItemVariable>(){
+
+					@Override
+					public int compare(MiniBlasItemVariable lhs, MiniBlasItemVariable rhs){
+						return rhs.getNombre().compareTo(lhs.getNombre());
+					}
+				};
+				Collections.sort(variablesList, comparator);
+				vista.getAdapter().clearCollection();
+				vista.getAdapter().clearSelection();
+				vista.getAdapter().addAll(variablesList);
+				//consultar base de datos para ver cuales tiene seleccionadas
+				int i = 0;
+				for(MiniBlasItemVariable variable : basket.getVariables()){
+					if((i = ((NewVariableElementsFragmentCab) vista).getAdapter().indexOf(variable)) != -1){
+						((NewVariableElementsFragmentCab) vista).addItemSelected(i);
+					}
+				}
+				vista.refreshList();
+				vista.dismissIconLoading();
+			}
+		}catch(Exception e){
+			System.out.println(e.toString());
+		}
 	}
 }

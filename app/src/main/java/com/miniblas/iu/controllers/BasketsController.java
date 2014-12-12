@@ -2,6 +2,7 @@ package com.miniblas.iu.controllers;
 
 import com.miniblas.app.AplicacionPrincipal;
 import com.miniblas.iu.controllers.base.BaseController;
+import com.miniblas.iu.fragments.BasketsElementsFragmentCab;
 import com.miniblas.iu.fragments.base.CabOrdenableElementsFragment;
 import com.miniblas.model.MiniBlasCesta;
 import com.miniblas.model.MiniBlasPerfil;
@@ -32,9 +33,33 @@ public class BasketsController extends BaseController<MiniBlasCesta> implements 
 
 	}
 
+	public void onClickAutoConexion(){
+		if(application.getSettingStorage().getPrefAutoConexionIdProfile()==profile.getId()){
+			//desmarcar
+			((BasketsElementsFragmentCab) vista).setNotChekedAutoConect();
+			application.getSettingStorage().setPrefAutoConexion(false);
+			application.getSettingStorage().setPrefAutoConexionIdProfile(0);
+		}else {
+			System.out.println(profile.getId());
+			((BasketsElementsFragmentCab) vista).setChekedAutoConect();
+			application.getSettingStorage().setPrefAutoConexion(true);
+			application.getSettingStorage().setPrefAutoConexionIdProfile(profile.getId());
+		}
+	}
+	public void autoConexionControl(){
+		if(application.getSettingStorage().getPrefAutoConexion()){
+			if(application.getSettingStorage().getPrefAutoConexionIdProfile()==profile.getId()){
+				((BasketsElementsFragmentCab) vista).setChekedAutoConect();
+			}else {
+				((BasketsElementsFragmentCab) vista).setNotChekedAutoConect();
+			}
+		}else{
+			((BasketsElementsFragmentCab) vista).setNotChekedAutoConect();
+		}
+	}
 	public void onViewChange(CabOrdenableElementsFragment _vista, int _id_profile){
 		try{
-			profile = application.getProfileStorage().getProfileByid(_id_profile);
+			profile = application.getProfileStorage().getProfileById(_id_profile);
 		}catch(BdException e){
 			e.printStackTrace();
 		}
@@ -42,8 +67,6 @@ public class BasketsController extends BaseController<MiniBlasCesta> implements 
 		/*******************Conexion a cosme **********************/
 		//esta tarea requiere de tienpo para establecer el socket
 		application.connect(profile.getId());
-
-		System.out.println("onview change.......................");
 	}
 
 

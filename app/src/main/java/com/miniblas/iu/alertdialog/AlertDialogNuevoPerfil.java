@@ -200,27 +200,27 @@ public class AlertDialogNuevoPerfil extends DialogFragment{
 
 	public void notificarOK(final MiniBlasPerfil data){
 		if(observador != null){
-			new Thread(new Runnable(){
+			AplicacionPrincipal.getInstance().addGlobalTask(new Runnable(){
 
 				@Override
 				public void run(){
 					observador.OnButtonNewSave(data);
 				}
-			}).start();
+			});
 		}
 
 	}
 
 	public void onotificarCancel(final MiniBlasPerfil data){
 		if(observador != null){
-			new Thread(new Runnable(){
+			AplicacionPrincipal.getInstance().addGlobalTask(new Runnable(){
 
 				@Override
 				public void run(){
 					observador.OnButtonNewCancel(data);
 
 				}
-			}).start();
+			});
 		}
 	}
 }

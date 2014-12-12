@@ -3,12 +3,12 @@ package com.miniblas.iu.controllers;
 
 import com.miniblas.app.AplicacionPrincipal;
 
-public class ConnectionIconListener{
+public class ConnectionListener{
 
-	private ObservadorConnectionIcon observador;
+	private IObservadorConnection observador;
 	//	private T data;
 
-	public interface ObservadorConnectionIcon{
+	public interface IObservadorConnection{
 		/**
 		 * Notificar que se ha cambiando el estado a conectado.
 		 * Este evento se ejecuta en un hilo independiente a la IU
@@ -25,7 +25,7 @@ public class ConnectionIconListener{
 	//	public ConnectionIconListener(ObservadorConnectionIcon observador){
 	//		this.observador=observador;
 	//	}
-	public void setObservador(ObservadorConnectionIcon _observador){
+	public void setObservador(IObservadorConnection _observador){
 		this.observador = _observador;
 	}
 

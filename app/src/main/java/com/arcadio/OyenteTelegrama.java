@@ -30,16 +30,16 @@ public class OyenteTelegrama extends Thread{
 
 	private BufferedReader entrada;
 	private CosmeListener emcosListener;
-	private Telegrama telegramaRecibido;
+	private Telegram telegramRecibido;
 	private boolean entradaNula = false;
 	private boolean estoyEnMarcha = true;
-	private ConexionEmcos conexion;
+	private CosmeConnector conexion;
 	private ControlTelegramasPerdidos ctp = null;
 	private long t1, t2, t;
 	private Semaphore pendingTlg;
 
 	/** Creates a new instance of OyenteTelegrama */
-	public OyenteTelegrama(CosmeListener _emcosListener, Semaphore _pendingTlg, ConexionEmcos _conexion){
+	public OyenteTelegrama(CosmeListener _emcosListener, Semaphore _pendingTlg, CosmeConnector _conexion){
 		this.emcosListener = _emcosListener;
 		this.pendingTlg = _pendingTlg;
 		this.conexion = _conexion;
@@ -75,31 +75,31 @@ public class OyenteTelegrama extends Thread{
 				}
 
 				try{
-					telegramaRecibido = new Telegrama(cadena);
+					telegramRecibido = new Telegram(cadena);
 				}catch(Exception e){
-					telegramaRecibido = null;
+					telegramRecibido = null;
 				}
 
-				if(telegramaRecibido == null){
+				if(telegramRecibido == null){
 					continue;
 				}
 
 				ctp = conexion.getCTPManager();
 				if(ctp != null){
-					ctp.registrarTelegramaRecibido(telegramaRecibido.getNumPeticion());
+					ctp.registrarTelegramaRecibido(telegramRecibido.getNumPeticion());
 				}
 
-				if(telegramaRecibido.contieneErrores()){
+				if(telegramRecibido.contieneErrores()){
 					int i = 1;
-					for(String msg : telegramaRecibido.getMensajesError()){
-						emcosListener.onError("ERROR (" + i + "/" + telegramaRecibido.getMensajesError().size() + "): " + msg);
+					for(String msg : telegramRecibido.getMensajesError()){
+						emcosListener.onError("ERROR (" + i + "/" + telegramRecibido.getMensajesError().size() + "): " + msg);
 						i++;
 					}
 
 					continue;
 				}
 
-				if(telegramaRecibido.isValido()){
+				if(telegramRecibido.isValido()){
 					processTelegram();
 
 					// Notifica la llegada de un mensaje
@@ -142,23 +142,23 @@ public class OyenteTelegrama extends Thread{
 		VariablesList lv;
 		String tipo;
 
-		if(telegramaRecibido == null){
+		if(telegramRecibido == null){
 			return;
 		}
 
 		// permitirá a ConexionEmcos gestionar los telegramas con bloqueo
 		// el telegrama lista_nombres_tipo es un poco especial!!
-		if(telegramaRecibido.getIdTelegrama() != TelegramTypes.LISTA_NOMBRES_TIPO && telegramaRecibido.getIdTelegrama() != TelegramTypes.LISTA_NOMBRES_TIPO_HABILITADOS){
-			if(telegramaRecibido.getNumPeticion() > conexion.getNumUltimoTelegramaRecibido()){
-				conexion.setNumUltimoTelegramaRecibido(telegramaRecibido.getNumPeticion());
+		if(telegramRecibido.getIdTelegrama() != TelegramTypes.LISTA_NOMBRES_TIPO && telegramRecibido.getIdTelegrama() != TelegramTypes.LISTA_NOMBRES_TIPO_HABILITADOS){
+			if(telegramRecibido.getNumPeticion() > conexion.getNumUltimoTelegramaRecibido()){
+				conexion.setNumUltimoTelegramaRecibido(telegramRecibido.getNumPeticion());
 			}
 		}
-		switch(telegramaRecibido.getIdTelegrama()){
+		switch(telegramRecibido.getIdTelegrama()){
 			// <editor-fold defaultstate="collapsed" desc=" LEER ">
 			case LEER:
 				lv = conexion.getNombres();
-				for(ItemVariable iv : telegramaRecibido.getListaVariables().getList()){
-					ItemVariable var = lv.getVariable(telegramaRecibido.getNombreInstancia());
+				for(ItemVariable iv : telegramRecibido.getListaVariables().getList()){
+					ItemVariable var = lv.getVariable(telegramRecibido.getNombreInstancia());
 					if(var != null){
 						if(var instanceof NumericVariable){
 							((NumericVariable) var).setValor(((NumericVariable) iv).getValue());
@@ -168,7 +168,7 @@ public class OyenteTelegrama extends Thread{
 					}
 				}
 
-				emcosListener.onDataReceived(telegramaRecibido.getNombreCesta(), telegramaRecibido.getListaVariables());
+				emcosListener.onDataReceived(telegramRecibido.getNombreCesta(), telegramRecibido.getListaVariables());
 				break;
 			// </editor-fold>
 
@@ -182,8 +182,8 @@ public class OyenteTelegrama extends Thread{
 			case PING:
 				conexion.setPingRXTime();
 				lv = conexion.getNombres();
-				for(ItemVariable iv : telegramaRecibido.getListaVariables().getList()){
-					ItemVariable var = lv.getVariable(telegramaRecibido.getNombreInstancia());
+				for(ItemVariable iv : telegramRecibido.getListaVariables().getList()){
+					ItemVariable var = lv.getVariable(telegramRecibido.getNombreInstancia());
 					if(var != null){
 						if(var instanceof NumericVariable){
 							((NumericVariable) var).setValor(((NumericVariable) iv).getValue());
@@ -198,7 +198,7 @@ public class OyenteTelegrama extends Thread{
 			// <editor-fold defaultstate="collapsed" desc=" CESTA ">
 			case CESTA:
 				lv = conexion.getNombres();
-				for(ItemVariable iv : telegramaRecibido.getListaVariables().getList()){
+				for(ItemVariable iv : telegramRecibido.getListaVariables().getList()){
 					ItemVariable var = lv.getVariable(iv.getName());
 					if(var != null){
 						if(var instanceof NumericVariable){
@@ -211,14 +211,14 @@ public class OyenteTelegrama extends Thread{
 						lv.add(iv);
 					}
 				}
-				if(!telegramaRecibido.esEco()){
-					String prefijoCesta = telegramaRecibido.getNombreCesta();
-					int index = telegramaRecibido.getNombreCesta().indexOf(Bag.BASKET_NAME_SEPARATOR);
+				if(!telegramRecibido.esEco()){
+					String prefijoCesta = telegramRecibido.getNombreCesta();
+					int index = telegramRecibido.getNombreCesta().indexOf(Bag.BASKET_NAME_SEPARATOR);
 
 					if(index != -1){
 						prefijoCesta = prefijoCesta.substring(0, index);
 					}
-					emcosListener.onDataReceived(prefijoCesta, telegramaRecibido.getListaVariables());
+					emcosListener.onDataReceived(prefijoCesta, telegramRecibido.getListaVariables());
 				}
 
 				break;
@@ -233,7 +233,7 @@ public class OyenteTelegrama extends Thread{
 
 			// <editor-fold defaultstate="collapsed" desc=" TIPO_NOMBRE ">
 			case TIPO_NOMBRE:
-				conexion.setTipoNombre(telegramaRecibido.getNombreClase());
+				conexion.setTipoNombre(telegramRecibido.getNombreClase());
 				emcosListener.onStateChange(CosmeStates.RECEIVED_NAME_TYPE);
 				break;
 			// </editor-fold>
@@ -241,8 +241,8 @@ public class OyenteTelegrama extends Thread{
 			// <editor-fold defaultstate="collapsed" desc=" LEER_BLOQUEO ">
 			case LEER_BLOQUEO:
 				lv = conexion.getNombres();
-				for(ItemVariable iv : telegramaRecibido.getListaVariables().getList()){
-					ItemVariable var = lv.getVariable(telegramaRecibido.getNombreInstancia());
+				for(ItemVariable iv : telegramRecibido.getListaVariables().getList()){
+					ItemVariable var = lv.getVariable(telegramRecibido.getNombreInstancia());
 					if(var != null){
 						if(var instanceof NumericVariable){
 							((NumericVariable) var).setValor(((NumericVariable) iv).getValue());
@@ -253,7 +253,7 @@ public class OyenteTelegrama extends Thread{
 				}
 
 				gas = GestorAccesoSincronizado.getInstance();
-				gas.desbloquear(telegramaRecibido.getListaVariables());
+				gas.desbloquear(telegramRecibido.getListaVariables());
 
 				break;
 			// </editor-fold>
@@ -266,12 +266,12 @@ public class OyenteTelegrama extends Thread{
 
 			// <editor-fold defaultstate="collapsed" desc=" LISTA_NOMBRES ">
 			case LISTA_NOMBRES:
-				for(ItemVariable v : telegramaRecibido.getListaVariables().getList()){
+				for(ItemVariable v : telegramRecibido.getListaVariables().getList()){
 					conexion.anadirNombre(v.getName());
 				}
 				//System.out.println ("En el TLG hay: "+telegramaRecibido.getListaVariables().getLista().size()+"\t y en el saco: "+conexion.getListaNombres().getNumNombres());
 
-				if(!telegramaRecibido.isListaNombresCompleta()){
+				if(!telegramRecibido.isListaNombresCompleta()){
 					conexion.cambiarEstado(CosmeStates.RECEIVING_NAMES_LIST);
 					conexion.pedirListaNombres(); //
 				}else{
@@ -283,17 +283,17 @@ public class OyenteTelegrama extends Thread{
 
 			// <editor-fold defaultstate="collapsed" desc=" LISTA_NOMBRES_TIPO_HABILITADOS ">
 			case LISTA_NOMBRES_TIPO_HABILITADOS:
-				tipo = telegramaRecibido.getTipoVariable();
-				for(ItemVariable v : telegramaRecibido.getListaVariablesDeTipo().getList()){
+				tipo = telegramRecibido.getTipoVariable();
+				for(ItemVariable v : telegramRecibido.getListaVariablesDeTipo().getList()){
 					conexion.addNombreDeTipo(v.getName());
 				}
 
-				if(!telegramaRecibido.isListaNombresCompleta()){
+				if(!telegramRecibido.isListaNombresCompleta()){
 					conexion.cambiarEstado(CosmeStates.RECEIVING_NAMES_LIST);
 					conexion.pedirListaNombresTipoHabilitados(tipo);
 				}else{
 					conexion.cambiarEstado(CosmeStates.NAMES_LIST_RECEIVED);
-					conexion.setNumUltimoTelegramaRecibido(telegramaRecibido.getNumPeticion());
+					conexion.setNumUltimoTelegramaRecibido(telegramRecibido.getNumPeticion());
 				}
 				break;
 
@@ -301,16 +301,16 @@ public class OyenteTelegrama extends Thread{
 
 			// <editor-fold defaultstate="collapsed" desc=" LISTA_NOMBRES_NIVEL ">
 			case LISTA_NOMBRES_NIVEL:
-				String prefijo = telegramaRecibido.getPrefijo();
+				String prefijo = telegramRecibido.getPrefijo();
 
 				if(prefijo != null){
-					for(ItemVariable v : telegramaRecibido.getListaVariables().getList()){
+					for(ItemVariable v : telegramRecibido.getListaVariables().getList()){
 						conexion.anadirNombre(v.getName());
 					}
 				}
 				//System.out.println ("En el TLG hay: "+telegramaRecibido.getListaVariables().getLista().size()+"\t y en el saco: "+conexion.getListaNombres().getNumNombres());
 
-				if(!telegramaRecibido.isListaNombresCompleta()){
+				if(!telegramRecibido.isListaNombresCompleta()){
 					conexion.cambiarEstado(CosmeStates.RECEIVING_NAMES_LIST);
 					conexion.pedirListaNombresNivel(prefijo); //
 				}else{
@@ -322,11 +322,11 @@ public class OyenteTelegrama extends Thread{
 
 			// <editor-fold defaultstate="collapsed" desc=" LISTA_TIPOS ">
 			case LISTA_TIPOS:
-				for(ItemVariable v : telegramaRecibido.getListaVariables().getList()){
+				for(ItemVariable v : telegramRecibido.getListaVariables().getList()){
 					conexion.anadirTipo(v.getName());
 				}
 
-				if(!telegramaRecibido.isListaTiposCompleta()){
+				if(!telegramRecibido.isListaTiposCompleta()){
 					conexion.cambiarEstado(CosmeStates.RECEIVING_TYPE_LIST);
 					conexion.pedirListaNombres(); //
 				}else{
@@ -339,44 +339,44 @@ public class OyenteTelegrama extends Thread{
 
 			// <editor-fold defaultstate="collapsed" desc=" LISTA_NOMBRES_TIPO ">
 			case LISTA_NOMBRES_TIPO:
-				tipo = telegramaRecibido.getTipoVariable();
+				tipo = telegramRecibido.getTipoVariable();
 				NamesList ln = conexion.getNombresExistentes();
 
-				for(ItemVariable iv : telegramaRecibido.getListaVariablesDeTipo().getList()){
+				for(ItemVariable iv : telegramRecibido.getListaVariablesDeTipo().getList()){
 					conexion.addNombreDeTipo(iv.getName());
 				}
 
 
 				// CUANDO EL TLG TRAE LA LISTA DE CLASES
-				if(telegramaRecibido.getTipoVariable().equals(IDENTIFICADOR_DE_CLASE)){ //"SISTEMA.CLASE"
-					for(ItemVariable v : telegramaRecibido.getListaVariablesDeTipo().getList()){
+				if(telegramRecibido.getTipoVariable().equals(IDENTIFICADOR_DE_CLASE)){ //"SISTEMA.CLASE"
+					for(ItemVariable v : telegramRecibido.getListaVariablesDeTipo().getList()){
 						//  conexion.anadirTipo(v.getName());
 						ln.setType(v.getName(), tipo);
 					}// for
 
 					// Si no ha llegado la marca de fin, pide otro telegrama con el siguiente cacho
-					if(!telegramaRecibido.isListaNombresTipoCompleta()){
+					if(!telegramRecibido.isListaNombresTipoCompleta()){
 						conexion.cambiarEstado(CosmeStates.RECEIVING_CLASS_LIST);
 						conexion.pedirListaNombresDeTipo(tipo);
 					}else{
 						conexion.cambiarEstado(CosmeStates.RECEIVED_CLASS_LIST);
-						conexion.setNumUltimoTelegramaRecibido(telegramaRecibido.getNumPeticion());
+						conexion.setNumUltimoTelegramaRecibido(telegramRecibido.getNumPeticion());
 					}
 
 					// CUANDO EL TLG TRAE NOMBRES DE UN TIPO CUALQUIERA, distinto de "SISTEMA.CLASE"
 				}else{
-					for(ItemVariable v : telegramaRecibido.getListaVariablesDeTipo().getList()){
+					for(ItemVariable v : telegramRecibido.getListaVariablesDeTipo().getList()){
 						ln.setType(v.getName(), tipo);
 						//           numeroTelegramasDeTipoRecibidos++;
 					}//for
 
 					// Si el tlg ha llegado con la marca "...", pide otro telegrama con el siguiente cacho
-					if(!telegramaRecibido.isListaNombresTipoCompleta()){
+					if(!telegramRecibido.isListaNombresTipoCompleta()){
 						conexion.pedirListaNombresDeTipo(tipo);
 						conexion.cambiarEstado(CosmeStates.RECEIVING_TYPE_NAME_LIST);
 					}else{
 						conexion.cambiarEstado(CosmeStates.RECEIVED_TYPE_NAME_LIST);
-						conexion.setNumUltimoTelegramaRecibido(telegramaRecibido.getNumPeticion());
+						conexion.setNumUltimoTelegramaRecibido(telegramRecibido.getNumPeticion());
 					}
 				}
 
@@ -392,7 +392,7 @@ public class OyenteTelegrama extends Thread{
 
 			// <editor-fold defaultstate="collapsed" desc=" LISTA_NOMBRES_CONFIGURABLES ">
 			case LISTA_NOMBRES_CONFIGURABLES:
-				for(ItemVariable v : telegramaRecibido.getListaVariables().getList()){
+				for(ItemVariable v : telegramRecibido.getListaVariables().getList()){
 					conexion.anadirNombreConfigurable(v.getName());
 				}
 				emcosListener.onStateChange(CosmeStates.RECEIVED_NAME_LIST_CONFIGURABLES);
@@ -402,7 +402,7 @@ public class OyenteTelegrama extends Thread{
 
 			// <editor-fold defaultstate="collapsed" desc=" LISTA_NOMBRES_CONFIGURABLES_RESERVADOS ">
 			case LISTA_NOMBRES_CONFIGURABLES_RESERVADOS:
-				for(ItemVariable v : telegramaRecibido.getListaVariables().getList()){
+				for(ItemVariable v : telegramRecibido.getListaVariables().getList()){
 					conexion.anadirNombreConfigurableReservado(v.getName());
 				}
 				emcosListener.onStateChange(CosmeStates.RECEIVED_NAME_LIST_CONFIGURABLES_RESERVED);
@@ -412,8 +412,8 @@ public class OyenteTelegrama extends Thread{
 
 			// <editor-fold defaultstate="collapsed" desc=" CREAR_MUESTREADOR ">
 			case CREAR_MUESTREADOR:
-				if(!telegramaRecibido.contieneErrores()){
-					nombreMuestreador = telegramaRecibido.getNombreMuestreador();
+				if(!telegramRecibido.contieneErrores()){
+					nombreMuestreador = telegramRecibido.getNombreMuestreador();
 					m = conexion.getMuestreador(nombreMuestreador);
 					if(m != null){
 						m.setCreado(true);
@@ -426,8 +426,8 @@ public class OyenteTelegrama extends Thread{
 
 			// <editor-fold defaultstate="collapsed" desc=" MUESTREANDO ">
 			case MUESTREANDO:
-				nombreMuestreador = telegramaRecibido.getNombreMuestreador();
-				numMuestras = telegramaRecibido.getNumMuestrasMuestreador();
+				nombreMuestreador = telegramRecibido.getNombreMuestreador();
+				numMuestras = telegramRecibido.getNumMuestrasMuestreador();
 				m = conexion.getMuestreador(nombreMuestreador);
 				if(m != null){
 					m.reset();
@@ -440,9 +440,9 @@ public class OyenteTelegrama extends Thread{
 
 			// <editor-fold defaultstate="collapsed" desc=" GET_DATOS_MUESTREADOR ">
 			case GET_DATOS_MUESTREADOR:
-				nombreMuestreador = telegramaRecibido.getNombreMuestreador();
-				int index = telegramaRecibido.getIndexChunk();
-				ArrayList<Double> valoresMuestreador = telegramaRecibido.getValoresMuestreador();
+				nombreMuestreador = telegramRecibido.getNombreMuestreador();
+				int index = telegramRecibido.getIndexChunk();
+				ArrayList<Double> valoresMuestreador = telegramRecibido.getValoresMuestreador();
 				m = conexion.getMuestreador(nombreMuestreador);
 				if(m != null){
 					numMuestras = valoresMuestreador.size();
@@ -484,7 +484,7 @@ public class OyenteTelegrama extends Thread{
 
 			// <editor-fold defaultstate="collapsed" desc=" NOTIFICAR_EVENTO ">
 			case NOTIFICAR_EVENTO:
-				emcosListener.onStateChange(telegramaRecibido.getEvento());
+				emcosListener.onStateChange(telegramRecibido.getEvento());
 				break;
 
 			// </editor-fold>
@@ -524,7 +524,7 @@ public class OyenteTelegrama extends Thread{
 			default:
 				// peticion desconocida
 				emcosListener.onStateChange(CosmeStates.RECEIVED_UNKNOWN_TELEGRAM);
-				System.out.println(">>>>> " + telegramaRecibido.toString() + telegramaRecibido.getIdTelegrama());
+				System.out.println(">>>>> " + telegramRecibido.toString() + telegramRecibido.getIdTelegrama());
 				break;
 			// </editor-fold>
 

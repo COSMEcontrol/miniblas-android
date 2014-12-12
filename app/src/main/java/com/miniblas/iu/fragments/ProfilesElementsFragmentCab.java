@@ -77,18 +77,7 @@ public class ProfilesElementsFragmentCab extends CabOrdenableElementsFragment<Mi
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id){
 				Adapter adapter = parent.getAdapter();
 				MiniBlasPerfil profile = (MiniBlasPerfil) adapter.getItem(position);
-				Bundle data = new Bundle();
-				data.putInt(Constantes.PROFILE_TABLE_NAME, profile.getId());
-
-				//getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-				getFragmentManager().executePendingTransactions();
-				FragmentTransaction trans = getFragmentManager().beginTransaction();
-				trans.setCustomAnimations(R.anim.left_in, R.anim.left_out, R.anim.right_in, R.anim.right_out);
-				BasketsElementsFragmentCab fragment = new BasketsElementsFragmentCab();
-				fragment.setArguments(data);
-				trans.replace(R.id.container, fragment);
-				trans.addToBackStack(null);
-				trans.commit();
+				gotoBagFragment(profile.getId());
 			}
 		});
 		pc.setListView(getListView());
@@ -101,7 +90,28 @@ public class ProfilesElementsFragmentCab extends CabOrdenableElementsFragment<Mi
 		controller.saveElements();
 
 	}
+	public void gotoBagFragment(final int _id_profile){
+		runOnUiThread(new Runnable(){
+			@Override
+			public void run(){
+				Bundle data = new Bundle();
+				data.putInt(Constantes.PROFILE_TABLE_NAME, _id_profile);
 
+				//getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+				System.out.println("pasando a basketelements");
+				//atencion comentado porque era recursiva
+				getFragmentManager().executePendingTransactions();
+				FragmentTransaction trans = getFragmentManager().beginTransaction();
+				trans.setCustomAnimations(R.anim.left_in, R.anim.left_out, R.anim.right_in, R.anim.right_out);
+				BasketsElementsFragmentCab fragment = new BasketsElementsFragmentCab();
+				fragment.setArguments(data);
+				trans.replace(R.id.container, fragment);
+				trans.addToBackStack(null);
+				trans.commit();
+			}
+		});
+
+	}
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
 		super.onCreateOptionsMenu(menu, inflater);

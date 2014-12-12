@@ -1,12 +1,12 @@
 package com.arcadio.api.v1.service;
 
-import com.arcadio.ConexionEmcos;
+import com.arcadio.CosmeConnector;
 
 import java.util.UUID;
 
 public class Session{
 
-	private ConexionEmcos cosmeConexionEmcos;
+	private CosmeConnector cosmeCosmeConnector;
 	private ISessionStartedListener sessionStartedListener;
 
 	private int sessionId;
@@ -14,9 +14,9 @@ public class Session{
 	//	private static Session session;
 
 
-	public Session(ISessionStartedListener sessionStartedListener, ConexionEmcos cosmeConexionEmcos){
+	public Session(ISessionStartedListener sessionStartedListener, CosmeConnector cosmeCosmeConnector){
 		this.sessionStartedListener = sessionStartedListener;
-		this.cosmeConexionEmcos = cosmeConexionEmcos;
+		this.cosmeCosmeConnector = cosmeCosmeConnector;
 		this.sessionId = UUID.randomUUID().hashCode();
 		this.sessionKey = UUID.randomUUID().toString();
 	}
@@ -31,9 +31,9 @@ public class Session{
 	//	}
 
 
-	public ConexionEmcos getCosmeConexion(String _sessionKey) throws IncorrectSessionKey{
+	public CosmeConnector getCosmeConexion(String _sessionKey) throws IncorrectSessionKey{
 		if(sessionKey.equals(_sessionKey)){
-			return cosmeConexionEmcos;
+			return cosmeCosmeConnector;
 		}else{
 			throw new IncorrectSessionKey("Session --> Incorrect UUID sessionKey in getCosmeConexion");
 		}

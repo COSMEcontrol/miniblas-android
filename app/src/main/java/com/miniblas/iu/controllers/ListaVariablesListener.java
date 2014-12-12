@@ -1,6 +1,8 @@
 package com.miniblas.iu.controllers;
 
 
+import com.miniblas.app.AplicacionPrincipal;
+
 public class ListaVariablesListener <T>{
 	private ObservadorListaVariables<T> observador;
 	//	private T data;
@@ -23,13 +25,13 @@ public class ListaVariablesListener <T>{
 
 	public void onReceivedNotify(final T _variables){
 		if(observador != null){
-			new Thread(new Runnable(){
+			AplicacionPrincipal.getInstance().addGlobalTask(new Runnable(){
 
 				@Override
 				public void run(){
 					observador.OnReceivedVariablesList(_variables);
 				}
-			}).start();
+			});
 		}
 
 	}

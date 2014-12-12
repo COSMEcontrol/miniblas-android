@@ -83,6 +83,8 @@
     <string name="cancel_conexion">Cancelar conexión</string>
     <string name="contectadoConCosme">Conectado a servidor COSME</string>
     <string name="ip_notification">IP:</string>
+    <string name="connectToArcadio">Conectado al servicio Arcadio</string>
+    <string name="disconnectToArcadio">Desconectado del servicio Arcadio</string>
 
 
 </resources>

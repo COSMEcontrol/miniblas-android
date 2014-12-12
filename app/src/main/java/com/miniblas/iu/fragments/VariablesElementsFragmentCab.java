@@ -80,8 +80,8 @@ public class VariablesElementsFragmentCab extends CabOrdenableElementsFragment<M
 
 	public void gotoNewVariableFragment(){
 		Bundle data = new Bundle();
-		data.putInt(Constantes.PROFILE_ID, controller.getIdProfile());
-		data.putInt(Constantes.BASKET_ID, controller.getBasket().getId());
+		data.putInt(Constantes.PROFILE_TABLE_NAME, controller.getIdProfile());
+		data.putInt(Constantes.BASKET_TABLE_NAME, controller.getBasket().getId());
 		//getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 		getFragmentManager().executePendingTransactions();
 		FragmentTransaction trans = getFragmentManager().beginTransaction();
@@ -123,6 +123,7 @@ public class VariablesElementsFragmentCab extends CabOrdenableElementsFragment<M
 		super.onCreateOptionsMenu(menu, inflater);
 		getActivity().getMenuInflater().inflate(R.menu.menu_variables, menu);
 		iconoEstado = (MenuItem) menu.findItem(R.id.estado);
+		((AplicacionPrincipal) getActivity().getApplication()).setIconObserver(controller);
 	}
 
 	@Override
@@ -156,7 +157,9 @@ public class VariablesElementsFragmentCab extends CabOrdenableElementsFragment<M
 		runOnUiThread(new Runnable(){
 			@Override
 			public void run(){
+				System.out.println("Poniendo el semaforo de variables en verde");
 				if(iconoEstado != null){
+					System.out.println("Poniendolo........");
 					iconoEstado.setIcon(R.drawable.conectado);
 				}
 			}

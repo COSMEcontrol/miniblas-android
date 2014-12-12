@@ -7,14 +7,14 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Mensajero extends Thread{
 	//  private static final Logger logger = Logger.getLogger(Mensajero.class);
 
-	private ConexionEmcos connection;
+	private CosmeConnector connection;
 	private BlockingQueue<String> tlgQueue;
 
 	private PrintWriter out;
 	private boolean estoyVivo = true;
 
 	/** Creates a new instance of Mensajero */
-	public Mensajero(ConexionEmcos _emcos){
+	public Mensajero(CosmeConnector _emcos){
 		this.connection = _emcos;
 		this.out = _emcos.getCanalDeSalida();
 		this.estoyVivo = true;

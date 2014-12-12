@@ -113,6 +113,7 @@ public class BasketsElementsFragmentCab extends CabOrdenableElementsFragment<Min
 		checkAutoConexion = (MenuItem) menu.findItem(R.id.menu_cestas_autoconexion);
 		iconoEstado = (MenuItem) menu.findItem(R.id.estado);
 		((AplicacionPrincipal) getActivity().getApplication()).setIconObserver(controller);
+		controller.autoConexionControl();
 	}
 
 	@Override
@@ -130,6 +131,9 @@ public class BasketsElementsFragmentCab extends CabOrdenableElementsFragment<Min
 			case R.id.Acercade:
 				Intent i = new Intent(getActivity(), AcercaDe.class);
 				startActivity(i);
+				return true;
+			case R.id.menu_cestas_autoconexion:
+				controller.onClickAutoConexion();
 				return true;
 			case R.id.menu_ajustes:
 				Intent intent = new Intent(getActivity(), Preferences.class);
@@ -245,5 +249,20 @@ public class BasketsElementsFragmentCab extends CabOrdenableElementsFragment<Min
 		return controller;
 	}
 
+	public void setChekedAutoConect(){
+		getActivity().runOnUiThread(new Runnable() {
+			public void run() {
+				checkAutoConexion.setChecked(true);
+			}
+		});
 
+	}
+	public void setNotChekedAutoConect(){
+		getActivity().runOnUiThread(new Runnable() {
+			public void run() {
+				checkAutoConexion.setChecked(false);
+			}
+		});
+
+	}
 }

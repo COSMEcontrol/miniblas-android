@@ -3,6 +3,7 @@ package com.miniblas.iu.controllers;
 import android.util.Log;
 
 import com.arcadio.common.VariablesList;
+import com.miniblas.app.AplicacionPrincipal;
 
 import java.util.ArrayList;
 
@@ -34,14 +35,14 @@ public class ObservadorVariables{
 
 	public void Notify(final String _basketName, final VariablesList _variableList){
 		if(!observadores.isEmpty()){
-			new Thread(new Runnable(){
+			AplicacionPrincipal.getInstance().addGlobalTask(new Runnable(){
 				@Override
 				public void run(){
 					for(IObservadorVariables _observador : observadores){
 						_observador.onNotifyVariables(_basketName, _variableList);
 					}
 				}
-			}).start();
+			});
 		}
 
 	}

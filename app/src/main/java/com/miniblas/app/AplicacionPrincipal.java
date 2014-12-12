@@ -13,8 +13,10 @@ import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.miniblas.iu.controllers.ConnectionIconListener;
 import com.miniblas.iu.controllers.ConnectionIconListener.ObservadorConnectionIcon;
+import com.miniblas.iu.controllers.ConnectionListener;
 import com.miniblas.iu.controllers.ListaVariablesListener;
 import com.miniblas.iu.controllers.ListaVariablesListener.ObservadorListaVariables;
+import com.miniblas.iu.controllers.ObservadorState;
 import com.miniblas.iu.controllers.ObservadorVariables;
 import com.miniblas.iu.controllers.ObservadorVariables.IObservadorVariables;
 import com.miniblas.model.MiniBlasCesta;
@@ -42,6 +44,9 @@ import dagger.ObjectGraph;
 
 
 public class AplicacionPrincipal extends Application{
+
+	private static AplicacionPrincipal instance;
+
 	private ObjectGraph objectGraph;
 	private DBHelper mDBHelper;
 	// persistencia
@@ -54,10 +59,11 @@ public class AplicacionPrincipal extends Application{
 	private ExecutorService globalExecutor = Executors.newCachedThreadPool();
 	// variables arcadio
 	private ConnectionIconListener listenerIconConnection = new ConnectionIconListener();
+	private ObservadorState listenerState = new ObservadorState();
 	private ObservadorVariables listenerObservadorVariables = new ObservadorVariables();
 	private ListaVariablesListener<ArrayList<MiniBlasItemVariable>> listenerListaVariables = new ListaVariablesListener<ArrayList<MiniBlasItemVariable>>();
+	private ConnectionListener listenerConnection = new ConnectionListener();
 	private PluginClientArcadio arcadio;
-	private CosmeStates estado = CosmeStates.DISCONNECTED;
 	private CosmeListener cosmeListener = new CosmeListener(){
 		@Override
 		public void onDataReceived(String _bagName, VariablesList _variableList){
@@ -66,16 +72,12 @@ public class AplicacionPrincipal extends Application{
 
 		@Override
 		public void onStateChange(CosmeStates _state){
-			estado = _state;
-			if(_state == CosmeStates.COMMUNICATION_OK){
+			if(_state == CosmeStates.COMMUNICATION_OK || arcadio.isConnected()){
 				listenerIconConnection.onConnectNotify();
 			}else if (_state == CosmeStates.COMMUNICATION_IMPOSSIBLE || _state == CosmeStates.CONNECTION_INTERRUPTED|| _state == CosmeStates.COMMUNICATION_TIMEOUT || _state == CosmeStates.CONNEXION_IMPOSSIBLE){
 				listenerIconConnection.onDisconnectNotify();
 			}
-			/*
-            listenerListaVariables.onReceivedNotify(listaNombres);
-            System.out.println(listaNombres.toString()+"fdhdf");
-            */
+			listenerState.notify(_state);
 		}
 
 		@Override
@@ -84,9 +86,14 @@ public class AplicacionPrincipal extends Application{
 		}
 	};
 
+	public static AplicacionPrincipal getInstance(){
+		return instance;
+	}
+
 	@Override
 	public void onCreate(){
 		super.onCreate();
+		instance = this;
 		if(mDBHelper == null){
 			mDBHelper = OpenHelperManager.getHelper(this, DBHelper.class);
 		}
@@ -108,26 +115,36 @@ public class AplicacionPrincipal extends Application{
 
 				@Override
 				public void onClientStopped(){
-					Toast.makeText(getApplicationContext(), "Desconectado del servicio Arcadio", Toast.LENGTH_SHORT).show();
-					Log.v("Aplicacion ejemplo:-->", "Desconectado del servicio Arcadio");
+					Toast.makeText(getApplicationContext(), getString(R.string.disconnectToArcadio), Toast.LENGTH_SHORT).show();
+					listenerConnection.onDisconnectNotify();
 				}
 
 				@Override
 				public void onClientStarted(){
-					Toast.makeText(getApplicationContext(), "Conectado del servicio Arcadio", Toast.LENGTH_SHORT).show();
-					Log.v("Aplicacion ejemplo:-->", "Conectado al servicio Arcadio");
+					Toast.makeText(getApplicationContext(),getString(R.string.connectToArcadio), Toast.LENGTH_SHORT).show();
+					listenerConnection.onConnectNotify();
 				}
 			});
 		}
 	}
-
+	public void setConnectionObserver(ConnectionListener.IObservadorConnection _observer){
+		if(listenerConnection != null){
+			this.listenerConnection.setObservador(_observer);
+			// notificar el ultimo estado a la nueva vista
+		}
+	}
+	public void resetConnectionObserver(){
+		if(listenerConnection != null){
+			this.listenerConnection.setObservador(null);
+			// notificar el ultimo estado a la nueva vista
+		}
+	}
 	public PluginClientArcadio getArcadioService(){
 		return arcadio;
 	}
 
 	public void connect(int _connectionId){
 		if(!arcadio.isConnected()){
-			System.out.println("Intentando establecer comunicacion con cosme con perfil: "+_connectionId);
 			arcadio.connect(_connectionId, cosmeListener);
 		}
 	}
@@ -135,12 +152,25 @@ public class AplicacionPrincipal extends Application{
 	public void setIconObserver(ObservadorConnectionIcon _observer){
 		if(listenerIconConnection != null){
 			this.listenerIconConnection.setObservador(_observer);
+			if(arcadio.isConnected()){
+				listenerIconConnection.onConnectNotify();
+			}
 			// notificar el ultimo estado a la nueva vista
-			cosmeListener.onStateChange(estado);
+			//cosmeListener.onStateChange(estado);
 		}
 
 	}
-
+	public void setStateObserver(ObservadorState.IObservadorState _observer){
+		if(listenerState != null){
+			this.listenerState.setObservador(_observer);
+			// notificar el ultimo estado a la nueva vista
+		}
+	}
+	public void deleteAllStateObservers(){
+		if(listenerState != null){
+			listenerState.deleteAllObservers();
+		}
+	}
 	public void setVariablesObserver(IObservadorVariables _observer){
 		listenerObservadorVariables.setObservador(_observer);
 	}

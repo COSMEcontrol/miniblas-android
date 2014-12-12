@@ -19,7 +19,7 @@ public interface ProfileStorage{
 	/**
 	 * Obtiene un perfil con un id especificado.
 	 */
-	public MiniBlasPerfil getProfileByid(int _id) throws BdException;
+	public MiniBlasPerfil getProfileById(int _id) throws BdException;
 
 	/**
 	 * Obtiene una coleccion de perfiles ordenados.
