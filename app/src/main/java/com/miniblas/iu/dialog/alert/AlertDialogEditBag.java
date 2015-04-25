@@ -108,8 +108,9 @@ public class AlertDialogEditBag extends DialogFragment{
 		alertBuilder.callback(new MaterialDialog.ButtonCallback(){
 			@Override
 			public void onPositive(MaterialDialog materialDialog){
-				if(!et_nombre_cesta.getText().toString().isEmpty()){
-					basketSelected.setNameElement(et_nombre_cesta.getText().toString());
+				String nombreBag = et_nombre_cesta.getText().toString().replace(" ", "_");
+				if(!nombreBag.isEmpty()){
+					basketSelected.setNameElement(nombreBag);
 				}
 				if(!et_periodo_refresco.getText().toString().isEmpty()){
 					basketSelected.setRefreshPeriod(Integer.valueOf(et_periodo_refresco.getText().toString()));

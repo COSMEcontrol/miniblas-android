@@ -338,7 +338,10 @@ public class VariablesElementsFragmentCab extends CabOrdenableElementsFragment<B
 						int start = list.getFirstVisiblePosition();
 						for(int i = start, j = list.getLastVisiblePosition(); i <= j; i++){
 							View view = list.getChildAt(i - start);
-							list.getAdapter().getView(i, view, list);
+							TextView tv_touched = (TextView) view.findViewById(R.id.touched);
+							boolean touched = Boolean.valueOf(tv_touched.getText().toString());
+							if(!touched)
+								list.getAdapter().getView(i, view, list);
 						}
 					}
 			}

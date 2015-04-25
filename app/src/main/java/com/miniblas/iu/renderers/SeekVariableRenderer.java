@@ -1,6 +1,7 @@
 package com.miniblas.iu.renderers;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +48,8 @@ public class SeekVariableRenderer extends Renderer<BaseVariableWidget>{
 	TextView tv_nom_variable;
 	@InjectView(R.id.seekBar)
 	DiscreteSeekBar sv_seekBar;
+	@InjectView(R.id.touched)
+	TextView touched;
 
 
 	@Override
@@ -78,8 +81,9 @@ public class SeekVariableRenderer extends Renderer<BaseVariableWidget>{
 
 		sv_seekBar.setMax((((variable.getValue_max() - variable.getValue_min()) / variable.getValue_salt())));
 		sv_seekBar.setMin(0);
-//		int value = (int) Integer.valueOf(variable.getValue());
-	//	sv_seekBar.setProgress((value * variable.getValue_salt())+variable.getValue_min());
+		Double value =  Double.valueOf(variable.getValue());
+		Log.v("SeekVariableRender",String.valueOf(value.intValue()));
+		sv_seekBar.setProgress((value.intValue() * variable.getValue_salt())+variable.getValue_min());
 
 		sv_seekBar.setNumericTransformer(new DiscreteSeekBar.NumericTransformer(){
 			@Override
@@ -91,6 +95,7 @@ public class SeekVariableRenderer extends Renderer<BaseVariableWidget>{
 		sv_seekBar.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener(){
 			@Override
 			public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser){
+
 				int real_value = value * variable.getValue_salt();
 				try{
 					app.getArcadioService().writeVariable(variable.getNameElement(), Double.valueOf(real_value));
@@ -106,12 +111,12 @@ public class SeekVariableRenderer extends Renderer<BaseVariableWidget>{
 
 			@Override
 			public void onStartTrackingTouch(DiscreteSeekBar seekBar){
-
+				touched.setText("true");
 			}
 
 			@Override
 			public void onStopTrackingTouch(DiscreteSeekBar seekBar){
-
+				touched.setText("false");
 			}
 		});
 

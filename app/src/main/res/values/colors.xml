@@ -5,10 +5,10 @@
     <color name="actionbar_bg">#9999FF</color>
 
     <color name="cabinet_accent_color_lighter">#f06292</color>
-    <color name="miniblas_accent_color">#e91e63</color>
+    <color name="miniblas_accent_color">#D32F2F</color>
     <color name="cabinet_color_darker">#455ede</color>
     <color name="cabinet_accent_color_darker">#d81b60</color>
-    <color name="miniblas_color">#96AA3B</color>
+    <color name="miniblas_color">#009688</color>
     <color name="miniblas_color_status_bar">#808B44</color>
     <color name="button_disabled">#ddd</color>
 

@@ -20,6 +20,7 @@
     <com.miniblas.views.MiniblasPreferenceCategory android:title="@string/perfilDeAutoconexion">
         <com.afollestad.materialdialogs.prefs.MaterialListPreference
             android:key="@string/profilePref"
+            android:defaultValue="true"
             android:summary="@string/profilePrefDescrition"
             android:title="@string/perfil"
             android:layout="@layout/preference_custom"/>
@@ -28,6 +29,7 @@
 
         <com.afollestad.materialdialogs.prefs.MaterialListPreference
             android:key="@string/themePref"
+            android:defaultValue="true"
             android:summary="@string/themePrefDescrition"
             android:entries="@array/themeMode"
             android:entryValues="@array/themeMode"

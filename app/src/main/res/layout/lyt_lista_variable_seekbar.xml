@@ -29,4 +29,12 @@
         android:layout_below="@+id/tv_nom_variable" android:layout_toRightOf="@id/drag_handle"
         android:layout_toEndOf="@id/drag_handle"/>
 
+    <TextView
+        android:id="@+id/touched"
+        android:visibility="invisible"
+        android:enabled="false"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="false"/>
+
 </RelativeLayout>

@@ -101,7 +101,7 @@ public class AlertDialogNewBag extends DialogFragment{
 		alertBuilder.callback(new MaterialDialog.ButtonCallback(){
 			@Override
 			public void onPositive(MaterialDialog materialDialog){
-				String nombreBag = et_nombre_cesta.getText().toString();
+				String nombreBag = et_nombre_cesta.getText().toString().replace(" ", "_");
 				try{
 					int port = Integer.valueOf(et_periodo_refresco.getText().toString());
 					MiniBlasBag basket = new MiniBlasBag(nombreBag, port);
@@ -164,11 +164,12 @@ public class AlertDialogNewBag extends DialogFragment{
 
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count){
-				if(lista_nombres.contains(et_nombre_cesta.getText().toString())){
+				String name_bag = et_nombre_cesta.getText().toString().replace(" ","_");
+				if(lista_nombres.contains(name_bag)){
 					completadoNombre = false;
 					et_nombre_cesta.setError(activity.getResources().getString(R.string.existeNombre));
 					bt_guardar.setEnabled(false);
-				}else if(et_nombre_cesta.getText().toString().length() == 0){
+				}else if(name_bag.length() == 0){
 					completadoNombre = false;
 					et_nombre_cesta.setError(activity.getResources().getString(R.string.requiereNombre));
 					bt_guardar.setEnabled(false);

@@ -1,7 +1,9 @@
 package com.miniblas.iu.renderers;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
@@ -48,6 +50,9 @@ public class SwitchVariableRenderer extends Renderer<BaseVariableWidget>{
 	@InjectView(R.id.switch1)
 	SwitchButton switch1;
 
+	@InjectView(R.id.touched)
+	TextView touched;
+
 
 	@Override
 	protected void setUpView(View rootView){
@@ -72,18 +77,37 @@ public class SwitchVariableRenderer extends Renderer<BaseVariableWidget>{
 	public void render(){
 		final VariableSwitchWidget variable = (VariableSwitchWidget) getContent();
 		tv_nom_variable.setText(variable.getWidgetName());
-		switch1.setChecked(variable.getValue().equals(variable.getValue_on()));
-		switch1.setChecked((variable.getValue().equals(variable.getValue_on())) == true);
+		if(!Boolean.valueOf(touched.getText().toString())){
+			//no notificar
+			switch1.setChecked((Double.valueOf(variable.getValue()).equals(Double.valueOf(variable.getValue_on()))) == true, false);
+		}
+
+		switch1.setOnTouchListener(new View.OnTouchListener(){
+			@Override
+			public boolean onTouch(View v, MotionEvent event){
+
+				return false;
+			}
+		});
+		switch1.setOnClickListener(new View.OnClickListener(){
+			@Override
+			public void onClick(View v){
+				touched.setText("true");
+			}
+		});
 		switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked){
+				String txt_to_sed ="";
 				if(isChecked){
-					variable.setValue(variable.getValue_on());
+					txt_to_sed = variable.getValue_on();
+					variable.setValue(txt_to_sed);
 				}else{
-					variable.setValue(variable.getValue_off());
+					txt_to_sed = variable.getValue_off();
+					variable.setValue(txt_to_sed);
 				}
 				try{
-					app.getArcadioService().writeVariable(variable.getNameElement(), variable.getValue());
+					app.getArcadioService().writeVariable(variable.getNameElement(), txt_to_sed);
 				}catch(ServiceDisconnectedArcadioException e){
 					((FabActivity)context).addLineTerminal(context.getString(R.string.servicioDesconectado));
 				}catch(NoConnectedArcadioException e){
@@ -91,6 +115,7 @@ public class SwitchVariableRenderer extends Renderer<BaseVariableWidget>{
 							R.string.imposibleEscribirVariable)+" "+variable.getNameElement());
 					((FabActivity)context).addLineTerminal(e.toString());
 				}
+				touched.setText("false");
 			}
 		});
 		switch1.setFocusable(false);
