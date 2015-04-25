@@ -1,23 +1,30 @@
 package com.miniblas.iu.controllers;
 
+import android.util.Log;
+import android.widget.ListView;
+
+import com.arcadio.common.ItemVariable;
+import com.arcadio.common.NumericVariable;
+import com.arcadio.common.TextVariable;
 import com.arcadio.common.VariablesList;
 import com.miniblas.app.AplicacionPrincipal;
 import com.miniblas.iu.controllers.base.BaseController;
+import com.miniblas.iu.dialog.interfaces.IObservadorEditBasket;
+import com.miniblas.iu.fragments.VariablesElementsFragmentCab;
 import com.miniblas.iu.fragments.base.CabOrdenableElementsFragment;
-import com.miniblas.model.MiniBlasCesta;
-import com.miniblas.model.MiniBlasItemVariable;
+import com.miniblas.model.MiniBlasBag;
+import com.miniblas.model.base.BaseElementList;
+import com.miniblas.model.variableWidgets.base.BaseVariableWidget;
 import com.miniblas.persistence.BdException;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Collection;
 
-public class VariablesController extends BaseController<MiniBlasItemVariable> implements ObservadorVariables.IObservadorVariables, ConnectionIconListener.ObservadorConnectionIcon{
+public class VariablesController extends BaseController<BaseVariableWidget> implements ObservadorVariables.IObservadorVariables, ConnectionIconListener.ObservadorConnectionIcon, IObservadorEditBasket{
 
-	// private ProfilesFragment profilesView;
 	public static VariablesController instance;
 	private int id_profile;
-	private MiniBlasCesta basket;
+	private MiniBlasBag basket;
 
 	public static VariablesController getInstance(AplicacionPrincipal _aplicacionPrincipal){
 		if(instance == null){
@@ -39,7 +46,7 @@ public class VariablesController extends BaseController<MiniBlasItemVariable> im
 		this.id_profile = _id_profile;
 		if(basket != null){
 			try{
-				application.getArcadioService().deleteBag(basket.getNombre());
+				application.getArcadioService().deleteBag(basket.getNameElement());
 			}catch(com.arcadio.api.v1.service.exceptions.ServiceDisconnectedArcadioException e){
 				e.printStackTrace();
 			}catch(com.arcadio.api.v1.service.exceptions.NoConnectedArcadioException e){
@@ -47,8 +54,8 @@ public class VariablesController extends BaseController<MiniBlasItemVariable> im
 			}
 		}
 		try{
-			basket = application.getBasketStorage().getBasketById(_id_basket);
-			basket.setPerfil(application.getProfileStorage().getProfileById(basket.getPerfil().getId()));
+			basket = application.getBasketStorage().getBagById(_id_basket);
+			basket.setProfile(application.getProfileStorage().getProfileById(basket.getProfile().getId()));
 		}catch(BdException e){
 			e.printStackTrace();
 		}
@@ -57,8 +64,8 @@ public class VariablesController extends BaseController<MiniBlasItemVariable> im
 			application.deleteAllVariablesObservers();
 			application.setVariablesObserver(this);
 			try{
-				application.getArcadioService().createBag(basket.getNombre());
-				application.getArcadioService().setBagPeriod(basket.getNombre(),basket.getPeriodoRefresco());
+				application.getArcadioService().createBag(basket.getNameElement());
+				application.getArcadioService().setBagPeriod(basket.getNameElement(),basket.getRefreshPeriod());
 			}catch(com.arcadio.api.v1.service.exceptions.ServiceDisconnectedArcadioException e){
 				e.printStackTrace();
 			}catch(com.arcadio.api.v1.service.exceptions.NoConnectedArcadioException e){
@@ -72,7 +79,7 @@ public class VariablesController extends BaseController<MiniBlasItemVariable> im
 	public void saveElements(){
 		if(basket != null){
 			try{
-				application.getArcadioService().deleteBag(basket.getNombre());
+				application.getArcadioService().deleteBag(basket.getNameElement());
 			}catch(com.arcadio.api.v1.service.exceptions.ServiceDisconnectedArcadioException e){
 				e.printStackTrace();
 			}catch(com.arcadio.api.v1.service.exceptions.NoConnectedArcadioException e){
@@ -89,18 +96,13 @@ public class VariablesController extends BaseController<MiniBlasItemVariable> im
 	}
 
 	@Override
-	protected List<MiniBlasItemVariable> getElementsToRepository() throws BdException{
-		ArrayList<MiniBlasItemVariable> variables = basket.getVariables();
-		Collections.sort(variables);
+	protected BaseElementList<BaseVariableWidget> getElementsToRepository() throws BdException{
+		BaseElementList<BaseVariableWidget> variables = application.getVariableWidgetsStorage().getItemVariableOrdered(basket.getId());
 		//conexion con cosme
-		List<String> listaNombreVariables = new ArrayList<String>();
-		for(MiniBlasItemVariable variable : variables){
-			listaNombreVariables.add(variable.getNombre());
-		}
-		System.out.println("estas son las variables: " + listaNombreVariables);
+		Collection<String> listaNombreVariables = variables.getNameList();
 		if(!listaNombreVariables.isEmpty()){
 			try{
-				application.getArcadioService().addNamesToBag(basket.getNombre(), listaNombreVariables);
+				application.getArcadioService().addNamesToBag(basket.getNameElement(), new ArrayList<String>(listaNombreVariables));
 			}catch(com.arcadio.api.v1.service.exceptions.ServiceDisconnectedArcadioException e){
 				e.printStackTrace();
 			}catch(com.arcadio.api.v1.service.exceptions.NoConnectedArcadioException e){
@@ -111,42 +113,64 @@ public class VariablesController extends BaseController<MiniBlasItemVariable> im
 	}
 
 	@Override
-	protected void saveElementsToRepository(List<MiniBlasItemVariable> _elements) throws BdException{
-		application.getVariableStorage().persistCollection(_elements);
+	protected void saveElementsToRepository(BaseElementList<BaseVariableWidget> _elements) throws BdException{
+			application.getVariableWidgetsStorage().persistCollection(_elements);
 	}
 
 	@Override
-	protected void deleteElements(List<MiniBlasItemVariable> elements) throws BdException{
-		application.getVariableStorage().deleteItemVariables(elements);
+	protected void deleteElements(BaseElementList<BaseVariableWidget> elements) throws BdException{
+		application.getVariableWidgetsStorage().deleteItemVariables(elements);
 	}
 
 	@Override
 	public void onNotifyVariables(String _nombreCesta, VariablesList _listaVariables){
-			vista.getAdapter().getItem(0).setValor(String.valueOf(_listaVariables.getValue("ondacuadrada.seno")));
-		//		vista.getAdapter().getItem(1).setValor(_listaVariables.get(1).getValor());
-		//		vista.getAdapter().getItem(2).setValor(_listaVariables.get(2).getValor());
-		//		for(MiniBlasItemVariable itemVariable:_listaVariables){
-		//			vista.getAdapter().setItemByKey(itemVariable.getNombre(), element);
-		//		}
-		//System.out.println(_listaVariables);
-		vista.refreshList();
+		BaseElementList<BaseVariableWidget> variablesList = vista.getAdapter().getElements();
+		for(BaseVariableWidget variableWidget: variablesList){
+			variableWidget.setValue(String.valueOf(_listaVariables.getValue(variableWidget.getNameElement())));
+		}
+		((VariablesElementsFragmentCab)vista).refreshElement();
 	}
 
 	@Override
 	public void OnConnect(){
 		vista.setConnectIcon();
+		((VariablesElementsFragmentCab)vista).showFab();
 	}
 
 	@Override
 	public void OnDisconnect(){
 		vista.setDisconnectIcon();
+		((VariablesElementsFragmentCab)vista).hideFab();
 	}
 
 	public int getIdProfile(){
 		return id_profile;
 	}
 
-	public MiniBlasCesta getBasket(){
+	public MiniBlasBag getBasket(){
 		return basket;
+	}
+
+	@Override
+	public void OnButtonEditSave(MiniBlasBag data){
+		try{
+			application.getArcadioService().setBagPeriod(basket.getNameElement(),basket.getRefreshPeriod());
+		}catch(com.arcadio.api.v1.service.exceptions.ServiceDisconnectedArcadioException e){
+			e.printStackTrace();
+		}catch(com.arcadio.api.v1.service.exceptions.NoConnectedArcadioException e){
+			e.printStackTrace();
+		}
+		try{
+			application.getBasketStorage().persist(basket);
+			vista.msgButtonEditSave();
+		}catch(BdException e){
+			vista.msgErrorSavingElementsToBD();
+			vista.msgButtonEditCancel();
+		}
+	}
+
+	@Override
+	public void OnButtonEditCancel(MiniBlasBag data){
+		vista.msgButtonEditCancel();
 	}
 }

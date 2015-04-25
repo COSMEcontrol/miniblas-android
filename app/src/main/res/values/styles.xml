@@ -1,24 +1,5 @@
 <resources>
 
-    <!--
-        Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
-    -->
-    <style name="AppBaseTheme" parent="android:Theme.Light">
-        <!--
-            Theme customizations available in newer API levels can go in
-            res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
-        -->
-    </style>
-	
-<!---	<style name="Theme.Transparency" parent="@style/Theme.Sherlock.Light"/> -->
-
-    <!-- Application theme. -->
-    <style name="AppTheme" parent="AppBaseTheme" >
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
-    </style>
-    
     <style name="MiniblasMaterialDesing" parent="@style/miniBlasParent" />
 
     <style name="MiniblasBasic" parent="@style/miniBlasDarkParent" />
@@ -32,7 +13,25 @@
         <item name="android:textColor">@color/emphasis</item>
         <item name="android:textSize">14sp</item>
     </style>
-    
-    
+
+    <style name="menu_labels_style">
+        <item name="android:background">@drawable/fab_label_background</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+
+    <style name="PopupMenuListViewDark" parent="@style/Widget.AppCompat.Light.ListView.DropDown">
+        <item name="android:background">@color/dark_theme_gray_darker</item>
+
+    </style>
+
+    <style name="miniBlasToolbar" parent="ThemeOverlay.AppCompat.ActionBar">
+        <item name="android:textColorPrimary">?attr/actionBar_color</item>
+        <item name="android:textColor">?attr/menuText_color</item>
+   </style>
+
+    <style name="LStyled.ActionMode" parent="@style/Widget.AppCompat.ActionMode">
+        <item name="background">@color/dark_theme_gray_darker</item>
+    </style>
 
 </resources>

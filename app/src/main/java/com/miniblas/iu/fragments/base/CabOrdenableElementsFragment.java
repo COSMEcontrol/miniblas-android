@@ -5,31 +5,34 @@ import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.miniblas.app.R;
 import com.miniblas.iu.FabActivity;
-import com.miniblas.iu.cab.base.BaseCab;
+import com.miniblas.iu.cab.base.BaseOrdenableElementsCab;
 import com.miniblas.iu.controllers.base.BaseController;
 import com.miniblas.iu.controllers.base.SerializableSparseBooleanArrayContainer;
-import com.miniblas.iu.utils.SeleccionableRendererAdapter;
-import com.miniblas.model.ISortElement;
+import com.miniblas.iu.utils.SeleccionableBaseElementsListRendererAdapter;
+import com.miniblas.model.base.BaseElement;
 import com.mobeta.android.dslv.DragSortController;
 import com.mobeta.android.dslv.DragSortListView;
 
 /**
  * Created by alberto on 13/11/14.
  */
-public abstract class CabOrdenableElementsFragment <T extends ISortElement> extends ListFragment{
+public abstract class CabOrdenableElementsFragment <T extends BaseElement> extends ListFragment {
 
-	private SeleccionableRendererAdapter<T> adapter;
+	private SeleccionableBaseElementsListRendererAdapter<T> adapter;
 	private Bundle savedInstance = null;
 	public static final String SELECTED_ELEMENTS = "SELECTED_ELEMENTS";
 	private ProgressBar progressBar;
 	private static ListView listView;
+	private DragSortController controllerDag;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
@@ -41,26 +44,50 @@ public abstract class CabOrdenableElementsFragment <T extends ISortElement> exte
 		super.onCreate(_savedInstanceState);
 		this.savedInstance = null;
 		this.savedInstance = _savedInstanceState;
+
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState){
 		super.onActivityCreated(savedInstanceState);
 		FabActivity act = (FabActivity) getActivity();
-		getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+		//getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 		if(getListView() instanceof DragSortListView){
-			((DragSortListView) getListView()).setDropListener(new onDropListener(adapter));
+			((DragSortListView) getListView()).setDropListener(new onDropBaseElementListener(adapter));
 		}
 		act.attachFabToListView(getListView());
-		act.disableFab(false);
 		act.setImageFab(R.drawable.ic_action_content_new);
+		if(controllerDag!=null)
+			controllerDag.setBackgroundColor(act.getThemeUtils().primaryColor());
 		progressBar = (ProgressBar) getView().findViewById(android.R.id.progress);
 		listView = getListView();
+		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id){
+				FabActivity activity = (FabActivity) getActivity();
+				BaseOrdenableElementsCab cab = (BaseOrdenableElementsCab) activity.getCab();
+				BaseElement element = getAdapter().getItem(position);
+				boolean added = !adapter.isSelected(element);
+				if (added){
+					adapter.addNewSelection(element);
+					if(!cab.isActive()){
+						cab.start();
+					}
+					cab.addElement(element);
+				}
+				else{
+					adapter.removeSelection(element);
+					cab.removeElement(element);
+				}
+				adapter.notifyDataSetChanged();
+				return true;
+			}
+		});
 	}
 
-	public void setCabInFragment(BaseCab baseCab){
+	public void setCabInFragment(BaseOrdenableElementsCab baseCab){
 		((FabActivity) getActivity()).setCab(baseCab);
-		getListView().setMultiChoiceModeListener(((FabActivity) getActivity()).getCab());
+//		getListView().setMultiChoiceModeListener((AbsListView.MultiChoiceModeListener) ((FabActivity) getActivity()).getCab());
 	}
 
 	public void loadState(){
@@ -74,8 +101,7 @@ public abstract class CabOrdenableElementsFragment <T extends ISortElement> exte
 						for(int i = 0; i < adapter.getCount(); i++){
 							listView.setItemChecked(i, sparseBooleanArrayContainer.get(i));
 						}
-
-						((FabActivity) getActivity()).disableFab(true);
+						((FabActivity) getActivity()).hideFab();
 					}
 				}
 			}
@@ -114,29 +140,40 @@ public abstract class CabOrdenableElementsFragment <T extends ISortElement> exte
 		LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View view = inflater.inflate(R.layout.lyt_fragment_ordenable, null, false);
 		DragSortListView mDslv = (DragSortListView) view.findViewById(android.R.id.list);
-		DragSortController controller = new DragSortController(mDslv);
+		controllerDag = new DragSortController(mDslv);
 		//determinacion de la imagen que hace que muevas el elemento
-		controller.setDragHandleId(R.id.drag_handle);
+		controllerDag.setDragHandleId(R.id.drag_handle);
 		////    controller.setClickRemoveId(R.id.click_remove);
-		controller.setRemoveEnabled(false);
-		controller.setSortEnabled(true);
-		controller.setDragInitMode(DragSortController.ON_DOWN);
-		controller.setRemoveMode(DragSortController.FLING_REMOVE);
-		controller.setBackgroundColor(getResources().getColor(R.color.miniblas_color_status_bar));
-		mDslv.setFloatViewManager(controller);
-		mDslv.setOnTouchListener(controller);
+		controllerDag.setRemoveEnabled(false);
+		controllerDag.setSortEnabled(true);
+		controllerDag.setDragInitMode(DragSortController.ON_DOWN);
+		controllerDag.setRemoveMode(DragSortController.FLING_REMOVE);
+		mDslv.setFloatViewManager(controllerDag);
+		mDslv.setOnTouchListener(controllerDag);
 		mDslv.setDragEnabled(true);
 
 		return view;
 
 	}
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item){
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		switch(item.getItemId()){
+			case android.R.id.home:
+				((FabActivity) getActivity()).backStackFragment();
+				return (true);
+		}
 
+		return super.onOptionsItemSelected(item);
+	}
 
-	public SeleccionableRendererAdapter<T> getAdapter(){
+	public SeleccionableBaseElementsListRendererAdapter<T> getAdapter(){
 		return adapter;
 	}
 
-	public void setAdapter(SeleccionableRendererAdapter<T> adapter){
+	public void setAdapter(SeleccionableBaseElementsListRendererAdapter<T> adapter){
 		this.adapter = adapter;
 	}
 

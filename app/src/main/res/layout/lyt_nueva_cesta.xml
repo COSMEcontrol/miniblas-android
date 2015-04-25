@@ -9,14 +9,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/customTitleDialog"
-        android:textColor="#80000000"
         android:text="@string/nombre_cesta" />
 
     <EditText
         android:id="@+id/et_nombre_cesta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#000000"
         android:textSize="@dimen/customEntryDialog" >
 
         <requestFocus />
@@ -27,7 +25,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/customTitleDialog"
-        android:textColor="#80000000"
         android:text="@string/periodo_refresco" />
 
     <EditText
@@ -35,7 +32,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="number"
-        android:textColor="#000000"
         android:textSize="@dimen/customEntryDialog"/>
  
 </LinearLayout>

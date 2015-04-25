@@ -1,9 +1,9 @@
 package com.miniblas.persistence;
 
-import com.miniblas.model.MiniBlasCesta;
-import com.miniblas.model.MiniBlasPerfil;
+import com.miniblas.model.MiniBlasBag;
+import com.miniblas.model.MiniBlasProfile;
+import com.miniblas.model.base.BaseElementList;
 
-import java.util.List;
 
 public interface BasketStorage{
 	/**
@@ -11,30 +11,30 @@ public interface BasketStorage{
 	 *
 	 * @param _basket
 	 */
-	public void persist(MiniBlasCesta _basket) throws BdException;
+	public void persist(MiniBlasBag _basket) throws BdException;
 
 	/**
 	 * Guarda una coleccion de cestas pasados por parámetros.
 	 * Si ya existe no lo modifica, si no existe lo crea
 	 */
-	public void persistCollection(List<MiniBlasCesta> _collection) throws BdException;
+	public void persistCollection(BaseElementList<MiniBlasBag> _collection) throws BdException;
 
 	/**
 	 * Obtiene una cesta con un id especificado.
 	 */
-	public List<MiniBlasCesta> getBasketsByProfile(MiniBlasPerfil _profile) throws BdException;
+	public BaseElementList<MiniBlasBag> getBagsByProfile(MiniBlasProfile _profile) throws BdException;
 
 	/**
 	 * Obtiene una coleccion de cestas ordenados.
 	 */
-	public List<MiniBlasCesta> getBasketsOrdered() throws BdException;
+	public BaseElementList<MiniBlasBag> getBagsOrdered() throws BdException;
 
 	/**
 	 * Elimina una cesta especificado.
 	 */
-	public void deleteBaskets(List<MiniBlasCesta> _baskets) throws BdException;
+	public void deleteBags(BaseElementList<MiniBlasBag> _bag) throws BdException;
 
-	public MiniBlasCesta getBasketById(int _id) throws BdException;
+	public MiniBlasBag getBagById(int _id) throws BdException;
 
 
 }

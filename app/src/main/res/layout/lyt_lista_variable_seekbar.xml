@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" >
 
     <ImageView
@@ -15,23 +17,16 @@
         android:id="@+id/tv_nom_variable"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="14dp"
-        android:layout_marginTop="5dp"
-        android:layout_toRightOf="@id/drag_handle"
         android:text="TextView"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/black" />
+        android:layout_alignParentTop="true" android:layout_centerHorizontal="true"/>
 
-    <SeekBar
+    <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/seekBar"
-        android:layout_below="@+id/tv_nom_variable"
         android:indeterminate="false"
-        android:layout_alignLeft="@+id/tv_nom_variable"
-        android:layout_alignStart="@+id/tv_nom_variable"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_below="@+id/tv_nom_variable" android:layout_toRightOf="@id/drag_handle"
+        android:layout_toEndOf="@id/drag_handle"/>
 
 </RelativeLayout>

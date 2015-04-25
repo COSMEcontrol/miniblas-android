@@ -2,13 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:miniBlas="http://schemas.android.com/apk/res-auto">
     
-    <item android:id="@+id/estado" android:title="@string/estado" android:icon="@drawable/desconectado" miniBlas:showAsAction="always" android:enabled="false"></item><item android:id="@+id/menu_anadir_cesta" android:title="@string/nuevo" android:icon="@android:drawable/ic_menu_add" miniBlas:showAsAction="never" android:visible="true" />
-    
+    <item android:id="@+id/estado" android:title="@string/estado" android:icon="@drawable/desconectado" miniBlas:showAsAction="always" android:enabled="false"></item>
     
     <group android:checkableBehavior="all">
         <item android:id="@+id/menu_cestas_autoconexion" android:titleCondensed="Autoconexión" android:title="Autoconexión">
         </item>
-    </group><item android:id="@+id/Acercade" android:title="@string/acercade" android:orderInCategory="1" android:showAsAction="never"></item>
+    </group>
+    <item android:id="@+id/terminal" android:titleCondensed="@string/terminal" android:title="@string/terminal" android:showAsAction="never"/>
+    <item android:id="@+id/menu_ajustes" android:titleCondensed="@string/ajustes" android:title="@string/ajustes" android:showAsAction="never"></item>
+    <item android:id="@+id/Acercade" android:title="@string/acercade" android:orderInCategory="1" android:showAsAction="never"></item>
      
     
 </menu>

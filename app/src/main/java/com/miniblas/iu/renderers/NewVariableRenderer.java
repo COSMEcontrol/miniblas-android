@@ -7,13 +7,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.miniblas.app.R;
-import com.miniblas.model.MiniBlasItemVariable;
+import com.miniblas.model.variableWidgets.base.BaseVariableWidget;
 import com.pedrogomez.renderers.Renderer;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class NewVariableRenderer extends Renderer<MiniBlasItemVariable>{
+public class NewVariableRenderer extends Renderer<BaseVariableWidget>{
 
 
 	/*
@@ -65,10 +65,10 @@ public class NewVariableRenderer extends Renderer<MiniBlasItemVariable>{
 
 	@Override
 	public void render(){
-		MiniBlasItemVariable variable = getContent();
-		tv_nom_variable.setText(variable.getNombre());
+		BaseVariableWidget variable = getContent();
+		tv_nom_variable.setText(variable.getWidgetName());
 		tv_separator.setVisibility(View.GONE);
-		//tv_variable.setText(variable.getValor());
+		//tv_variable.setText(variable.getValue());
 
 	}
 

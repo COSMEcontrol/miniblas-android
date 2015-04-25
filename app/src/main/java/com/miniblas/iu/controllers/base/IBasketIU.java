@@ -1,7 +1,7 @@
 package com.miniblas.iu.controllers.base;
 
 
-import com.miniblas.model.MiniBlasCesta;
+import com.miniblas.model.MiniBlasBag;
 
 public interface IBasketIU{
 	public void actualizarLista();
@@ -9,7 +9,7 @@ public interface IBasketIU{
 	public void setSubtitle(final String title);
 
 	//public SeleccionableRenderAdapter<MiniBlasCesta> getAdapter();
-	public void addElementAdapter(final MiniBlasCesta basket);
+	public void addElementAdapter(final MiniBlasBag basket);
 
 	public void setConnectIcon();
 

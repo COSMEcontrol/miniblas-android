@@ -1,13 +1,7 @@
 package com.miniblas.iu.controllers;
 
-import android.util.Log;
-
 import com.arcadio.api.v1.service.CosmeStates;
-import com.arcadio.common.VariablesList;
 import com.miniblas.app.AplicacionPrincipal;
-
-import java.util.ArrayList;
-import java.util.concurrent.Executors;
 
 public class ObservadorState{
 	private IObservadorState observadores;

@@ -5,7 +5,7 @@
     <color name="actionbar_bg">#9999FF</color>
 
     <color name="cabinet_accent_color_lighter">#f06292</color>
-    <color name="cabinet_accent_color">#e91e63</color>
+    <color name="miniblas_accent_color">#e91e63</color>
     <color name="cabinet_color_darker">#455ede</color>
     <color name="cabinet_accent_color_darker">#d81b60</color>
     <color name="miniblas_color">#96AA3B</color>
@@ -30,5 +30,21 @@
 
     <color name="emphasis">#31b6e7</color>
     <color name="bg_gray">#cecbce</color>
+
+
+    <color name="black_semi_transparent">#B2000000</color>
+    <color name="background">#e5e5e5</color>
+    <color name="half_black">#808080</color>
+    <color name="white">#fafafa</color>
+    <color name="white_pressed">#f1f1f1</color>
+    <color name="pink">#e91e63</color>
+    <color name="pink_pressed">#ec407a</color>
+    <color name="blue_semi_transparent">#805677fc</color>
+    <color name="blue_semi_transparent_pressed">#80738ffe</color>
+    <color name="header_normal">#ffe74c3c</color>
+    <color name="header_pressed">#ffc0392b</color>
+    <color name="menu_section_header">#FFDDDDDD</color>
+
+    <color name="dark_theme_gray_darker">#292929</color>
     
 </resources>

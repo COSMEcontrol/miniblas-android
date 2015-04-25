@@ -7,36 +7,39 @@ import android.widget.Toast;
 import com.arcadio.CosmeListener;
 import com.arcadio.api.v1.service.CosmeStates;
 import com.arcadio.api.v1.service.PluginClientArcadio;
+import com.arcadio.common.ItemVariable;
 import com.arcadio.common.VariablesList;
 import com.arcadio.service.api.v1.listeners.OnClientStartedListener;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
+import com.miniblas.iu.FabActivity;
 import com.miniblas.iu.controllers.ConnectionIconListener;
 import com.miniblas.iu.controllers.ConnectionIconListener.ObservadorConnectionIcon;
 import com.miniblas.iu.controllers.ConnectionListener;
-import com.miniblas.iu.controllers.ListaVariablesListener;
-import com.miniblas.iu.controllers.ListaVariablesListener.ObservadorListaVariables;
+import com.miniblas.iu.controllers.ListVariablesListener;
+import com.miniblas.iu.controllers.ListVariablesListener.ObservadorListaVariables;
+import com.miniblas.iu.controllers.ObservadorError;
 import com.miniblas.iu.controllers.ObservadorState;
 import com.miniblas.iu.controllers.ObservadorVariables;
 import com.miniblas.iu.controllers.ObservadorVariables.IObservadorVariables;
-import com.miniblas.model.MiniBlasCesta;
-import com.miniblas.model.MiniBlasItemVariable;
-import com.miniblas.model.MiniBlasPerfil;
+import com.miniblas.iu.utils.ThemeUtils;
+import com.miniblas.model.MiniBlasBag;
+import com.miniblas.model.MiniBlasProfile;
+import com.miniblas.model.variableWidgets.VariableSeekWidget;
+import com.miniblas.model.variableWidgets.VariableSwitchWidget;
+import com.miniblas.model.variableWidgets.VariableValueWidget;
+import com.miniblas.model.variableWidgets.base.BaseVariableWidget;
 import com.miniblas.modules.CheckIpModule;
-import com.miniblas.modules.RenderAdaptersModule;
-import com.miniblas.perfistence.ormlite.DBHelper;
+import com.miniblas.persistence.ormlite.DBHelper;
 import com.miniblas.persistence.BasketStorage;
-import com.miniblas.persistence.ItemVariableStorage;
 import com.miniblas.persistence.OrmLiteBasketStorage;
-import com.miniblas.persistence.OrmLiteItemVariableStorage;
 import com.miniblas.persistence.OrmLiteProfileStorage;
+import com.miniblas.persistence.OrmLiteVariableWidgetsStorage;
 import com.miniblas.persistence.ProfileStorage;
 import com.miniblas.persistence.SharedPreferencesSettingStorage;
-
+import com.miniblas.persistence.VariableWidgetsStorage;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -46,13 +49,13 @@ import dagger.ObjectGraph;
 public class AplicacionPrincipal extends Application{
 
 	private static AplicacionPrincipal instance;
-
+	private ThemeUtils mThemeUtils;
 	private ObjectGraph objectGraph;
 	private DBHelper mDBHelper;
 	// persistencia
 	private ProfileStorage profileStorage;
 	private BasketStorage basketStorage;
-	private ItemVariableStorage itemVariableStorage;
+	private VariableWidgetsStorage variableWidgetsStorage;
 	private SharedPreferencesSettingStorage settingStorage;
 	//pool de hilos
 	private ExecutorService singleExecutor = Executors.newSingleThreadExecutor();
@@ -61,7 +64,9 @@ public class AplicacionPrincipal extends Application{
 	private ConnectionIconListener listenerIconConnection = new ConnectionIconListener();
 	private ObservadorState listenerState = new ObservadorState();
 	private ObservadorVariables listenerObservadorVariables = new ObservadorVariables();
-	private ListaVariablesListener<ArrayList<MiniBlasItemVariable>> listenerListaVariables = new ListaVariablesListener<ArrayList<MiniBlasItemVariable>>();
+	private ObservadorError listenerObservadorError = new ObservadorError();
+	private ListVariablesListener<ArrayList<BaseVariableWidget>> listenerListaVariables
+			= new ListVariablesListener<ArrayList<BaseVariableWidget>>();
 	private ConnectionListener listenerConnection = new ConnectionListener();
 	private PluginClientArcadio arcadio;
 	private CosmeListener cosmeListener = new CosmeListener(){
@@ -72,9 +77,12 @@ public class AplicacionPrincipal extends Application{
 
 		@Override
 		public void onStateChange(CosmeStates _state){
-			if(_state == CosmeStates.COMMUNICATION_OK || arcadio.isConnected()){
+			if(_state == CosmeStates.COMMUNICATION_OK){
 				listenerIconConnection.onConnectNotify();
-			}else if (_state == CosmeStates.COMMUNICATION_IMPOSSIBLE || _state == CosmeStates.CONNECTION_INTERRUPTED|| _state == CosmeStates.COMMUNICATION_TIMEOUT || _state == CosmeStates.CONNEXION_IMPOSSIBLE){
+			}else if (_state == CosmeStates.COMMUNICATION_IMPOSSIBLE ||
+					_state == CosmeStates.CONNECTION_INTERRUPTED||
+					_state == CosmeStates.COMMUNICATION_TIMEOUT ||
+					_state == CosmeStates.CONNEXION_IMPOSSIBLE){
 				listenerIconConnection.onDisconnectNotify();
 			}
 			listenerState.notify(_state);
@@ -82,17 +90,21 @@ public class AplicacionPrincipal extends Application{
 
 		@Override
 		public void onError(String _txtError){
-
+			listenerObservadorError.notify(_txtError);
 		}
 	};
 
 	public static AplicacionPrincipal getInstance(){
 		return instance;
 	}
-
+	protected boolean hasNavDrawer() {
+		return false;
+	}
 	@Override
 	public void onCreate(){
 		super.onCreate();
+		mThemeUtils = new ThemeUtils(getBaseContext());
+		setTheme(mThemeUtils.getCurrent(hasNavDrawer()));
 		instance = this;
 		if(mDBHelper == null){
 			mDBHelper = OpenHelperManager.getHelper(this, DBHelper.class);
@@ -183,7 +195,7 @@ public class AplicacionPrincipal extends Application{
 		listenerObservadorVariables.deleteAllObservers();
 	}
 
-	public void setListaNombresObserver(ObservadorListaVariables<ArrayList<MiniBlasItemVariable>> _observador){
+	public void setListaNombresObserver(ObservadorListaVariables<ArrayList<BaseVariableWidget>> _observador){
 		if(listenerListaVariables != null){
 			this.listenerListaVariables.setObservador(_observador);
 		}
@@ -192,31 +204,39 @@ public class AplicacionPrincipal extends Application{
 	public void inject(Object object){
 		objectGraph.inject(object);
 	}
-
+/*
 	private List<Object> getModules(){
 		return Arrays.asList(new CheckIpModule(), new RenderAdaptersModule(getBaseContext()));
 	}
-
+*/
 	private void initInjection(){
 		if(objectGraph == null){
-			Object[] modules = getModules().toArray();
+			//getModules().toArray();
+			Object[] modules = {new CheckIpModule()};
 			objectGraph = ObjectGraph.create(modules);
 		}
-		objectGraph.inject(this);
+		//objectGraph.inject(this);
 	}
 
 	/** ********* Clases de la base de datos ********** */
 
-	private Dao<MiniBlasPerfil, Integer> getPerfilDao() throws SQLException{
+	private Dao<MiniBlasProfile, Integer> getPerfilDao() throws SQLException{
 		return mDBHelper.getPerfilDao();
 	}
 
-	private Dao<MiniBlasCesta, Integer> getCestaDao() throws SQLException{
+	private Dao<MiniBlasBag, Integer> getCestaDao() throws SQLException{
 		return mDBHelper.getCestaDao();
 	}
 
-	private Dao<MiniBlasItemVariable, Integer> getVariableDao() throws SQLException{
-		return mDBHelper.getVariableDao();
+	private Dao<VariableSeekWidget, Integer> getVariableSeekDao() throws SQLException{
+		return mDBHelper.getVariableSeekWidgetDao();
+	}
+
+	private Dao<VariableSwitchWidget, Integer> getVariableSwitchDao() throws SQLException{
+		return mDBHelper.getVariableSwitchWidgetDao();
+	}
+	private Dao<VariableValueWidget, Integer> getVariableValueDao() throws SQLException{
+		return mDBHelper.getVariableValueWidgetDao();
 	}
 
 	/** ******* Seleccion de base de datos ******* */
@@ -245,17 +265,20 @@ public class AplicacionPrincipal extends Application{
 		return basketStorage;
 	}
 
-	public ItemVariableStorage getVariableStorage(){
-		if(itemVariableStorage == null){
+	public VariableWidgetsStorage getVariableWidgetsStorage(){
+		if(variableWidgetsStorage == null){
 			try{
-				itemVariableStorage = OrmLiteItemVariableStorage.getInstance(getVariableDao());
+				variableWidgetsStorage = OrmLiteVariableWidgetsStorage.getInstance(getVariableSeekDao(), getVariableSwitchDao(),getVariableValueDao());
 			}catch(SQLException e){
 				e.printStackTrace();
 				Toast.makeText(this, getResources().getString(R.string.errorAccessBd), Toast.LENGTH_SHORT).show();
 			}
 		}
-		return itemVariableStorage;
+		return variableWidgetsStorage;
 	}
+
+
+
 
 	public SharedPreferencesSettingStorage getSettingStorage(){
 		if(settingStorage == null){
@@ -263,5 +286,7 @@ public class AplicacionPrincipal extends Application{
 		}
 		return settingStorage;
 	}
-
+	public void setErrorObserver(FabActivity _errorObserver){
+		this.listenerObservadorError.setObservador(_errorObserver);
+	}
 }

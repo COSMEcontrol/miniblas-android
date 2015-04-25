@@ -121,7 +121,7 @@ public class SintaxisTelegrama{
 				tlg.append(String.valueOf('"') + ((TextVariable) iv).getValue() + String.valueOf('"') + " ");
 			}
 			if(iv instanceof NumericVariable){
-				//                tlg=tlg+iv.getValor()+" ";
+				//                tlg=tlg+iv.getValue()+" ";
 				tlg.append(((NumericVariable) iv).getValue() + " ");
 			}
 		}// for
@@ -136,12 +136,12 @@ public class SintaxisTelegrama{
         String tlg = this.getInicioTelegrama()+"escribir ";
 
         for (ItemVariable iv: _lv.getList()){
-        tlg = tlg + iv.getName()+" ";
+        tlg = tlg + iv.getNameElement()+" ";
         if (iv.isText()){
         tlg=tlg+ String.valueOf('"') +iv.getValor_txt()+String.valueOf('"')+" ";
         }
         if (iv.isNumeric()){
-        tlg=tlg+iv.getValor()+" ";
+        tlg=tlg+iv.getValue()+" ";
         }
         }// for
         return tlg;
@@ -206,7 +206,7 @@ public class SintaxisTelegrama{
 			}
 			tlg.append(iv.getName() + " ");
 			if(iv instanceof NumericVariable){
-				//                tlg=tlg+iv.getValor()+" ";
+				//                tlg=tlg+iv.getValue()+" ";
 				tlg.append(((NumericVariable) iv).getValue() + " ");
 			}else if(iv instanceof TextVariable){
 				tlg.append(String.valueOf('"') + ((TextVariable) iv).getValue() + String.valueOf('"') + " ");

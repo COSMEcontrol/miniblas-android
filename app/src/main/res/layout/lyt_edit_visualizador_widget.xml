@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <TextView android:id="@+id/textView9" android:layout_width="wrap_content"
+              android:layout_height="wrap_content" android:textSize="@dimen/customTitleDialog"
+              android:textColor="#80000000" android:text="@string/nombreWidget"/>
+    <EditText android:id="@+id/et_name" android:layout_width="match_parent"
+              android:layout_height="wrap_content" android:inputType="text"
+              android:textColor="#000000" android:hint="Nombre"
+              android:textSize="@dimen/customEntryDialog"/>
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/customTitleDialog"
+        android:textColor="#80000000"
+        android:text="@string/valor_max" />
+
+
+    <EditText
+        android:id="@+id/et_switch_max"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:textColor="#000000"
+        android:hint="1"
+        android:textSize="@dimen/customEntryDialog"/>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/customTitleDialog"
+        android:textColor="#80000000"
+        android:text="@string/valor_min"/>
+
+    <EditText
+        android:id="@+id/et_switch_min"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:textColor="#000000"
+        android:hint="0"
+        android:textSize="@dimen/customEntryDialog"/>
+
+
+</LinearLayout>

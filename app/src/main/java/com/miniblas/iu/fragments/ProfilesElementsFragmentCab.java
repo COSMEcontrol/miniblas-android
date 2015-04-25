@@ -1,54 +1,49 @@
 package com.miniblas.iu.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.Toast;
-
 import com.miniblas.app.AplicacionPrincipal;
 import com.miniblas.app.R;
-import com.miniblas.iu.AcercaDe;
 import com.miniblas.iu.FabActivity;
-import com.miniblas.iu.Preferences;
-import com.miniblas.iu.alertdialog.AlertDialogNuevoPerfil;
+import com.miniblas.iu.builder.ProfileRendererBuilder;
 import com.miniblas.iu.cab.PerfilCab;
 import com.miniblas.iu.controllers.ProfilesController;
 import com.miniblas.iu.controllers.base.BaseController;
+import com.miniblas.iu.dialog.alert.AlertDialogNewProfile;
 import com.miniblas.iu.fragments.base.CabOrdenableElementsFragment;
-import com.miniblas.iu.utils.SeleccionableRendererAdapter;
-import com.miniblas.model.MiniBlasPerfil;
-import com.miniblas.perfistence.ormlite.Constantes;
-
+import com.miniblas.iu.renderers.ProfileRenderer;
+import com.miniblas.iu.utils.SeleccionableBaseElementsListRendererAdapter;
+import com.miniblas.model.MiniBlasProfile;
+import com.miniblas.model.base.BaseElement;
+import com.miniblas.model.base.BaseElementList;
+import com.miniblas.persistence.ormlite.Contract;
+import com.pedrogomez.renderers.Renderer;
 import java.util.ArrayList;
-
-import javax.inject.Inject;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by alberto on 13/11/14.
  */
-public class ProfilesElementsFragmentCab extends CabOrdenableElementsFragment<MiniBlasPerfil>{
-	@Inject
-	public SeleccionableRendererAdapter<MiniBlasPerfil> adaptador;
+public class ProfilesElementsFragmentCab extends CabOrdenableElementsFragment<MiniBlasProfile>{
 
 	private ProfilesController controller;
-	private android.view.Menu menu;
-	private android.view.ActionMode mode;
 	private PerfilCab pc;
 	private ProfilesElementsFragmentCab yo;
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		AplicacionPrincipal application = (AplicacionPrincipal) getActivity().getApplication();
-		application.inject(this);
-		setAdapter(adaptador);
+		setAdapter(providePerfilRendererAdapter(LayoutInflater.from(getActivity()),providePerfilRendererBuilder()));
 		setListAdapter(getAdapter());
 		//getListView().setOnItemClickListener(new OnPerfilClickedListener());
 		pc = new PerfilCab();
@@ -62,24 +57,41 @@ public class ProfilesElementsFragmentCab extends CabOrdenableElementsFragment<Mi
 	public void onActivityCreated(final Bundle savedInstanceState){
 		super.onActivityCreated(savedInstanceState);
 		setHasOptionsMenu(true);
-		(((ActionBarActivity) getActivity()).getSupportActionBar()).setDisplayHomeAsUpEnabled(false);
+		//(((ActionBarActivity) getActivity()).getSupportActionBar()).setDisplayHomeAsUpEnabled(false);
+		Toolbar mToolbar = (Toolbar) getActivity().findViewById(R.id.toolbar_actionbar);
+		mToolbar.setNavigationIcon(R.drawable.ic_launcher);
 		FabActivity act = (FabActivity) getActivity();
 		act.setTitle(getResources().getString(R.string.lista_perfiles));
 		act.setFabListener(new FabActivity.FabListener(){
 			@Override
 			public void onFabPressed(){
-				AlertDialogNuevoPerfil.newInstance(controller, new ArrayList<MiniBlasPerfil>()).show(getFragmentManager(), "");
+				BaseElementList<MiniBlasProfile> listProfilesSelected = ((SeleccionableBaseElementsListRendererAdapter) getAdapter()).getCurrentCheckedItems();
+				AlertDialogNewProfile.newInstance(controller, getAdapter().getElements()).show(getFragmentManager(), "");
 			}
 		});
 		controller.onViewChange(this);
 		getListView().setOnItemClickListener(new AdapterView.OnItemClickListener(){
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-				Adapter adapter = parent.getAdapter();
-				MiniBlasPerfil profile = (MiniBlasPerfil) adapter.getItem(position);
-				gotoBagFragment(profile.getId());
+				BaseElement element = getAdapter().getItem(position);
+				if(pc.isActive()){
+					boolean added = !getAdapter().isSelected(element);
+					if(added){
+						getAdapter().addNewSelection(element);
+						pc.addElement(element);
+					}else{
+						getAdapter().removeSelection(element);
+						pc.removeElement(element);
+					}
+					getAdapter().notifyDataSetChanged();
+				}else{
+					MiniBlasProfile profile = (MiniBlasProfile) element;
+					gotoBagFragment(profile.getId());
+				}
+
 			}
 		});
+
 		pc.setListView(getListView());
 		setCabInFragment(pc);
 	}
@@ -95,15 +107,14 @@ public class ProfilesElementsFragmentCab extends CabOrdenableElementsFragment<Mi
 			@Override
 			public void run(){
 				Bundle data = new Bundle();
-				data.putInt(Constantes.PROFILE_TABLE_NAME, _id_profile);
+				data.putInt(Contract.PROFILE_TABLE_NAME, _id_profile);
 
 				//getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-				System.out.println("pasando a basketelements");
 				//atencion comentado porque era recursiva
 				getFragmentManager().executePendingTransactions();
 				FragmentTransaction trans = getFragmentManager().beginTransaction();
 				trans.setCustomAnimations(R.anim.left_in, R.anim.left_out, R.anim.right_in, R.anim.right_out);
-				BasketsElementsFragmentCab fragment = new BasketsElementsFragmentCab();
+				BagElementsFragmentCab fragment = new BagElementsFragmentCab();
 				fragment.setArguments(data);
 				trans.replace(R.id.container, fragment);
 				trans.addToBackStack(null);
@@ -118,29 +129,6 @@ public class ProfilesElementsFragmentCab extends CabOrdenableElementsFragment<Mi
 		getActivity().getMenuInflater().inflate(R.menu.menu_perfiles, menu);
 
 	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item){
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		switch(item.getItemId()){
-			case R.id.menu_anadir_perfil:
-				AlertDialogNuevoPerfil.newInstance(controller, new ArrayList<MiniBlasPerfil>()).show(getFragmentManager(), "");
-				return true;
-			case R.id.Acercade:
-				Intent i = new Intent(getActivity(), AcercaDe.class);
-				startActivity(i);
-				return true;
-			case R.id.menu_ajustes:
-				Intent intent = new Intent(getActivity(), Preferences.class);
-				startActivity(intent);
-				return true;
-		}
-
-		return super.onOptionsItemSelected(item);
-	}
-
 
 	@Override
 	public void setConnectIcon(){
@@ -229,9 +217,25 @@ public class ProfilesElementsFragmentCab extends CabOrdenableElementsFragment<Mi
 		}
 	}
 
-	public BaseController<MiniBlasPerfil> getController(){
+	public BaseController<MiniBlasProfile> getController(){
 		return controller;
 	}
 
+	SeleccionableBaseElementsListRendererAdapter<MiniBlasProfile> providePerfilRendererAdapter(LayoutInflater layoutInflater, ProfileRendererBuilder rendererBuilder){
+		BaseElementList<MiniBlasProfile> perfilCollection = new BaseElementList<MiniBlasProfile>();
+		final SeleccionableBaseElementsListRendererAdapter<MiniBlasProfile> adapter = new SeleccionableBaseElementsListRendererAdapter<MiniBlasProfile>(layoutInflater, rendererBuilder, perfilCollection);
+		return adapter;
+	}
+
+	private List<Renderer<MiniBlasProfile>> getPrototypesPerfil(){
+		List<Renderer<MiniBlasProfile>> prototypes = new LinkedList<Renderer<MiniBlasProfile>>();
+		ProfileRenderer perfilrenderer = new ProfileRenderer(getActivity());
+		prototypes.add(perfilrenderer);
+		return prototypes;
+	}
+
+	ProfileRendererBuilder providePerfilRendererBuilder(){
+		return new ProfileRendererBuilder(getPrototypesPerfil());
+	}
 
 }

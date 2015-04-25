@@ -1,39 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory
-        android:title="Ajustes por defecto"
-        android:layout="@layout/preference_category_custom">
-        <EditTextPreference
+    <com.miniblas.views.MiniblasPreferenceCategory android:title="@string/ajustesPorDefecto">
+        <com.afollestad.materialdialogs.prefs.MaterialEditTextPreference
             android:key="porPref"
             android:summary="@string/cambiarPuertoPorDefecto"
             android:defaultValue="@string/puertoPrecargado"
-			android:title="@string/puerto"
+			android:title="@string/port"
 			android:inputType="number"
             android:layout="@layout/preference_custom"/>
-        <EditTextPreference
+        <com.afollestad.materialdialogs.prefs.MaterialEditTextPreference
             android:key="passPref"
             android:summary="@string/cambiarPasswordPorDefecto"
             android:defaultValue="GTA70"
 			android:title="Password"
+            android:password="true"
             android:layout="@layout/preference_custom"/>
-    </PreferenceCategory>
-    <PreferenceCategory
-        android:title="Interfaz"
-        android:layout="@layout/preference_category_custom">
+    </com.miniblas.views.MiniblasPreferenceCategory>
+    <com.miniblas.views.MiniblasPreferenceCategory android:title="@string/perfilDeAutoconexion">
+        <com.afollestad.materialdialogs.prefs.MaterialListPreference
+            android:key="@string/profilePref"
+            android:summary="@string/profilePrefDescrition"
+            android:title="@string/perfil"
+            android:layout="@layout/preference_custom"/>
+    </com.miniblas.views.MiniblasPreferenceCategory>
+    <com.miniblas.views.MiniblasPreferenceCategory android:title="@string/iu">
+
+        <com.afollestad.materialdialogs.prefs.MaterialListPreference
+            android:key="@string/themePref"
+            android:summary="@string/themePrefDescrition"
+            android:entries="@array/themeMode"
+            android:entryValues="@array/themeMode"
+            android:title="@string/themeTitle"
+            android:layout="@layout/preference_custom"/>
+
+        <com.miniblas.views.MiniblasPreference
+            android:key="primary_color"
+            android:title="@string/primaryColor"
+            android:summary="@string/primaryColorDesc" />
+
+        <com.miniblas.views.MiniblasPreference
+            android:key="accent_color"
+            android:title="@string/accentColor"
+            android:summary="@string/accentColorDesc" />
 
         <CheckBoxPreference
-            android:key="basic_mode"
-            android:title="Tema básico"
-            android:summary="Tema con vista básica"
+            android:key="colored_navbar"
+            android:title="@string/coloredNavbar"
+            android:summary="@string/coloredNavbarDesc"
+            android:layout="@layout/preference_custom"
             android:persistent="true"
-            android:layout="@layout/preference_custom" />
+            android:defaultValue="true" />
 
-        <CheckBoxPreference
-            android:key="other_mode"
-            android:title="Otro tema"
-            android:summary="Descripción de otro tema"
-            android:layout="@layout/preference_custom" />
-
-    </PreferenceCategory>
+    </com.miniblas.views.MiniblasPreferenceCategory>
 </PreferenceScreen>

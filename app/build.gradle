@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 21
-    buildToolsVersion "20.0.0"
+    buildToolsVersion "21.0.1"
 
     def versionPropsFile = file('version.properties')
 
@@ -54,21 +54,27 @@ def getDate() {
     def formattedDate = date.format('(HH:mm:ss-dd/MM/yyyy)')
     return formattedDate
 }
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:21.0.0'
+    compile 'com.android.support:appcompat-v7:21.0.3'
     // @aar or @jar
     compile 'com.j256.ormlite:ormlite-android:4.48'
     compile 'com.j256.ormlite:ormlite-jdbc:4.48'
     compile 'com.j256.ormlite:ormlite-core:4.48'
     compile 'com.tojc.ormlite.android:ormlite-content-provider-library:1.0.4'
     //compile 'com.tojc.ormlite.android:ormlite-content-provider-compiler:1.0.4'
-    compile 'com.alazuga:arcadioLibrary:0.4.980002'
     compile 'com.squareup.dagger:dagger-compiler:1.2.2'
-    compile 'com.github.pedrovgs:renderers:1.2'
-    compile 'com.melnykov:floatingactionbutton:1.0.7'
+    compile 'com.github.pedrovgs:renderers:1.5'
+    compile 'com.melnykov:floatingactionbutton:1.2.0'
     compile 'asia.ivity.android:drag-sort-listview:1.0'
     compile 'com.jakewharton:butterknife:6.0.0'
     compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
-    compile 'com.afollestad:material-dialogs:0.3.0'
+    compile 'com.afollestad:material-dialogs:0.7.1.2'
+    compile 'se.emilsjolander:stickylistheaders:2.5.2'
+    compile project(':librarySeekBar')
+    compile project(':librarySwitch')
+    compile 'com.android.support:gridlayout-v7:21.0.3'
+    compile 'com.sothree.slidinguppanel:library:3.0.0'
+    compile project(':arcadioLibrary')
 }

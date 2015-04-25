@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.miniblas.app">
+        package="com.miniblas.app">
 
     <permission
         android:name="com.miniblas.api.v1.provider.READ_PROFILES"
@@ -24,15 +24,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.miniblas.iu.AcercaDe"
-            android:theme="@android:style/Theme.Dialog"
-            android:label="@string/acercaDe">
-        </activity>
-        <activity
             android:name="com.miniblas.iu.Preferences"/>
         <provider
             android:name="com.miniblas.api.v1.provider.PluginProvider"
-            android:authorities="@string/AUTHORITY_CONTENT"
+            android:authorities="com.miniblas.api.v1.provider"
             android:readPermission="com.miniblas.api.v1.provider.READ_PROFILES"
             android:exported="true">
         </provider>

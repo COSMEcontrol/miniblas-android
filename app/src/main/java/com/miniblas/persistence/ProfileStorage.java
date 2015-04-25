@@ -1,34 +1,33 @@
 package com.miniblas.persistence;
 
-import com.miniblas.model.MiniBlasPerfil;
-
-import java.util.List;
+import com.miniblas.model.MiniBlasProfile;
+import com.miniblas.model.base.BaseElementList;
 
 public interface ProfileStorage{
 	/**
 	 * Guarda el perfil pasado por parámetros.
 	 */
-	public void persist(MiniBlasPerfil _profile) throws BdException;
+	public void persist(MiniBlasProfile _profile) throws BdException;
 
 	/**
 	 * Guarda una coleccion de perfiles pasados por parámetros.
 	 * Si ya existe no lo modifica, si no existe lo crea
 	 */
-	public void persistCollection(List<MiniBlasPerfil> _collection) throws BdException;
+	public void persistCollection(BaseElementList<MiniBlasProfile> _collection) throws BdException;
 
 	/**
 	 * Obtiene un perfil con un id especificado.
 	 */
-	public MiniBlasPerfil getProfileById(int _id) throws BdException;
+	public MiniBlasProfile getProfileById(int _id) throws BdException;
 
 	/**
 	 * Obtiene una coleccion de perfiles ordenados.
 	 */
-	public List<MiniBlasPerfil> getProfilesOrdered() throws BdException;
+	public BaseElementList<MiniBlasProfile> getProfilesOrdered() throws BdException;
 
 	/**
 	 * Elimina un perfil especificado.
 	 */
-	public void deleteProfiles(List<MiniBlasPerfil> _profiles) throws BdException;
+	public void deleteProfiles(BaseElementList<MiniBlasProfile> _profiles) throws BdException;
 
 }

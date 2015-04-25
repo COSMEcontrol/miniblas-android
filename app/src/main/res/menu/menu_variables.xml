@@ -1,14 +1,16 @@
 <menu
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:miniBlas="http://schemas.android.com/apk/res-auto">
-    
+
+    <item android:id="@+id/menu_ajustes_cesta" android:title="@string/menuAjustesCesta" android:icon="@android:drawable/ic_menu_preferences" miniBlas:showAsAction="ifRoom"></item>
     <item android:id="@+id/estado" android:title="@string/estado" android:icon="@drawable/desconectado" miniBlas:showAsAction="ifRoom" android:enabled="false"></item>
 
-    <item android:id="@+id/menu_anadir_variable" android:title="@string/nuevo" android:icon="@android:drawable/ic_menu_add" miniBlas:showAsAction="never" android:visible="true" />
     
     
     <!--  <item android:id="@+id/actualizar_lista_variables" android:showAsAction="ifRoom|withText" android:visible="true" android:title="@string/actualizarListaVariables" android:icon="@drawable/navigation_refresh"></item>
         -->
+    <item android:id="@+id/terminal" android:titleCondensed="@string/terminal" android:title="@string/terminal" android:showAsAction="never"/>
+    <item android:id="@+id/menu_ajustes" android:titleCondensed="@string/ajustes" android:title="@string/ajustes" android:showAsAction="never"></item>
     <item android:id="@+id/Acercade" android:title="@string/acercade" android:orderInCategory="1" miniBlas:showAsAction="never"></item>
 
     

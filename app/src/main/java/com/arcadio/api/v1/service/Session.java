@@ -14,9 +14,9 @@ public class Session{
 	//	private static Session session;
 
 
-	public Session(ISessionStartedListener sessionStartedListener, CosmeConnector cosmeCosmeConnector){
+	public Session(ISessionStartedListener sessionStartedListener){
 		this.sessionStartedListener = sessionStartedListener;
-		this.cosmeCosmeConnector = cosmeCosmeConnector;
+		//this.cosmeCosmeConnector = cosmeCosmeConnector;
 		this.sessionId = UUID.randomUUID().hashCode();
 		this.sessionKey = UUID.randomUUID().toString();
 	}
@@ -48,6 +48,7 @@ public class Session{
 		}
 
 	}
+	public void setCosmeCosmeConnector(CosmeConnector _cosmeCosmeConnector){this.cosmeCosmeConnector= _cosmeCosmeConnector;}
 
 
 	public int getSessionId(){

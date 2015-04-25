@@ -1,60 +1,105 @@
 package com.miniblas.iu.utils;
 
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.miniblas.app.R;
+import com.miniblas.iu.dialog.ColorChooserDialog;
 
 public class ThemeUtils{
 
-	public ThemeUtils(Activity context){
+	public ThemeUtils(Context context){
 		mContext = context;
-		isChanged(); // invalidate stored booleans
+		isChanged(false); // invalidate stored booleans
 	}
 
 	private Context mContext;
-	private boolean otherMode;
-	private boolean basicMode;
+	private boolean mDarkMode;
+	private int mLastPrimaryColor;
+	private int mLastAccentColor;
+	private boolean mLastColoredNav;
 
-	public static boolean isOtherMode(Context context){
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-		return prefs.getBoolean("other_mode", false);
+
+	public static int positiveColor;
+	public static int neutralColor;
+	public static int negativeColor;
+
+
+	public static boolean isDarkMode(Context paramContext){
+		return PreferenceManager.getDefaultSharedPreferences(paramContext).getBoolean("dark_mode", false);
 	}
 
-	public static boolean isBasicMode(Context context){
-		if(!isOtherMode(context)){
-			return false;
+	public int primaryColor() {
+		final int defaultColor = mContext.getResources().getColor(R.color.miniblas_color);
+		return PreferenceManager.getDefaultSharedPreferences(mContext).getInt("primary_color", defaultColor);
+	}
+
+	public void setPrimaryColor(int newColor) {
+		PreferenceManager.getDefaultSharedPreferences(mContext).edit().putInt("primary_color", newColor).commit();
+	}
+
+	public int primaryColorDark() {
+		return ColorChooserDialog.shiftColorDown(primaryColor());
+	}
+
+	public int accentColor() {
+		final int defaultColor = mContext.getResources().getColor(R.color.miniblas_accent_color);
+		return PreferenceManager.getDefaultSharedPreferences(mContext).getInt("accent_color", defaultColor);
+	}
+
+	public int accentColorLight() {
+		return ColorChooserDialog.shiftColorUp(accentColor());
+	}
+
+	public int accentColorDark() {
+		return ColorChooserDialog.shiftColorDown(accentColor());
+	}
+
+	public void accentColor(int newColor) {
+		PreferenceManager.getDefaultSharedPreferences(mContext).edit().putInt("accent_color", newColor).commit();
+	}
+
+	public boolean isColoredNavBar() {
+		return PreferenceManager.getDefaultSharedPreferences(mContext).getBoolean("colored_navbar", true);
+	}
+
+	public boolean isChanged(boolean checkForChanged) {
+		final boolean darkTheme = isDarkMode(mContext);
+		final int primaryColor = primaryColor();
+		final int accentColor = accentColor();
+		final boolean coloredNav = isColoredNavBar();
+
+		boolean changed = false;
+		if (checkForChanged) {
+			changed = mDarkMode != darkTheme ||
+					mLastPrimaryColor != primaryColor || mLastAccentColor != accentColor ||
+					coloredNav != mLastColoredNav;
 		}
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-		return prefs.getBoolean("basic_mode", false);
-	}
 
-	//    public static Theme getDialogTheme(Context context) {
-	//        if (isMaterialDesingMode(context) || isBasicMode(context)) return Theme.DARK;
-	//        else return Theme.LIGHT;
-	//    }
+		mDarkMode = darkTheme;
+		mLastPrimaryColor = primaryColor;
+		mLastAccentColor = accentColor;
+		mLastColoredNav = coloredNav;
 
-	public boolean isChanged(){
-		boolean otherTheme = isOtherMode(mContext);
-		boolean basicTheme = isBasicMode(mContext);
-
-		boolean changed = otherMode != otherTheme || basicMode != basicTheme;
-		otherMode = otherTheme;
-		basicMode = basicTheme;
 		return changed;
 	}
 
-	public int getCurrent(){
-		if(basicMode){
-			return R.style.MiniblasBasic;
-		}
-		if(otherMode){
-			return R.style.MiniblasBasic;
-		}else{
-			return R.style.MiniblasMaterialDesing;
+	public int getCurrent(boolean hasNavDrawer) {
+		if (hasNavDrawer) {
+			if (mDarkMode) {
+				return R.style.MiniblasBasic;
+			} else {
+				return R.style.MiniblasMaterialDesing;
+			}
+		} else {
+			if (mDarkMode) {
+				return R.style.MiniblasBasic;
+			} else {
+				return R.style.MiniblasMaterialDesing;
+			}
 		}
 	}
+
+
 }

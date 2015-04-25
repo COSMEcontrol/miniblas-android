@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.miniblas.model.MiniBlasPerfil;
+import com.miniblas.model.MiniBlasProfile;
 
 public class SharedPreferencesSettingStorage implements SettingStorage{
 
@@ -13,7 +13,7 @@ public class SharedPreferencesSettingStorage implements SettingStorage{
 	private SharedPreferences.Editor editor;
 
 	public static final String PREF_AUTOCONEXION = "PREF_AUTOCONEXION";
-	public static final String PREF_AUTOCONEXION_ID_PROFILE = "PREF_AUTOCONEXION_ID_PROFILE";
+	public static final String PREF_AUTOCONEXION_ID_PROFILE = "bagPref";
 
 	public static final String PREF_DEFAULT_PORT = "porPref";
 	public static final String PREF_DEFAULT_PASS = "passPref";
@@ -30,7 +30,7 @@ public class SharedPreferencesSettingStorage implements SettingStorage{
 
 	@Override
 	public int getPrefAutoConexionIdProfile(){
-		return preferencias.getInt(PREF_AUTOCONEXION_ID_PROFILE, 0);
+		return Integer.valueOf(preferencias.getString(PREF_AUTOCONEXION_ID_PROFILE, "0"));
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class SharedPreferencesSettingStorage implements SettingStorage{
 
 	@Override
 	public void setPrefAutoConexionIdProfile(int _ip){
-		editor.putInt(PREF_AUTOCONEXION_ID_PROFILE, _ip);
+		editor.putString(PREF_AUTOCONEXION_ID_PROFILE, String.valueOf(_ip));
 		editor.commit();
 	}
 
@@ -61,12 +61,12 @@ public class SharedPreferencesSettingStorage implements SettingStorage{
 
 	@Override
 	public int getPrefDefaultPort(){
-		return Integer.valueOf(preferencias.getString(PREF_DEFAULT_PORT, String.valueOf(MiniBlasPerfil.PUERTO_POR_DEFECTO)));
+		return Integer.valueOf(preferencias.getString(PREF_DEFAULT_PORT, String.valueOf(MiniBlasProfile.PUERTO_POR_DEFECTO)));
 	}
 
 	@Override
 	public String getPrefDefaultPassword(){
-		return preferencias.getString(PREF_DEFAULT_PASS, MiniBlasPerfil.CONTRASEÑA_POR_DEFECTO);
+		return preferencias.getString(PREF_DEFAULT_PASS, MiniBlasProfile.CONTRASEÑA_POR_DEFECTO);
 	}
 
 }

@@ -3,8 +3,7 @@
     
     <item android:id="@+id/estado" android:title="@string/estado" android:icon="@drawable/desconectado" android:showAsAction="ifRoom" android:enabled="false"></item>
     <item android:id="@+id/menu_anadir_cesta" android:title="@string/nueva_cesta" android:icon="@android:drawable/ic_menu_add" android:showAsAction="ifRoom|withText" android:visible="true" />
-    <item android:id="@+id/menu_anadir_variable" android:title="@string/nuevaVariable" android:icon="@android:drawable/ic_menu_add" android:showAsAction="ifRoom|withText" android:visible="true" android:enabled="false"/>
-    
+
     <group android:checkableBehavior="all">
         <item android:id="@+id/menu_cestas_autoconexion" android:titleCondensed="Autoconexión" android:title="Autoconexión">
         </item>

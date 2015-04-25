@@ -4,12 +4,11 @@ import com.miniblas.app.AplicacionPrincipal;
 import com.miniblas.iu.controllers.base.BaseController;
 import com.miniblas.iu.fragments.ProfilesElementsFragmentCab;
 import com.miniblas.iu.fragments.base.CabOrdenableElementsFragment;
-import com.miniblas.model.MiniBlasPerfil;
+import com.miniblas.model.MiniBlasProfile;
+import com.miniblas.model.base.BaseElementList;
 import com.miniblas.persistence.BdException;
 
-import java.util.List;
-
-public class ProfilesController extends BaseController<MiniBlasPerfil> implements ConnectionListener.IObservadorConnection{
+public class ProfilesController extends BaseController<MiniBlasProfile> implements ConnectionListener.IObservadorConnection{
 
 	// private ProfilesFragment profilesView;
 	public static ProfilesController instance;
@@ -50,24 +49,24 @@ public class ProfilesController extends BaseController<MiniBlasPerfil> implement
 		application.addGlobalTask(new Runnable(){
 			@Override
 			public void run(){
-				MiniBlasPerfil.CONTRASEÑA_POR_DEFECTO = application.getSettingStorage().getPrefDefaultPassword();
-				MiniBlasPerfil.PUERTO_POR_DEFECTO = application.getSettingStorage().getPrefDefaultPort();
+				MiniBlasProfile.CONTRASEÑA_POR_DEFECTO = application.getSettingStorage().getPrefDefaultPassword();
+				MiniBlasProfile.PUERTO_POR_DEFECTO = application.getSettingStorage().getPrefDefaultPort();
 			}
 		});
 	}
 
 	@Override
-	protected List<MiniBlasPerfil> getElementsToRepository() throws com.miniblas.persistence.BdException{
+	protected BaseElementList<MiniBlasProfile> getElementsToRepository() throws com.miniblas.persistence.BdException{
 		return application.getProfileStorage().getProfilesOrdered();
 	}
 
 	@Override
-	protected void saveElementsToRepository(List<MiniBlasPerfil> _elements) throws com.miniblas.persistence.BdException{
+	protected void saveElementsToRepository(BaseElementList<MiniBlasProfile> _elements) throws com.miniblas.persistence.BdException{
 		application.getProfileStorage().persistCollection(_elements);
 	}
 
 	@Override
-	protected void deleteElements(List<MiniBlasPerfil> elements) throws BdException{
+	protected void deleteElements(BaseElementList<MiniBlasProfile> elements) throws BdException{
 		application.getProfileStorage().deleteProfiles(elements);
 	}
 

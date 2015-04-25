@@ -20,15 +20,15 @@
         android:layout_marginTop="20dp"
         android:layout_toRightOf="@id/drag_handle"
         android:text="TextView"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/black" />
+        android:textAppearance="?android:attr/textAppearanceLarge"/>
 
-    <Switch
+    <com.kyleduo.switchbutton.switchbutton.SwitchButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/switch1"
-        android:layout_alignTop="@+id/tv_nom_variable"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginTop="20dp" android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"/>
 
 </RelativeLayout>

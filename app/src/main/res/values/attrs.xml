@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="toolbar_shadow" format="reference" />
+    <attr name="title_lyt_color" format="color" />
+    <attr name="list_selector" format="reference" />
+
+    <attr name="empty_image" format="reference" />
+    <attr name="empty_text" format="reference" />
+
+    <attr name="menuText_color" format="color" />
+    <attr name="actionBar_color" format="color" />
+
+
+</resources>

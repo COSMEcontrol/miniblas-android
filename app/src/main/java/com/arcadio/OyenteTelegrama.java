@@ -1,5 +1,7 @@
 package com.arcadio;
 
+import android.util.Log;
+
 import com.arcadio.api.v1.service.CosmeStates;
 import com.arcadio.common.Bag;
 import com.arcadio.common.ItemVariable;
@@ -199,17 +201,30 @@ public class OyenteTelegrama extends Thread{
 			case CESTA:
 				lv = conexion.getNombres();
 				for(ItemVariable iv : telegramRecibido.getListaVariables().getList()){
-					ItemVariable var = lv.getVariable(iv.getName());
-					if(var != null){
-						if(var instanceof NumericVariable){
-							((NumericVariable) var).setValor(((NumericVariable) iv).getValue());
-						}else if(var instanceof TextVariable){
-							((TextVariable) var).setValue(((TextVariable) iv).getValue());
+						if(iv instanceof NumericVariable){
+							ItemVariable var = lv.getVariable(iv.getName());
+							if(var != null){
+								if(var instanceof NumericVariable){
+									((NumericVariable) var).setValor(((NumericVariable) iv).getValue());
+								}else{
+									lv.add(iv.getName(),((NumericVariable) iv).getValue());
+								}
+							}else{
+								lv.add((NumericVariable) iv);
+							}
+
+						}else if(iv instanceof TextVariable){
+							ItemVariable var = lv.getVariable(iv.getName());
+							if(var != null){
+								if(var instanceof TextVariable){
+									((TextVariable) var).setValue(((TextVariable) iv).getValue());
+								}else{
+									lv.add(iv.getName(),((TextVariable) iv).getValue());
+								}
+							}else{
+								lv.add((TextVariable) iv);
+							}
 						}
-					}else{
-						// si no existe la añadimos
-						lv.add(iv);
-					}
 				}
 				if(!telegramRecibido.esEco()){
 					String prefijoCesta = telegramRecibido.getNombreCesta();
@@ -350,7 +365,7 @@ public class OyenteTelegrama extends Thread{
 				// CUANDO EL TLG TRAE LA LISTA DE CLASES
 				if(telegramRecibido.getTipoVariable().equals(IDENTIFICADOR_DE_CLASE)){ //"SISTEMA.CLASE"
 					for(ItemVariable v : telegramRecibido.getListaVariablesDeTipo().getList()){
-						//  conexion.anadirTipo(v.getName());
+						//  conexion.anadirTipo(v.getNameElement());
 						ln.setType(v.getName(), tipo);
 					}// for
 

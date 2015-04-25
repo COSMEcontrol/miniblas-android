@@ -21,7 +21,7 @@ ADDED from AndroidManifest.xml:5:5
 		ADDED from AndroidManifest.xml:9:9
 	android:permissionGroup
 		ADDED from AndroidManifest.xml:8:9
-	android:name
+	android:nameElement
 		ADDED from AndroidManifest.xml:6:9
 application
 ADDED from AndroidManifest.xml:11:5
@@ -44,23 +44,23 @@ MERGED from com.android.support:support-v4:21.0.2:16:5
 		ADDED from AndroidManifest.xml:14:9
 	android:theme
 		ADDED from AndroidManifest.xml:16:9
-	android:name
+	android:nameElement
 		ADDED from AndroidManifest.xml:12:9
 activity#com.miniblas.iu.FabActivity
 ADDED from AndroidManifest.xml:17:9
 	android:label
 		ADDED from AndroidManifest.xml:19:13
-	android:name
+	android:nameElement
 		ADDED from AndroidManifest.xml:18:13
 intent-filter#android.intent.action.MAIN+android.intent.category.LAUNCHER
 ADDED from AndroidManifest.xml:20:13
 action#android.intent.action.MAIN
 ADDED from AndroidManifest.xml:21:17
-	android:name
+	android:nameElement
 		ADDED from AndroidManifest.xml:21:25
 category#android.intent.category.LAUNCHER
 ADDED from AndroidManifest.xml:23:17
-	android:name
+	android:nameElement
 		ADDED from AndroidManifest.xml:23:27
 activity#com.miniblas.iu.AcercaDe
 ADDED from AndroidManifest.xml:26:9
@@ -68,11 +68,11 @@ ADDED from AndroidManifest.xml:26:9
 		ADDED from AndroidManifest.xml:29:13
 	android:theme
 		ADDED from AndroidManifest.xml:28:13
-	android:name
+	android:nameElement
 		ADDED from AndroidManifest.xml:27:13
 activity#com.miniblas.iu.Preferences
 ADDED from AndroidManifest.xml:31:9
-	android:name
+	android:nameElement
 		ADDED from AndroidManifest.xml:32:13
 provider#com.miniblas.api.v1.provider.PluginProvider
 ADDED from AndroidManifest.xml:33:9
@@ -82,27 +82,27 @@ ADDED from AndroidManifest.xml:33:9
 		ADDED from AndroidManifest.xml:35:13
 	android:readPermission
 		ADDED from AndroidManifest.xml:36:13
-	android:name
+	android:nameElement
 		ADDED from AndroidManifest.xml:34:13
 service#com.arcadio.api.v1.service.ConnectionArcadioService
 ADDED from AndroidManifest.xml:39:9
 	android:process
 		ADDED from AndroidManifest.xml:41:13
-	android:name
+	android:nameElement
 		ADDED from AndroidManifest.xml:40:13
 intent-filter#com.arcadio.api.v1.service.IPluginServiceArcadio
 ADDED from AndroidManifest.xml:42:13
 action#com.arcadio.api.v1.service.IPluginServiceArcadio
 ADDED from AndroidManifest.xml:43:17
-	android:name
+	android:nameElement
 		ADDED from AndroidManifest.xml:44:21
 activity#com.arcadio.api.v1.service.StopConnection
 ADDED from AndroidManifest.xml:47:9
-	android:name
+	android:nameElement
 		ADDED from AndroidManifest.xml:47:19
 uses-permission#android.permission.INTERNET
 ADDED from AndroidManifest.xml:49:5
-	android:name
+	android:nameElement
 		ADDED from AndroidManifest.xml:49:22
 uses-sdk
 INJECTED from AndroidManifest.xml:0:0 reason: use-sdk injection requested
@@ -129,5 +129,5 @@ activity#android.support.v7.widget.TestActivity
 ADDED from com.android.support:recyclerview-v7:21.0.0:18:9
 	android:label
 		ADDED from com.android.support:recyclerview-v7:21.0.0:18:19
-	android:name
+	android:nameElement
 		ADDED from com.android.support:recyclerview-v7:21.0.0:18:60

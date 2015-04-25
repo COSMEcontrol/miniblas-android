@@ -1,24 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<!--
-    <style name="_SelectorParent" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="list_selector">@drawable/list_selector</item>
-        <item name="menu_selector">@drawable/menu_selector</item>
-    </style>
--->
-    <style name="miniBlasParent" parent="Theme.AppCompat.Light.DarkActionBar">
 
-        <item name="colorPrimary">@color/miniblas_color</item>
+    <style name="miniBlasParent" parent="Theme.AppCompat.Light.NoActionBar">
+
+        <item name="offDrawable">@drawable/md_back_off</item>
+        <item name="onDrawable">@drawable/md_back_on</item>
+        <!-- Color de la barra de seleccion
         <item name="actionModeBackground">@drawable/cab_background_top_example</item>
         <item name="actionModeSplitBackground">@drawable/cab_background_bottom_example</item>
+        -->
+        <item name="windowActionModeOverlay">true</item>
+
+
+        <item name="actionModeCloseDrawable">@drawable/ic_action_close</item>
+        <item name="android:actionModeCloseDrawable">@drawable/ic_action_close</item>
+
+
+        <item name="rlv_titleSize">25dp</item>
+        <item name="rlv_titleColor">@color/white</item>
+        <item name="rlv_backgroundColorValue">@color/pink</item>
+
+
+        <item name="empty_text">@color/empty_text</item>
+        <item name="empty_image">@drawable/ic_empty_image</item>
+
+
+        <item name="actionBar_color">@color/white</item>
+        <item name="menuText_color">@color/black</item>
+
+        <item name="actionModeStyle">@style/LStyled.ActionMode</item>
+
+
+
+
 
     </style>
 
+    <style name="miniBlasDarkParent" parent="Theme.AppCompat.NoActionBar">
 
-    <style name="miniBlasDarkParent" parent="Theme.AppCompat">
+        <item name="actionBar_color">@color/white</item>
+        <item name="menuText_color">@color/white</item>
+
+        <item name="offDrawable">@drawable/md_back_off</item>
+        <item name="onDrawable">@drawable/md_back_on</item>
+
+        <item name="android:textColor">@android:color/white</item>
+        <item name="dropDownListViewStyle">@style/PopupMenuListViewDark</item>
+
+
+        <item name="textAppearanceLargePopupMenu">
+                    @style/TextAppearance.AppCompat.Widget.PopupMenu.Large
+        </item>
+        <item name="textAppearanceSmallPopupMenu">
+                    @style/TextAppearance.AppCompat.Widget.PopupMenu.Small
+        </item>
+        <item name="windowActionModeOverlay">true</item>
+
+        <item name="actionModeCloseDrawable">@drawable/ic_action_close</item>
+        <item name="android:actionModeCloseDrawable">@drawable/ic_action_close</item>
+
+
+        <item name="rlv_titleSize">25dp</item>
+        <item name="rlv_titleColor">@color/white</item>
+        <item name="rlv_backgroundColorValue">@color/pink</item>
+
+        <item name="empty_text">@color/empty_text_dark</item>
+        <item name="empty_image">@drawable/ic_empty_image_light</item>
+
 
 
     </style>
-
 
 </resources>

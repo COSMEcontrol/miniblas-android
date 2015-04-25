@@ -1,95 +1,97 @@
 package com.miniblas.iu.cab.base;
 
-import android.util.Log;
-import android.util.SparseBooleanArray;
+import android.support.v7.view.ActionMode;
 import android.view.Menu;
+import android.view.MenuItem;
 
 import com.miniblas.app.R;
 import com.miniblas.iu.fragments.base.CabOrdenableElementsFragment;
-import com.miniblas.model.ISortElement;
-
-import java.util.ArrayList;
+import com.miniblas.model.base.BaseElement;
+import com.miniblas.model.base.BaseElementList;
 
 public abstract class BaseOrdenableElementsCab extends BaseCab{
 
-	private android.view.Menu menu;
+	private Menu menu;
+	private ActionMode aMode;
+	private BaseElementList<BaseElement> elementsSelected;
 
+	public BaseOrdenableElementsCab() {
+		super();
+		elementsSelected = new BaseElementList();
+	}
 
 	public abstract boolean canShowFab();
 
 	public abstract int getMultipleElementMenu();
 
 	@Override
-	public final boolean onCreateActionMode(android.view.ActionMode actionMode, Menu menu){
+	public final boolean onCreateActionMode(ActionMode actionMode, Menu menu){
 		boolean result = super.onCreateActionMode(actionMode, menu);
+		getContext().hideFab();
 		this.menu = menu;
-		invalidateFab();
+		this.aMode=actionMode;
+		elementsSelected = new BaseElementList();
 		return result;
 	}
 
 	@Override
 	public BaseOrdenableElementsCab setFragment(CabOrdenableElementsFragment fragment){
 		super.setFragment(fragment);
-		//invalidateFab();
 		return this;
 	}
-
-	public BaseOrdenableElementsCab invalidateFab(){
-		Log.v("Fab", "invalidateFab()");
-		boolean hide = false;
-		if(!canShowFab() && isActive()){
-			Log.v("Fab", "Cannot use the FAB in the current mode.");
-			hide = true;
-		}
-		getContext().disableFab(hide);
-		return this;
-	}
-
 
 	@Override
-	public void onDestroyActionMode(android.view.ActionMode actionMode){
+	public final void invalidate() {
+		if (getElements().size() == 0) finish();
+		else super.invalidate();
+	}
+
+	@Override
+	public void onDestroyActionMode(ActionMode actionMode){
 		super.onDestroyActionMode(actionMode);
 		getContext().runOnUiThread(new Runnable(){
 			@Override
 			public void run(){
 				getListView().clearChoices();
-				getContext().disableFab(false);
+				getFragment().getAdapter().clearSelection();
+				getContext().showFab();
 				getFragment().getAdapter().notifyDataSetChanged();
 			}
 		});
 	}
 
 	@Override
-	public void onItemCheckedStateChanged(android.view.ActionMode mode, int position, long id, boolean checked){
-		mode.setTitle(super.getListView().getCheckedItemCount() + " " +
-				getFragment().getActivity().getResources().getString(R.string.elementosSeleccionados));
-
-		menu.clear();
-		if(getMultipleElementMenu() != -1 && super.getListView().getCheckedItemCount() > 1){
-			mode.getMenuInflater().inflate(getMultipleElementMenu(), menu);
-
-		}else{
-			mode.getMenuInflater().inflate(getMenu(), menu);
-		}
-		getFragment().getAdapter().notifyDataSetChanged();
-	}
-
-	@Override
-	public boolean onActionItemClicked(android.view.ActionMode mode, android.view.MenuItem item){
+	public boolean onActionItemClicked(ActionMode mode, MenuItem item){
+		super.onActionItemClicked(mode, item);
 		switch(item.getItemId()){
 			case R.id.menu_eliminar:
-				ArrayList<ISortElement> objectList = new ArrayList<ISortElement>();
-				SparseBooleanArray sba = super.getListView().getCheckedItemPositions();
-				for(int i = 0; i < sba.size(); i++){
-					if(sba.valueAt(i)){
-						objectList.add((ISortElement) getFragment().getAdapter().getItem(sba.keyAt(i)));
-					}
-				}
-				getFragment().getController().OnButtonDelete(objectList);
+				getFragment().getController().OnButtonDelete(getElements());
 				mode.finish();
 				return true;
 			default:
 				return false;
+		}
+	}
+	public BaseElementList getElements() {
+		return elementsSelected;
+	}
+	public void addElement(BaseElement elementSelected){
+		elementsSelected.add(elementSelected);
+		refreshToolbar();
+		invalidate();
+	}
+	public void removeElement(BaseElement elementSelected){
+		elementsSelected.remove(elementSelected);
+		refreshToolbar();
+		invalidate();
+	}
+	public void refreshToolbar(){
+		if(elementsSelected.size()>1){
+			menu.clear();
+			aMode.getMenuInflater().inflate(getMultipleElementMenu(), menu);
+		}else{
+			menu.clear();
+			aMode.getMenuInflater().inflate(getMenu(), menu);
 		}
 	}
 }

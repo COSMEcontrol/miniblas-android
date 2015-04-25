@@ -9,14 +9,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/customTitleDialog"
-        android:textColor="#80000000"
         android:text="@string/nombre_perfil" />
 
     <EditText
         android:id="@+id/et_nombre"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#000000"
         android:textSize="@dimen/customEntryDialog">
 
         <requestFocus />
@@ -27,22 +25,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/customTitleDialog"
-        android:textColor="#80000000"
         android:text="@string/ip" />
 
     <EditText
         android:id="@+id/et_ip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#000000"
         android:textSize="@dimen/customEntryDialog"/>
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/puerto"
-        android:textColor="#80000000"
+        android:text="@string/port"
         android:textSize="@dimen/customTitleDialog"/>
 
     <EditText
@@ -50,7 +45,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="number"
-        android:textColor="#000000"
         android:textSize="@dimen/customEntryDialog"
         android:hint="(Puerto 15150 por defecto)" />
 
@@ -59,7 +53,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/customTitleDialog"
-        android:textColor="#80000000"
         android:text="@string/pass" />
 
     <EditText
@@ -67,7 +60,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
-        android:textColor="#000000"
         android:textSize="@dimen/customEntryDialog"
         android:hint="(Contraseña sin modificar)"/>
 

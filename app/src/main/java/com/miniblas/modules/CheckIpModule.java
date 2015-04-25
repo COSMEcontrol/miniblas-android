@@ -1,7 +1,7 @@
 package com.miniblas.modules;
 
-import com.miniblas.iu.alertdialog.AlertDialogEditarPerfil;
-import com.miniblas.iu.alertdialog.AlertDialogNuevoPerfil;
+import com.miniblas.iu.dialog.alert.AlertDialogEditProfile;
+import com.miniblas.iu.dialog.alert.AlertDialogNewProfile;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 import dagger.Module;
 import dagger.Provides;
 
-@Module(injects = {AlertDialogNuevoPerfil.class, AlertDialogEditarPerfil.class,})
+@Module(injects = {AlertDialogNewProfile.class, AlertDialogEditProfile.class,})
 public class CheckIpModule{
 	private Pattern pattern;
 	private Matcher matcher;

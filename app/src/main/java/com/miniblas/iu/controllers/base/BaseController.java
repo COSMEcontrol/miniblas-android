@@ -1,20 +1,19 @@
 package com.miniblas.iu.controllers.base;
 
 import com.miniblas.app.AplicacionPrincipal;
-import com.miniblas.iu.alertdialog.interfaces.IObservadorEditAlertDialog;
-import com.miniblas.iu.alertdialog.interfaces.IObservadorNewAlertDialog;
+import com.miniblas.iu.dialog.interfaces.IObservadorEditDialog;
+import com.miniblas.iu.dialog.interfaces.IObservadorNewDialog;
 import com.miniblas.iu.fragments.base.CabOrdenableElementsFragment;
-import com.miniblas.iu.utils.SeleccionableRendererAdapter;
-import com.miniblas.model.ISortElement;
+import com.miniblas.iu.utils.SeleccionableBaseElementsListRendererAdapter;
+import com.miniblas.model.base.BaseElement;
+import com.miniblas.model.base.BaseElementList;
 import com.miniblas.persistence.BdException;
 
 import java.util.ArrayList;
-import java.util.List;
 
-
-public abstract class BaseController <T extends ISortElement> implements IObservadorNewAlertDialog<T>, IObservadorEditAlertDialog<T>{
+public abstract class BaseController <T extends BaseElement> implements IObservadorNewDialog<T>, IObservadorEditDialog<T>{
 	protected CabOrdenableElementsFragment<T> vista;
-	private SeleccionableRendererAdapter<T> adapter;
+	private SeleccionableBaseElementsListRendererAdapter<T> adapter;
 	protected AplicacionPrincipal application;
 
 
@@ -54,20 +53,14 @@ public abstract class BaseController <T extends ISortElement> implements IObserv
 	}
 
 	public void saveElements(){
-		final SeleccionableRendererAdapter<T> old_adapter = (SeleccionableRendererAdapter<T>) vista.getListAdapter();
+		final SeleccionableBaseElementsListRendererAdapter<T> old_adapter = (SeleccionableBaseElementsListRendererAdapter<T>) vista.getListAdapter();
 		application.addSingleTask(new Runnable(){
 			@Override
 			public void run(){
-				//						try {
-				//							Thread.sleep(5000);
-				//							System.out.println("aquiiiiiiiiiiiiiiiii");
-				//						} catch (InterruptedException e1) {
-				//							e1.printStackTrace();
-				//						}
-				ArrayList<T> objectsList = new ArrayList<T>();
+				BaseElementList<T> objectsList = new BaseElementList<T>();
 				for(int i = 0; i < old_adapter.getCount(); i++){
 					T element = (T) old_adapter.getItem(i);
-					element.setOrden(i);
+					element.setOrder(i);
 					objectsList.add((T) old_adapter.getItem(i));
 				}
 				try{
@@ -84,45 +77,50 @@ public abstract class BaseController <T extends ISortElement> implements IObserv
 	}
 
 	@Override
-	public void OnButtonNewSave(final T element){
+	public void OnButtonNewSave(final BaseElementList<T> elements){
 		application.addSingleTask(new Runnable(){
 			@Override
 			public void run(){
-				element.setOrden(adapter.getCount() + 1);
-				adapter.add(element);
-				//actualizar lista
-				vista.refreshList();
-				vista.msgButtonNewSave();
-				saveElements();
+				for(T element : elements){
+					element.setOrder(adapter.getCount() + 1);
+					adapter.add(element);
+					//actualizar lista
+					vista.refreshList();
+					vista.msgButtonNewSave();
+					saveElements();
+				}
 			}
 		});
 	}
 
 	@Override
-	public void OnButtonNewCancel(T element){
+	public void OnButtonNewCancel(BaseElementList<T> element){
 		vista.msgButtonNewCancel();
 	}
 
 	@Override
-	public void OnButtonEditSave(final T element){
+	public void OnButtonEditSave(final BaseElementList<T> elements){
 		application.addSingleTask(new Runnable(){
 			@Override
 			public void run(){
-				adapter.remove(element);
-				adapter.insert(element, element.getOrden());
-				vista.msgButtonEditSave();
-				vista.refreshList();
+				for(T element : elements){
+					adapter.remove(element);
+					adapter.insert(element, element.getOrder());
+					vista.msgButtonEditSave();
+					vista.refreshList();
+				}
+
 			}
 		});
 
 	}
 
 	@Override
-	public void OnButtonEditCancel(T element){
+	public void OnButtonEditCancel(BaseElementList<T> element){
 		vista.msgButtonEditCancel();
 	}
 
-	public void OnButtonDelete(final List<T> _elementos){
+	public void OnButtonDelete(final BaseElementList<T> _elementos){
 		for(final T element : _elementos){
 			adapter.remove(element);
 		}
@@ -147,10 +145,10 @@ public abstract class BaseController <T extends ISortElement> implements IObserv
 
 	protected abstract void loadPreferences();
 
-	protected abstract List<T> getElementsToRepository() throws BdException;
+	protected abstract BaseElementList<T> getElementsToRepository() throws BdException;
 
-	protected abstract void saveElementsToRepository(List<T> _elements) throws BdException;
+	protected abstract void saveElementsToRepository(BaseElementList<T> _elements) throws BdException;
 
-	protected abstract void deleteElements(List<T> elements) throws BdException;
+	protected abstract void deleteElements(BaseElementList<T> elements) throws BdException;
 
 }

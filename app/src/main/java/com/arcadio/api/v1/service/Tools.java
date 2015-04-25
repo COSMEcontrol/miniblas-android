@@ -8,9 +8,9 @@ import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
-import com.miniblas.model.MiniBlasPerfil;
-import com.miniblas.perfistence.ormlite.Constantes;
-import com.miniblas.perfistence.ormlite.DBHelper;
+import com.miniblas.model.MiniBlasProfile;
+import com.miniblas.persistence.ormlite.Contract;
+import com.miniblas.persistence.ormlite.DBHelper;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -26,22 +26,22 @@ public class Tools{
 		}
 	}
 
-	public static MiniBlasPerfil getProfileById(Context context, int id) throws SQLException, ErrorProfile{
+	public static MiniBlasProfile getProfileById(Context context, int id) throws SQLException, ErrorProfile{
 		//			AplicacionPrincipal application = ((AplicacionPrincipal) context.getApplicationContext());
 		//			application.
 		Log.v("Abriendo base de datos", "Abriendo base de datos");
-		Dao<MiniBlasPerfil, Integer> perfilDao = OpenHelperManager.getHelper(context, DBHelper.class).getPerfilDao();
+		Dao<MiniBlasProfile, Integer> perfilDao = OpenHelperManager.getHelper(context, DBHelper.class).getPerfilDao();
 		Log.v("rescatado perfildao", "rescatado perfildao");
-		QueryBuilder<MiniBlasPerfil, Integer> queryBuilder = perfilDao.queryBuilder();
+		QueryBuilder<MiniBlasProfile, Integer> queryBuilder = perfilDao.queryBuilder();
 		Log.v("instanciando consulta", "instanciando consulta");
 		//seleccion de la tabla
-		queryBuilder.where().eq(Constantes.PROFILE_ID, id);
+		queryBuilder.where().eq(Contract.ID, id);
 		Log.v("generada consulta", "generada consulta");
 		// prepare our sql statement
-		PreparedQuery<MiniBlasPerfil> preparedQuery = queryBuilder.prepare();
+		PreparedQuery<MiniBlasProfile> preparedQuery = queryBuilder.prepare();
 		Log.v("preparado query", "preparado query");
 		// query for all profiles that have  String id as a id.
-		List<MiniBlasPerfil> profileList = perfilDao.query(preparedQuery);
+		List<MiniBlasProfile> profileList = perfilDao.query(preparedQuery);
 		Log.v("Tengo listas", "tengo listas");
 		if(profileList.size() > 1){
 			throw new ErrorProfile("ToolsConnectionArcadioService ----> Error, encontrado " + "mas de un perfil con ID pedido " + String.valueOf(id));

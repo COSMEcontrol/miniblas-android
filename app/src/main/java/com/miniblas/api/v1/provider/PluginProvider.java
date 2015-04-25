@@ -1,14 +1,14 @@
 package com.miniblas.api.v1.provider;
 
 
-import com.miniblas.model.MiniBlasPerfil;
-import com.miniblas.perfistence.ormlite.DBHelper;
+import com.miniblas.persistence.ormlite.DBHelper;
 import com.tojc.ormlite.android.OrmLiteSimpleContentProvider;
-import com.tojc.ormlite.android.framework.MatcherController;
-import com.tojc.ormlite.android.framework.MimeTypeVnd.SubType;
 
 
 public class PluginProvider extends OrmLiteSimpleContentProvider<DBHelper>{
+
+	public static final int CONTENT_URI_PATTERN_MANY = 1;
+	public static final int CONTENT_URI_PATTERN_ONE = 2;
 
 	@Override
 	protected Class<DBHelper> getHelperClass(){
@@ -17,7 +17,9 @@ public class PluginProvider extends OrmLiteSimpleContentProvider<DBHelper>{
 
 	@Override
 	public boolean onCreate(){
-		setMatcherController(new MatcherController().add(MiniBlasPerfil.class, SubType.DIRECTORY, "", PluginContract.Profiles.CONTENT_URI_PATTERN_MANY).add(MiniBlasPerfil.class, SubType.ITEM, "#", PluginContract.Profiles.CONTENT_URI_PATTERN_ONE));
+		//setMatcherController(new MatcherController()
+		//		.add(MiniBlasProfile.class, MimeTypeVnd.SubType.DIRECTORY, "", CONTENT_URI_PATTERN_MANY)
+		//		.add(MiniBlasProfile.class, MimeTypeVnd.SubType.ITEM, "#",CONTENT_URI_PATTERN_ONE));
 		return true;
 	}
 }

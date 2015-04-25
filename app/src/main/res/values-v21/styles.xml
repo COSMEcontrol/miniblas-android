@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <style name="MiniblasMaterialDesing" parent="@miniBlasParent" >
-        <item name="android:colorPrimaryDark">@color/miniblas_color_status_bar</item>
-        <!-- <item name="android:windowTranslucentNavigation">true</item> -->
-    </style>
-</resources>

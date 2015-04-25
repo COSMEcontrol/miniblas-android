@@ -158,6 +158,9 @@ public class CosmeConnector{
 		conectar(true);
 	}
 
+	public String getHost(){
+		return host;
+	}
 	/**
 	 * >>>>>>>>>>>>>>>>>>>>>>>>>> PRUEBAS RECONEXION
 	 * Este método debe ejecutarse una sola vez. Se supone que si se pierde
@@ -640,10 +643,15 @@ public class CosmeConnector{
 	}
 
 	protected void pedirListaNombres(){
+
 		if(sintaxisTelegrama != null){
 			String txtTlg = sintaxisTelegrama.getTelegrama_pedirNombres();
 			this.enviarTelegrama(txtTlg);
 		}
+		pedirListaTipos();
+		solicitarListaNombresTipos("SISTEMA.VAR");
+		getTipoNombre("ondacuadrada.seno");
+		System.out.println("********"+getListaTipos().toString());
 	}
 
 	protected void pedirListaNombresTipoHabilitados(String tipo){

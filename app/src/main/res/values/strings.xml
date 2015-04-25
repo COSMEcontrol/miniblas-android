@@ -10,18 +10,19 @@
     <string name="sin_perfiles">¡No hay perfiles!</string>
     <string name="nombre_perfil">Nombre del perfil:</string>
     <string name="ip">IP:</string>
-    <string name="puerto">Puerto:</string>
+    <string name="port">Puerto:</string>
     <string name="pass">Contraseña:</string>
     <string name="nuevo_perfil">Nuevo Perfil</string>
     <string name="nombre_cesta">Nombre de la cesta:</string>
     <string name="periodo_refresco">Periodo de refresco (ms):</string>
-    <string name="valor">Valor:</string>
+    <string name="value">Valor:</string>
+    <string name="ajustesMiniBlas">Ajustes</string>
     <string name="ajustes">Ajustes</string>
     <string name="Guardar">Guardar</string>
     <string name="Cancelar">Cancelar</string>
     <string name="valor_max">Valor máximo:</string>
     <string name="valor_min">Valor mínimo</string>
-    <string name="sin_cestas">¡No tiene ninguna cesta creada!</string>
+    <string name="sin_cestas">¡No hay cestas!</string>
     <string name="editar_cesta">Editar Cesta</string>
     <string name="nueva_cesta">Nueva Cesta</string>
     <string name="editar_perfil">Editar Perfil</string>
@@ -41,40 +42,44 @@
     <string name="esperar">Espere...</string>
     <string name="puertoPrecargado">15150</string>
     <string name="acercaDe">Acerca de ...</string>
-    <string name="perfilVacio">El nombre de perfil o el periodo de refresco esta vacio</string>
+    <string name="perfilVacio">El nombre de profile o el periodo de refresco esta vacio</string>
     <string name="cestaExistente">El nombre de la cesta ya existe</string>
     <string name="imposibleConexion">Imposible conectarse a Cosme</string>
     <string name="actualizarListaVariables">Actualizar lista de variables</string>
     <string name="actualizandoListaVariables">Actualizando la lista de variables disponibles</string>
-    <string name="nomPerfilExistente">El nombre del perfil ya existe</string>
-    <string name="nomPerfilVacio">El nombre del perfil está vacío</string>
+    <string name="nomPerfilExistente">El nombre del profile ya existe</string>
+    <string name="nomPerfilVacio">El nombre del profile está vacío</string>
     <string name="variableExistente">La variable ya está en la cesta</string>
     <string name="nuevaVariable">Nueva Variable</string>
+    <string name="seleccionaVariable">Selecciona las variables</string>
     <string name="requiereIp">Se requiere una IP</string>
     <string name="requierePuerto">Se requiere un puerto</string>
     <string name="requiereNombre">Se requiere un nombre</string>
     <string name="existeNombre">Ya existe ese nombre</string>
-    <string name="elementosSeleccionados">seleccionados</string>
+    <string name="seleccionados">seleccionados</string>
+    <string name="seleccionado">seleccionado</string>
+    <string name="seleccionada">seleccionada</string>
+    <string name="seleccionadas">seleccionadas</string>
     <string name="periodoPositivo">Periodo mayor o igual a 0</string>
     <string name="AUTHORITY_CONTENT">com.miniblas.api.v1.provider</string>
     <string name="perfilDescartado">Perfil descartado</string>
     <string name="errorAccessBd">Error al acceder a la base de datos</string>
-    <string name="errorPerfiles">Error al guardar los perfiles en la base de datos</string>
-    <string name="errorDelPerfilBd">Error al eliminar de la BD el perfil </string>
+    <string name="errorPerfiles">Error al guardar los abstractElement en la base de datos</string>
+    <string name="errorDelPerfilBd">Error al eliminar de la BD el profile </string>
     <string name="cestaDescartada">Cesta descartada</string>
-    <string name="cesta">Cesta:</string>
+    <string name="bag">Cesta:</string>
     <string name="perfilNoModificado">Perfil no modificado</string>
     <string name="cestaNoModificada">Cesta no modificada</string>
     <string name="recibiendoListaVariables">Recibiendo lista de variables...</string>
     <string name="noAñadidaVariable">No se añadido ninguna variable</string>
-    <string name="variablesAñadidas">Variables añadidas a la cesta</string>
+    <string name="variablesAñadidas">Variables añadidas a la bag</string>
     <string name="cestaAñadida">Cesta añadida</string>
     <string name="cestaModificada">Cesta modificada</string>
     <string name="cargando">Cargando...</string>
-    <string name="cambiarPuertoPorDefecto">Cambiar el puerto por defecto</string>
-    <string name="cambiarPasswordPorDefecto">Cambiar el password por defecto</string>
+    <string name="cambiarPuertoPorDefecto">Cambiar el pueto por defecto</string>
+    <string name="cambiarPasswordPorDefecto">Cambiar la password por defecto</string>
     <string name="contraseñaPorDefecto">(Contraseña por defecto)</string>
-    <string name="puertoPorDefecto">(Puerto por defecto)</string>
+    <string name="puerNuevo0toPorDefecto">(Puerto por defecto)</string>
     <string name="perfilGuardado">Perfil Guardado</string>
     <string name="perfilEditado">Perfil editado correctamente</string>
     <string name="title_activity_main">MainActivity</string>
@@ -85,6 +90,57 @@
     <string name="ip_notification">IP:</string>
     <string name="connectToArcadio">Conectado al servicio Arcadio</string>
     <string name="disconnectToArcadio">Desconectado del servicio Arcadio</string>
-
-
+    <string name="widgetVisualizacion">Widget de Visualización:</string>
+    <string name="variable">Variable</string>
+    <string name="variableModificada">Variable modificada</string>
+    <string name="variableNoModificada">Variable no modificada</string>
+    <string name="variables">Variables</string>
+    <string name="widget">Widget</string>
+    <string name="ok">Ok!</string>
+    <string name="about_body"><![CDATA[miniBlas, programa desarrollado por <b>Alberto Azuara</b>.<br/><a href=\'https://github.com/alazuga\'>GitHub</a>&nbsp;&nbsp;&nbsp; <a href=\'https://google.com/+AlbertoAzuaraGarcia\'>Google+</a>&nbsp;&nbsp;&nbsp;<a href=\'https://twitter.com/alazuga\'>Twitter</a>&nbsp;&nbsp;&nbsp;</a><br/> ]]></string>
+    <string name="valor_on">Valor ON</string>
+    <string name="valor_off">Valor OFF</string>
+    <string name="salto_seekbar">Salto de la seekbar</string>
+    <string name="new_switch">Switch Widget</string>
+    <string name="new_seekbar_widget">Seekbar Widget</string>
+    <string name="seleccionaVariables">Selecciona las Variables</string>
+    <string name="menuAjustesCesta">Ajustes de la cesta</string>
+    <string name="nombreWidget">Nombre del widget:</string>
+    <string-array name="widget_list">
+            <item>Visualizador</item>
+            <item>Barra de deslizamiento</item>
+            <item>Interruptor</item>
+    </string-array>
+    <string name="datoIncorrecto">Dato incorrecto</string>
+    <string name="profilePref">bagPref</string>
+    <string name="profilePrefDescrition">Cambiar el perfil de conexion por defecto</string>
+    <string name="profilePreferencesTitle">Perfil por defecto</string>
+    <string name="perfil">Perfil</string>
+    <string name="perfiles">Perfiles</string>
+    <string name="ninguno">Ninguno</string>
+    <string name="primaryColor">Color Primario</string>
+    <string name="primaryColorDesc">Color primario del tema usado. Por defecto Material Green.</string>
+    <string name="accentColor">Accent Color</string>
+    <string name="accentColorDesc">Accent color del tema usado. Por defecto Material pink.</string>
+    <string name="themePref">themePref</string>
+    <string name="themePrefDescrition">Cambiar el tema principal, Por defecto o tema oscuro</string>
+    <string name="themeTitle">Tema</string>
+    <string name="coloredNavbar">Color en la barra de navegacion</string>
+    <string name="coloredNavbarDesc">Cambia el color de la barra de navegacion con el color primario</string>
+    <string-array name="themeMode">
+        <item>Tema Básico</item>
+        <item>Tema Oscuro</item>
+    </string-array>
+    <string name="hecho">Hecho</string>
+    <string name="porDefecto">Por defecto</string>
+    <string name="iu">Interfaz</string>
+    <string name="perfilDeAutoconexion">Perfil de Autoconexión</string>
+    <string name="ajustesPorDefecto">Ajustes por defecto</string>
+    <string name="only_available_lollipop">Solo disponible en Android Lollipop o superior.</string>
+    <string name="cestas">Cestas</string>
+    <string name="cesta">Cesta</string>
+    <string name="sinElementos">No hay elementos</string>
+    <string name="imposibleEscribirVariable">Imposible escribir la variable:</string>
+    <string name="servicioDesconectado">Servicio Arcadio Android desconectado</string>
+    <string name="terminal">Terminal</string>
 </resources>

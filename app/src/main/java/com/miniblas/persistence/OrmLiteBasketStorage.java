@@ -1,15 +1,15 @@
 package com.miniblas.persistence;
 
-import android.util.Log;
 
 import com.j256.ormlite.dao.Dao;
-import com.miniblas.model.MiniBlasCesta;
-import com.miniblas.model.MiniBlasPerfil;
-import com.miniblas.perfistence.ormlite.Constantes;
+import com.miniblas.model.MiniBlasBag;
+import com.miniblas.model.MiniBlasProfile;
+import com.miniblas.model.base.BaseElementList;
+import com.miniblas.persistence.ormlite.Contract;
 
 import java.sql.SQLException;
 import java.util.Collections;
-import java.util.List;
+
 
 public class OrmLiteBasketStorage implements BasketStorage{
 	private static OrmLiteBasketStorage moimeme;
@@ -30,9 +30,8 @@ public class OrmLiteBasketStorage implements BasketStorage{
 	}
 
 	@Override
-	public void persist(final MiniBlasCesta _basket) throws BdException{
+	public void persist(final MiniBlasBag _basket) throws BdException{
 		try{
-			Log.v(_basket.toString(), _basket.toString());
 			basketDao.createOrUpdate(_basket);
 		}catch(SQLException e){
 			throw new BdException(e.toString());
@@ -40,10 +39,10 @@ public class OrmLiteBasketStorage implements BasketStorage{
 	}
 
 	@Override
-	public void persistCollection(final List<MiniBlasCesta> _collection) throws BdException{
-		for(MiniBlasCesta basket : _collection){
+	public void persistCollection(BaseElementList<MiniBlasBag> _collection) throws BdException{
+		for(int i=0; i<_collection.size();i++){
 			try{
-				basketDao.createOrUpdate(basket);
+				basketDao.createOrUpdate(_collection.get(i));
 			}catch(SQLException e){
 				throw new BdException(e.toString());
 			}
@@ -51,19 +50,19 @@ public class OrmLiteBasketStorage implements BasketStorage{
 	}
 
 	@Override
-	public List<MiniBlasCesta> getBasketsOrdered() throws BdException{
-		List<MiniBlasCesta> listaCestas = null;
+	public BaseElementList<MiniBlasBag> getBagsOrdered() throws BdException{
+		BaseElementList<MiniBlasBag> baskets = null;
 		try{
-			listaCestas = basketDao.queryForAll();
-			Collections.sort(listaCestas);
+			baskets = new BaseElementList<>(basketDao.queryForAll());
+			Collections.sort(baskets);
 		}catch(SQLException e){
 			throw new BdException(e.toString());
 		}
-		return listaCestas;
+		return baskets;
 	}
 
 	@Override
-	public void deleteBaskets(List<MiniBlasCesta> _baskets) throws BdException{
+	public void deleteBags(BaseElementList<MiniBlasBag> _baskets) throws BdException{
 		try{
 			basketDao.delete(_baskets);
 		}catch(SQLException e){
@@ -73,10 +72,10 @@ public class OrmLiteBasketStorage implements BasketStorage{
 	}
 
 	@Override
-	public List<MiniBlasCesta> getBasketsByProfile(MiniBlasPerfil _profile) throws BdException{
-		List<MiniBlasCesta> baskets = null;
+	public BaseElementList<MiniBlasBag> getBagsByProfile(MiniBlasProfile _profile) throws BdException{
+		BaseElementList<MiniBlasBag> baskets = null;
 		try{
-			baskets = basketDao.queryForEq(Constantes.BASKET_PROFILE, _profile);
+			baskets = new BaseElementList<>(basketDao.queryForEq(Contract.BASKET_PROFILE, _profile));
 			Collections.sort(baskets);
 		}catch(SQLException e){
 			e.printStackTrace();
@@ -86,10 +85,10 @@ public class OrmLiteBasketStorage implements BasketStorage{
 	}
 
 	@Override
-	public MiniBlasCesta getBasketById(int _id) throws BdException{
-		MiniBlasCesta basket = null;
+	public MiniBlasBag getBagById(int _id) throws BdException{
+		MiniBlasBag basket = null;
 		try{
-			basket = (MiniBlasCesta) basketDao.queryForId(_id);
+			basket = (MiniBlasBag) basketDao.queryForId(_id);
 		}catch(SQLException e){
 			e.printStackTrace();
 			throw new BdException(e.toString());

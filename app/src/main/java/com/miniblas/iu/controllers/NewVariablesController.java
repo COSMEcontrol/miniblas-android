@@ -1,7 +1,5 @@
 package com.miniblas.iu.controllers;
 
-import android.util.SparseBooleanArray;
-
 import com.arcadio.api.v1.service.CosmeStates;
 import com.arcadio.api.v1.service.exceptions.NoConnectedArcadioException;
 import com.arcadio.api.v1.service.exceptions.ServiceDisconnectedArcadioException;
@@ -11,20 +9,18 @@ import com.miniblas.iu.controllers.base.BaseController;
 import com.miniblas.iu.fragments.NewVariableElementsFragmentCab;
 import com.miniblas.iu.fragments.VariablesElementsFragmentCab;
 import com.miniblas.iu.fragments.base.CabOrdenableElementsFragment;
-import com.miniblas.model.MiniBlasCesta;
-import com.miniblas.model.MiniBlasItemVariable;
+import com.miniblas.model.MiniBlasBag;
+import com.miniblas.model.base.BaseElementList;
+import com.miniblas.model.variableWidgets.base.BaseVariableWidget;
 import com.miniblas.persistence.BdException;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 
-public class NewVariablesController extends BaseController<MiniBlasItemVariable> implements ObservadorState.IObservadorState{
+public class NewVariablesController extends BaseController<BaseVariableWidget> implements ObservadorState.IObservadorState{
 
-	// private ProfilesFragment profilesView;
 	public static NewVariablesController instance;
-	private MiniBlasCesta basket;
+	private MiniBlasBag bag;
 
 	public static NewVariablesController getInstance(AplicacionPrincipal _aplicacionPrincipal){
 		if(instance == null){
@@ -44,8 +40,8 @@ public class NewVariablesController extends BaseController<MiniBlasItemVariable>
 
 	public void onViewChange(CabOrdenableElementsFragment _vista, int _id_profile, int _id_basket){
 		try{
-			basket = application.getBasketStorage().getBasketById(_id_basket);
-			basket.setPerfil(application.getProfileStorage().getProfileById(basket.getPerfil().getId()));
+			bag = application.getBasketStorage().getBagById(_id_basket);
+			bag.setProfile(application.getProfileStorage().getProfileById(bag.getProfile().getId()));
 		}catch(BdException e){
 			e.printStackTrace();
 		}
@@ -60,7 +56,6 @@ public class NewVariablesController extends BaseController<MiniBlasItemVariable>
 		vista.showIconLoading();
 		application.deleteAllStateObservers();
 		application.setStateObserver(this);
-		System.out.println("Estableciendo state observer");
 	}
 
 
@@ -69,52 +64,31 @@ public class NewVariablesController extends BaseController<MiniBlasItemVariable>
 	}
 
 	@Override
-	protected List<MiniBlasItemVariable> getElementsToRepository() throws BdException{
-		return new ArrayList<MiniBlasItemVariable>();
+	protected BaseElementList<BaseVariableWidget> getElementsToRepository() throws BdException{
+		return new BaseElementList<BaseVariableWidget>();
 	}
 
 	@Override
-	protected void saveElementsToRepository(List<MiniBlasItemVariable> _elements) throws BdException{
+	protected void saveElementsToRepository(BaseElementList<BaseVariableWidget> _elements) throws BdException{
 		//application.getVariableStorage().persistCollection(_elements);
 	}
 
 	@Override
-	protected void deleteElements(List<MiniBlasItemVariable> elements) throws BdException{
+	protected void deleteElements(BaseElementList<BaseVariableWidget> elements) throws BdException{
 		//application.getVariableStorage().deleteItemVariables(elements);
 	}
 
 	public void guardarVariables(){
-		final SparseBooleanArray sba = vista.getListView().getCheckedItemPositions();
-		application.addSingleTask(new Runnable(){
-			@Override
-			public void run(){
-				try{
-					application.getVariableStorage().deleteItemVariables(basket.getVariables());
-				}catch(BdException e){
-					e.printStackTrace();
-				}
+		BaseElementList<BaseVariableWidget> variableWidgetList = vista.getAdapter().getCurrentCheckedItems();
+		for(BaseVariableWidget variable : variableWidgetList){
+			variable.setBag(bag);
+		}
+		((NewVariableElementsFragmentCab)vista).setResultCode(VariablesElementsFragmentCab.RESULT_OK,variableWidgetList);
 
-				for(int i = 0; i < sba.size(); i++){
-					if(sba.valueAt(i)){
-						try{
-							MiniBlasItemVariable variable = vista.getAdapter().getItem(sba.keyAt(i));
-							variable.setCesta(basket);
-							application.getVariableStorage().persist(variable);
-
-						}catch(BdException e){
-							e.printStackTrace();
-						}
-					}
-				}
-			}
-		});
-		((NewVariableElementsFragmentCab) vista).setResultIU(VariablesElementsFragmentCab.RESULT_OK);
 	}
 
 	@Override
 	public void onNotifyNewState(CosmeStates _state){
-		try{
-			System.out.println("Recibido estado :" + _state);
 			if(_state == CosmeStates.NAMES_LIST_RECEIVED){
 				NamesList namesList = null;
 				try{
@@ -124,33 +98,24 @@ public class NewVariablesController extends BaseController<MiniBlasItemVariable>
 				}catch(NoConnectedArcadioException e){
 					e.printStackTrace();
 				}
-				ArrayList<MiniBlasItemVariable> variablesList = new ArrayList<>();
-				for(String variable : namesList.getNameList()){
-					variablesList.add(new MiniBlasItemVariable(variable));
+				BaseElementList variablesList = new BaseElementList();
+				for(String variable_name : namesList.getNameList()){
+					BaseVariableWidget var = new BaseVariableWidget(variable_name);
+					variablesList.add(var);
 				}
-				Comparator<MiniBlasItemVariable> comparator = new Comparator<MiniBlasItemVariable>(){
+				Comparator<BaseVariableWidget> comparator = new Comparator<BaseVariableWidget>(){
 
 					@Override
-					public int compare(MiniBlasItemVariable lhs, MiniBlasItemVariable rhs){
-						return rhs.getNombre().compareTo(lhs.getNombre());
+					public int compare(BaseVariableWidget lhs, BaseVariableWidget rhs){
+						return rhs.getWidgetName().compareTo(lhs.getWidgetName());
 					}
 				};
 				Collections.sort(variablesList, comparator);
 				vista.getAdapter().clearCollection();
 				vista.getAdapter().clearSelection();
 				vista.getAdapter().addAll(variablesList);
-				//consultar base de datos para ver cuales tiene seleccionadas
-				int i = 0;
-				for(MiniBlasItemVariable variable : basket.getVariables()){
-					if((i = ((NewVariableElementsFragmentCab) vista).getAdapter().indexOf(variable)) != -1){
-						((NewVariableElementsFragmentCab) vista).addItemSelected(i);
-					}
-				}
 				vista.refreshList();
 				vista.dismissIconLoading();
 			}
-		}catch(Exception e){
-			System.out.println(e.toString());
-		}
 	}
 }

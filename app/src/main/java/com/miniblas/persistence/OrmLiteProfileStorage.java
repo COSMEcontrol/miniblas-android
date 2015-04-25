@@ -1,11 +1,11 @@
 package com.miniblas.persistence;
 
 import com.j256.ormlite.dao.Dao;
-import com.miniblas.model.MiniBlasPerfil;
+import com.miniblas.model.MiniBlasProfile;
+import com.miniblas.model.base.BaseElementList;
 
 import java.sql.SQLException;
 import java.util.Collections;
-import java.util.List;
 
 public class OrmLiteProfileStorage implements ProfileStorage{
 	private static OrmLiteProfileStorage moimeme;
@@ -24,7 +24,7 @@ public class OrmLiteProfileStorage implements ProfileStorage{
 	}
 
 	@Override
-	public synchronized void persist(final MiniBlasPerfil _profile) throws BdException{
+	public synchronized void persist(final MiniBlasProfile _profile) throws BdException{
 		try{
 			perfilDao.createOrUpdate(_profile);
 		}catch(SQLException e){
@@ -33,22 +33,21 @@ public class OrmLiteProfileStorage implements ProfileStorage{
 	}
 
 	@Override
-	public synchronized void persistCollection(final List<MiniBlasPerfil> _collection) throws BdException{
-		for(MiniBlasPerfil elemento : _collection){
+	public void persistCollection(BaseElementList<MiniBlasProfile> _collection) throws BdException{
+		for(MiniBlasProfile elemento : _collection){
 			try{
 				perfilDao.createOrUpdate(elemento);
 			}catch(SQLException e){
 				throw new BdException(e.toString());
 			}
 		}
-
 	}
 
 	@Override
-	public synchronized MiniBlasPerfil getProfileById(int _id) throws BdException{
-		MiniBlasPerfil perfil = null;
+	public synchronized MiniBlasProfile getProfileById(int _id) throws BdException{
+		MiniBlasProfile perfil = null;
 		try{
-			perfil = (MiniBlasPerfil) perfilDao.queryForId(_id);
+			perfil = (MiniBlasProfile) perfilDao.queryForId(_id);
 		}catch(SQLException e){
 			throw new BdException(e.toString());
 		}
@@ -56,10 +55,10 @@ public class OrmLiteProfileStorage implements ProfileStorage{
 	}
 
 	@Override
-	public synchronized List<MiniBlasPerfil> getProfilesOrdered() throws BdException{
-		List<MiniBlasPerfil> listaPerfiles = null;
+	public synchronized BaseElementList<MiniBlasProfile> getProfilesOrdered() throws BdException{
+		BaseElementList<MiniBlasProfile> listaPerfiles = null;
 		try{
-			listaPerfiles = perfilDao.queryForAll();
+			listaPerfiles = new BaseElementList<>(perfilDao.queryForAll());
 			Collections.sort(listaPerfiles);
 		}catch(SQLException e){
 			throw new BdException(e.toString());
@@ -68,13 +67,14 @@ public class OrmLiteProfileStorage implements ProfileStorage{
 	}
 
 	@Override
-	public synchronized void deleteProfiles(List<MiniBlasPerfil> _profiles) throws BdException{
+	public void deleteProfiles(BaseElementList<MiniBlasProfile> _profiles) throws BdException{
 		try{
 			perfilDao.delete(_profiles);
 		}catch(SQLException e){
 			throw new BdException(e.toString());
 		}
 	}
+
 
 
 }
