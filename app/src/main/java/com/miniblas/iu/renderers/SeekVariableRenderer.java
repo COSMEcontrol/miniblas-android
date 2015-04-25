@@ -78,11 +78,9 @@ public class SeekVariableRenderer extends Renderer<BaseVariableWidget>{
 		sv_seekBar.setScrubberColor(mThemeUtils.accentColor());
 		sv_seekBar.setThumbColor(mThemeUtils.accentColor(), mThemeUtils.accentColor());
 		tv_nom_variable.setText(variable.getWidgetName());
-
 		sv_seekBar.setMax((((variable.getValue_max() - variable.getValue_min()) / variable.getValue_salt())));
 		sv_seekBar.setMin(0);
 		Double value =  Double.valueOf(variable.getValue());
-		Log.v("SeekVariableRender",String.valueOf(value.intValue()));
 		sv_seekBar.setProgress((value.intValue() * variable.getValue_salt())+variable.getValue_min());
 
 		sv_seekBar.setNumericTransformer(new DiscreteSeekBar.NumericTransformer(){

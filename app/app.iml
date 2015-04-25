@@ -104,13 +104,13 @@
     <orderEntry type="library" exported="" name="ormlite-jdbc-4.48" level="project" />
     <orderEntry type="library" exported="" name="butterknife-6.0.0" level="project" />
     <orderEntry type="library" exported="" name="javawriter-2.5.0" level="project" />
+    <orderEntry type="library" exported="" name="arcadioLibrary-0.54" level="project" />
     <orderEntry type="library" exported="" name="systembartint-1.0.3" level="project" />
     <orderEntry type="library" exported="" name="material-dialogs-0.7.1.2" level="project" />
     <orderEntry type="library" exported="" name="ormlite-content-provider-library-1.0.4" level="project" />
     <orderEntry type="library" exported="" name="library-3.0.0" level="project" />
     <orderEntry type="library" exported="" name="dagger-compiler-1.2.2" level="project" />
     <orderEntry type="module" module-name="librarySeekBar" exported="" />
-    <orderEntry type="module" module-name="arcadioLibrary" exported="" />
     <orderEntry type="module" module-name="librarySwitch" exported="" />
   </component>
 </module>
