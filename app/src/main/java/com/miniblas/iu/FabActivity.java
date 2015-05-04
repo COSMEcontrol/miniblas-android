@@ -47,6 +47,7 @@ public class FabActivity extends ThemableActivity implements ObservadorError.IOb
 	public static final String TERMINALPANELHEIGHT ="TERMINALPANELHEIGHT";
 	public static final String TERMINALTEXT ="TERMINALTEXT";
 
+
 	@Override
 	public void onNotifyError(String _error){
 		addLineTerminal(_error);
@@ -116,9 +117,7 @@ public class FabActivity extends ThemableActivity implements ObservadorError.IOb
 			e.printStackTrace();
 		}
 		fab.show(true);
-
-
-
+		defaultTerminalView();
 	}
 
 	public void addLineTerminal(final String _txt){
@@ -156,7 +155,7 @@ public class FabActivity extends ThemableActivity implements ObservadorError.IOb
 			mToolbar.getMenu().getItem(i).setVisible(!cabShown);
 		}
 	}
-	
+
 	public void setImageFab(int resource){
 		ImageButton button1 = (ImageButton) findViewById(R.id.fab);
 		button1.setImageResource(resource);
@@ -210,7 +209,7 @@ public class FabActivity extends ThemableActivity implements ObservadorError.IOb
 						.title(R.string.acercaDe)
 						.positiveText(R.string.ok)
 						.content(Html.fromHtml(getString(R.string.about_body)+
-						"Version: " + pInfo.versionName))
+								"Version: " + pInfo.versionName))
 						.contentLineSpacing(1.6f)
 						.build()
 						.show();
@@ -223,11 +222,14 @@ public class FabActivity extends ThemableActivity implements ObservadorError.IOb
 					int pixels = (int) (fpixels + 0.5f);
 					lytTerminal.setPanelHeight(pixels);
 					lytTerminal.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+					((AplicacionPrincipal)getApplication()).getSettingStorage().setPrefTerminal(true);
 				}else{
 					if(lytTerminal.getPanelState() != SlidingUpPanelLayout.PanelState.HIDDEN){
 						lytTerminal.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+						((AplicacionPrincipal)getApplication()).getSettingStorage().setPrefTerminal(false);
 					}else{
 						lytTerminal.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+						((AplicacionPrincipal)getApplication()).getSettingStorage().setPrefTerminal(false);
 					}
 				}
 				return true;
@@ -250,6 +252,21 @@ public class FabActivity extends ThemableActivity implements ObservadorError.IOb
 		this.fab.attachToListView(_lv);
 	}
 
-
+	private void defaultTerminalView(){
+		if(((AplicacionPrincipal)getApplication()).getSettingStorage().getPrefTerminal()){
+			DisplayMetrics metrics = getResources().getDisplayMetrics();
+			float dp = 25f;
+			float fpixels = metrics.density * dp;
+			int pixels = (int) (fpixels + 0.5f);
+			lytTerminal.setPanelHeight(pixels);
+			lytTerminal.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+		}else{
+			if(lytTerminal.getPanelState() != SlidingUpPanelLayout.PanelState.HIDDEN){
+				lytTerminal.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+			}else{
+				lytTerminal.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+			}
+		}
+	}
 
 }

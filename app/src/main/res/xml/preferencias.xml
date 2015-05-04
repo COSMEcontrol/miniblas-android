@@ -20,21 +20,29 @@
     <com.miniblas.views.MiniblasPreferenceCategory android:title="@string/perfilDeAutoconexion">
         <com.afollestad.materialdialogs.prefs.MaterialListPreference
             android:key="@string/profilePref"
-            android:defaultValue="true"
+            android:defaultValue="0"
             android:summary="@string/profilePrefDescrition"
             android:title="@string/perfil"
             android:layout="@layout/preference_custom"/>
+
     </com.miniblas.views.MiniblasPreferenceCategory>
     <com.miniblas.views.MiniblasPreferenceCategory android:title="@string/iu">
 
-        <com.afollestad.materialdialogs.prefs.MaterialListPreference
+        <CheckBoxPreference
+            android:key="PREF_TERMINAL"
+            android:title="@string/terminalViewPreference"
+            android:summary="@string/summaryTerminalPref"
+            android:layout="@layout/preference_custom"
+            android:persistent="true"
+            android:defaultValue="false" />
+
+        <Preference
             android:key="@string/themePref"
-            android:defaultValue="true"
-            android:summary="@string/themePrefDescrition"
-            android:entries="@array/themeMode"
-            android:entryValues="@array/themeMode"
             android:title="@string/themeTitle"
-            android:layout="@layout/preference_custom"/>
+            android:summary="@string/themePrefDescrition"
+            android:persistent="false"
+            android:layout="@layout/preference_custom" />
+
 
         <com.miniblas.views.MiniblasPreference
             android:key="primary_color"

@@ -18,6 +18,8 @@ public class SharedPreferencesSettingStorage implements SettingStorage{
 	public static final String PREF_DEFAULT_PORT = "porPref";
 	public static final String PREF_DEFAULT_PASS = "passPref";
 
+	public static final String PREF_TERMINAL = "PREF_TERMINAL";
+
 	public SharedPreferencesSettingStorage(Context ctx){
 		preferencias = PreferenceManager.getDefaultSharedPreferences(ctx);
 		editor = preferencias.edit();
@@ -67,6 +69,17 @@ public class SharedPreferencesSettingStorage implements SettingStorage{
 	@Override
 	public String getPrefDefaultPassword(){
 		return preferencias.getString(PREF_DEFAULT_PASS, MiniBlasProfile.CONTRASEÑA_POR_DEFECTO);
+	}
+
+	@Override
+	public boolean getPrefTerminal(){
+		return preferencias.getBoolean(PREF_TERMINAL, false);
+	}
+
+	@Override
+	public void setPrefTerminal(boolean _pref){
+		editor.putBoolean(PREF_TERMINAL, _pref);
+		editor.commit();
 	}
 
 }

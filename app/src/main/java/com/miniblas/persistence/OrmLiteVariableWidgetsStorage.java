@@ -1,5 +1,7 @@
 package com.miniblas.persistence;
 
+import android.util.Log;
+
 import com.j256.ormlite.dao.Dao;
 import com.miniblas.model.base.BaseElementList;
 import com.miniblas.model.variableWidgets.VariableSeekWidget;

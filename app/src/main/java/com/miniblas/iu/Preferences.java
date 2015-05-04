@@ -5,10 +5,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.prefs.MaterialListPreference;
 import com.miniblas.app.AplicacionPrincipal;
 import com.miniblas.app.R;
@@ -52,12 +55,12 @@ public class Preferences extends ThemableActivity implements ColorChooserDialog.
 			editor = preferencias.edit();
 			//basic_modeCheckBoxPreference = (CheckBoxPreference) getPreferenceScreen().findPreference("basic_mode");
 			//other_modeCheckBoxPreference = (CheckBoxPreference) getPreferenceScreen().findPreference("other_mode");
-
 			autoBag = (MaterialListPreference) getPreferenceScreen().findPreference(getString(R.string.profilePref));
-			
 			try{
 				list = ((AplicacionPrincipal)getActivity().getApplication()).getProfileStorage().getProfilesOrdered();
-				list.add(new MiniBlasProfile(getString(R.string.ninguno)));
+				MiniBlasProfile profileDefault = new MiniBlasProfile(getString(R.string.ninguno));
+				profileDefault.setId(0);
+				list.add(profileDefault);
 				autoBag.setEntries(list.getNameList().toArray(new CharSequence[list.size()]));
 				autoBag.setEntryValues(list.getIdsStringList().toArray(new CharSequence[list.size()]));
 			}catch(BdException e){
@@ -65,6 +68,7 @@ public class Preferences extends ThemableActivity implements ColorChooserDialog.
 				e.printStackTrace();
 				getActivity().finish();
 			}
+
 			autoBag.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener(){
 				@Override
 				public boolean onPreferenceChange(Preference preference, Object newValue){
@@ -99,6 +103,44 @@ public class Preferences extends ThemableActivity implements ColorChooserDialog.
 			});
 			*/
 
+			findPreference(getString(R.string.themePref)).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+				@Override
+				public boolean onPreferenceClick(Preference preference) {
+
+					SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+					int preselect = 0;
+					if (prefs.getBoolean("dark_mode", false)) {
+						preselect = 1;
+					} /*else if (prefs.getBoolean("dark_mode", false)) {
+						preselect = 1;
+					}*/
+
+					new MaterialDialog.Builder(getActivity())
+							.title(R.string.themeTitle)
+							.items(R.array.themeMode)
+							.itemsCallbackSingleChoice(preselect, new MaterialDialog.ListCallbackSingleChoice(){
+								@Override
+								public boolean onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence){
+									SharedPreferences.Editor prefs = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
+									switch (i) {
+										case 0:
+											prefs.putBoolean("basic_mode",true)
+													.remove("dark_mode");
+											break;
+										case 1:
+											prefs.remove("basic_mode")
+													.putBoolean("dark_mode", true);
+											break;
+									}
+									prefs.commit();
+									getActivity().recreate();
+									return false;
+								}
+							} ).show();
+					return false;
+				}
+			});
+			/*
 			themePreference = (MaterialListPreference) getPreferenceScreen().findPreference(getString(R.string.themePref));
 			themePreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener(){
 				@Override
@@ -118,6 +160,7 @@ public class Preferences extends ThemableActivity implements ColorChooserDialog.
 					return true;
 				}
 			});
+			*/
 			Preference coloredNav = findPreference("colored_navbar");
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 				coloredNav.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -132,7 +175,6 @@ public class Preferences extends ThemableActivity implements ColorChooserDialog.
 				coloredNav.setEnabled(false);
 				coloredNav.setSummary(R.string.only_available_lollipop);
 			}
-
 
 			ThemeUtils themeUtils = ((ThemableActivity) getActivity()).getThemeUtils();
 			MiniblasPreference primaryColor = (MiniblasPreference) findPreference("primary_color");

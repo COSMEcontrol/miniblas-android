@@ -1,13 +1,17 @@
 package com.miniblas.iu.fragments;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
+import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -56,6 +60,8 @@ public class VariablesElementsFragmentCab extends CabOrdenableElementsFragment<B
 	private VariableCab vc;
 	private AplicacionPrincipal application;
 	private ListView list;
+	private int id_basket;
+	private int id_profile;
 
 
 
@@ -63,6 +69,9 @@ public class VariablesElementsFragmentCab extends CabOrdenableElementsFragment<B
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		application = (AplicacionPrincipal) getActivity().getApplication();
+		Bundle extras = getArguments();
+		id_basket = extras.getInt(Contract.BASKET_TABLE_NAME);
+		id_profile = extras.getInt(Contract.PROFILE_TABLE_NAME);
 		//application.inject(this);
 		setAdapter(provideVariablesRendererAdapter(LayoutInflater.from(getActivity()), provideVariableRendererBuilder()));
 		setListAdapter(getAdapter());
@@ -80,10 +89,6 @@ public class VariablesElementsFragmentCab extends CabOrdenableElementsFragment<B
 		act = (FabActivity) getActivity();
 		act.setTitle(getResources().getString(R.string.listaVariables));
 		//act.disableFab(true);
-		Bundle extras = getArguments();
-		int id_basket = extras.getInt(Contract.BASKET_TABLE_NAME);
-		int id_profile = extras.getInt(Contract.PROFILE_TABLE_NAME);
-		controller.onViewChange(this, id_profile, id_basket);
 		//(((ActionBarActivity) getActivity()).getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 		Toolbar mToolbar = (Toolbar) getActivity().findViewById(R.id.toolbar_actionbar);
 		mToolbar.setNavigationIcon(R.drawable.ic_arrow_left_white_24dp);
@@ -129,7 +134,15 @@ public class VariablesElementsFragmentCab extends CabOrdenableElementsFragment<B
 		setCabInFragment(vc);
 		list = getListView();
 	}
-
+	@Override
+	public void onResume(){
+		super.onResume();
+		refreshView();
+	}
+	public void refreshView(){
+		controller.onViewChange(this, id_profile, id_basket);
+		((AplicacionPrincipal) getActivity().getApplication()).setIconObserver(controller);
+	}
 	public void gotoNewVariableFragment(int request_code){
 		Bundle data = new Bundle();
 		data.putInt(Contract.PROFILE_TABLE_NAME, controller.getIdProfile());
@@ -153,11 +166,12 @@ public class VariablesElementsFragmentCab extends CabOrdenableElementsFragment<B
 		act.hideFab();
 	}
 
+
 	@Override
 	public void onStop(){
 		super.onStop();
 		controller.saveElements();
-
+		controller.exit();
 	}
 
 	@Override
@@ -184,8 +198,9 @@ public class VariablesElementsFragmentCab extends CabOrdenableElementsFragment<B
 				Toast.makeText(getActivity(), getResources().getString(R.string.noAñadidaVariable), Toast.LENGTH_SHORT).show();
 			}
 		}
-		//application.setVariablesObserver(controller);
+		refreshView();
 	}
+
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
 		super.onCreateOptionsMenu(menu, inflater);
@@ -333,17 +348,17 @@ public class VariablesElementsFragmentCab extends CabOrdenableElementsFragment<B
 		runOnUiThread(new Runnable(){
 			@Override
 			public void run(){
-					//controlar si por si acaso no se ha creado la vista todavia
-					if(list != null){
-						int start = list.getFirstVisiblePosition();
-						for(int i = start, j = list.getLastVisiblePosition(); i <= j; i++){
-							View view = list.getChildAt(i - start);
-							TextView tv_touched = (TextView) view.findViewById(R.id.touched);
-							boolean touched = Boolean.valueOf(tv_touched.getText().toString());
-							if(!touched)
-								list.getAdapter().getView(i, view, list);
-						}
+				//controlar si por si acaso no se ha creado la vista todavia
+				if(list != null){
+					int start = list.getFirstVisiblePosition();
+					for(int i = start, j = list.getLastVisiblePosition(); i <= j; i++){
+						View view = list.getChildAt(i - start);
+						TextView tv_touched = (TextView) view.findViewById(R.id.touched);
+						boolean touched = Boolean.valueOf(tv_touched.getText().toString());
+						if(!touched)
+							list.getAdapter().getView(i, view, list);
 					}
+				}
 			}
 		});
 

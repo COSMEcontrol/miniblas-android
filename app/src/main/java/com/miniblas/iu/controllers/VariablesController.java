@@ -13,6 +13,7 @@ import com.miniblas.iu.dialog.interfaces.IObservadorEditBasket;
 import com.miniblas.iu.fragments.VariablesElementsFragmentCab;
 import com.miniblas.iu.fragments.base.CabOrdenableElementsFragment;
 import com.miniblas.model.MiniBlasBag;
+import com.miniblas.model.base.BaseElement;
 import com.miniblas.model.base.BaseElementList;
 import com.miniblas.model.variableWidgets.base.BaseVariableWidget;
 import com.miniblas.persistence.BdException;
@@ -60,8 +61,8 @@ public class VariablesController extends BaseController<BaseVariableWidget> impl
 			e.printStackTrace();
 		}
 		if(basket != null){
-			application.connect(_id_profile);
-			application.deleteAllVariablesObservers();
+			//application.connect(_id_profile);
+			application.deleteVariablesObserver();
 			application.setVariablesObserver(this);
 			try{
 				application.getArcadioService().createBag(basket.getNameElement());
@@ -75,8 +76,7 @@ public class VariablesController extends BaseController<BaseVariableWidget> impl
 		}
 	}
 
-	@Override
-	public void saveElements(){
+	public void exit(){
 		if(basket != null){
 			try{
 				application.getArcadioService().deleteBag(basket.getNameElement());
@@ -87,9 +87,8 @@ public class VariablesController extends BaseController<BaseVariableWidget> impl
 			}
 		}
 		super.saveElements();
-		application.deleteVariablesObserver(this);
+		application.deleteVariablesObserver();
 	}
-
 
 	@Override
 	protected void loadPreferences(){
@@ -119,6 +118,16 @@ public class VariablesController extends BaseController<BaseVariableWidget> impl
 
 	@Override
 	protected void deleteElements(BaseElementList<BaseVariableWidget> elements) throws BdException{
+		for(BaseElement element: elements){
+			try{
+				application.getArcadioService().removeNameFromBag(basket.getNameElement(), element.getNameElement());
+			}catch(com.arcadio.api.v1.service.exceptions.ServiceDisconnectedArcadioException e){
+				e.printStackTrace();
+			}catch(com.arcadio.api.v1.service.exceptions.NoConnectedArcadioException e){
+				e.printStackTrace();
+			}
+		}
+
 		application.getVariableWidgetsStorage().deleteItemVariables(elements);
 	}
 
@@ -172,5 +181,16 @@ public class VariablesController extends BaseController<BaseVariableWidget> impl
 	@Override
 	public void OnButtonEditCancel(MiniBlasBag data){
 		vista.msgButtonEditCancel();
+	}
+	@Override
+	public void OnButtonNewSave(final BaseElementList<BaseVariableWidget> elements){
+		super.OnButtonNewSave(elements);
+		try{
+			application.getArcadioService().addNamesToBag(basket.getNameElement(), new ArrayList<String>(elements.getNameList()));
+		}catch(com.arcadio.api.v1.service.exceptions.ServiceDisconnectedArcadioException e){
+			e.printStackTrace();
+		}catch(com.arcadio.api.v1.service.exceptions.NoConnectedArcadioException e){
+			e.printStackTrace();
+		}
 	}
 }

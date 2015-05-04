@@ -100,11 +100,11 @@
     <orderEntry type="library" exported="" name="guava-15.0" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-22.0.0" level="project" />
     <orderEntry type="library" exported="" name="ormlite-android-4.48" level="project" />
+    <orderEntry type="library" exported="" name="arcadioLibrary-0.57" level="project" />
     <orderEntry type="library" exported="" name="ormlite-core-4.48" level="project" />
     <orderEntry type="library" exported="" name="ormlite-jdbc-4.48" level="project" />
     <orderEntry type="library" exported="" name="butterknife-6.0.0" level="project" />
     <orderEntry type="library" exported="" name="javawriter-2.5.0" level="project" />
-    <orderEntry type="library" exported="" name="arcadioLibrary-0.54" level="project" />
     <orderEntry type="library" exported="" name="systembartint-1.0.3" level="project" />
     <orderEntry type="library" exported="" name="material-dialogs-0.7.1.2" level="project" />
     <orderEntry type="library" exported="" name="ormlite-content-provider-library-1.0.4" level="project" />

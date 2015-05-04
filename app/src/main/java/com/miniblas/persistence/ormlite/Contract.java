@@ -53,6 +53,8 @@ public class Contract{
 		VariableValueWidget
 	 */
 	public static final String VARIABLE_WIDGET_VALUE_NAME = "ValueWidget";
+	public static final String VARIABLE_WIDGET_VALUE_MAXVALUE = "VariableMaxValue";
+	public static final String VARIABLE_WIDGET_VALUE_MINVALUE = "VariableMinValue";
 
 
 

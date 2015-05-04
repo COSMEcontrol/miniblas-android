@@ -12,6 +12,8 @@ import com.arcadio.api.v1.service.exceptions.ServiceDisconnectedArcadioException
 import com.miniblas.app.AplicacionPrincipal;
 import com.miniblas.app.R;
 import com.miniblas.iu.FabActivity;
+import com.miniblas.iu.utils.ThemeUtils;
+import com.miniblas.model.variableWidgets.VariableValueWidget;
 import com.miniblas.model.variableWidgets.base.BaseVariableWidget;
 import com.pedrogomez.renderers.Renderer;
 
@@ -26,6 +28,7 @@ public class VisualizadorVariableRenderer extends Renderer<BaseVariableWidget>{
 	 */
 	private final Context context;
 	private final AplicacionPrincipal app;
+	private static ThemeUtils mThemeUtils;
 
 	/*
      * Constructor
@@ -34,6 +37,7 @@ public class VisualizadorVariableRenderer extends Renderer<BaseVariableWidget>{
 	public VisualizadorVariableRenderer(Context context){
 		this.context = context;
 		app = (AplicacionPrincipal) context.getApplicationContext();
+		mThemeUtils = new ThemeUtils(context);
 	}
     /*
      * Widgets
@@ -68,31 +72,41 @@ public class VisualizadorVariableRenderer extends Renderer<BaseVariableWidget>{
 
 	@Override
 	public void render(){
-		final BaseVariableWidget variable = getContent();
+		final VariableValueWidget variable = (VariableValueWidget) getContent();
 		tv_nom_variable.setText(variable.getWidgetName());
 		tv_variable.setText(variable.getValue());
+		// no siempre serán variables numericas
+		try{
+			double valueDouble = Double.valueOf(variable.getValue());
+			if(valueDouble>variable.getMax_value()
+					|| valueDouble< variable.getMin_value()){
+
+				tv_variable.setTextColor(mThemeUtils.accentColor());
+			}else{
+				tv_variable.setTextColor(context.getResources().getColor(R.color.black));
+			}
+		}catch(NumberFormatException ex){
+			tv_variable.setTextColor(context.getResources().getColor(R.color.black));
+		}
+
 		tv_variable.setOnClickListener(new View.OnClickListener(){
 			@Override
 			public void onClick(View v){
-				new MaterialDialog.Builder(context)
-						.title(variable.getWidgetName())
-						.content(variable.getNameElement())
-						.input(R.string.value, 0, new MaterialDialog.InputCallback(){
-							@Override
-							public void onInput(MaterialDialog dialog, CharSequence input){
-								variable.setValue(input.toString());
-								try{
-									app.getArcadioService().writeVariable(variable.getNameElement(), variable.getValue());
-								}catch(ServiceDisconnectedArcadioException e){
-									((FabActivity)context).addLineTerminal(context.getString(R.string.servicioDesconectado));
-								}catch(NoConnectedArcadioException e){
-									((FabActivity)context).addLineTerminal(context.getString(
-											R.string.imposibleEscribirVariable)+" "+variable.getNameElement());
-									((FabActivity)context).addLineTerminal(e.toString());
-								}
+				new MaterialDialog.Builder(context).title(variable.getWidgetName()).content(variable.getNameElement()).input(R.string.value, 0, new MaterialDialog.InputCallback(){
+					@Override
+					public void onInput(MaterialDialog dialog, CharSequence input){
+						variable.setValue(input.toString());
+						try{
+							app.getArcadioService().writeVariable(variable.getNameElement(), variable.getValue());
+						}catch(ServiceDisconnectedArcadioException e){
+							((FabActivity) context).addLineTerminal(context.getString(R.string.servicioDesconectado));
+						}catch(NoConnectedArcadioException e){
+							((FabActivity) context).addLineTerminal(context.getString(R.string.imposibleEscribirVariable) + " " + variable.getNameElement());
+							((FabActivity) context).addLineTerminal(e.toString());
+						}
 
-							}
-						}).show();
+					}
+				}).show();
 			}
 		});
 

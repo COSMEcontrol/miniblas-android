@@ -19,5 +19,9 @@ public interface SettingStorage{
 
 	public String getPrefDefaultPassword();
 
+	public boolean getPrefTerminal();
+
+	public void setPrefTerminal(boolean _pref);
+
 
 }

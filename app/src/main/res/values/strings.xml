@@ -72,7 +72,7 @@
     <string name="cestaNoModificada">Cesta no modificada</string>
     <string name="recibiendoListaVariables">Recibiendo lista de variables...</string>
     <string name="noAñadidaVariable">No se añadido ninguna variable</string>
-    <string name="variablesAñadidas">Variables añadidas a la bag</string>
+    <string name="variablesAñadidas">Variables añadidas a la cesta</string>
     <string name="cestaAñadida">Cesta añadida</string>
     <string name="cestaModificada">Cesta modificada</string>
     <string name="cargando">Cargando...</string>
@@ -135,6 +135,7 @@
     <string name="porDefecto">Por defecto</string>
     <string name="iu">Interfaz</string>
     <string name="perfilDeAutoconexion">Perfil de Autoconexión</string>
+    <string name="terminalViewPreference">Terminal</string>
     <string name="ajustesPorDefecto">Ajustes por defecto</string>
     <string name="only_available_lollipop">Solo disponible en Android Lollipop o superior.</string>
     <string name="cestas">Cestas</string>
@@ -143,4 +144,6 @@
     <string name="imposibleEscribirVariable">Imposible escribir la variable:</string>
     <string name="servicioDesconectado">Servicio Arcadio Android desconectado</string>
     <string name="terminal">Terminal</string>
+    <string name="summaryTerminalPref">Muestra la vista del terminal</string>
+    <string name="ErrorConvirtiendoANumber">Error convirtiendo a double la variable:</string>
 </resources>

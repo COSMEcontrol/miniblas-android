@@ -15,6 +15,7 @@ import com.kyleduo.switchbutton.switchbutton.SwitchButton;
 import com.miniblas.app.AplicacionPrincipal;
 import com.miniblas.app.R;
 import com.miniblas.iu.FabActivity;
+import com.miniblas.iu.utils.ThemeUtils;
 import com.miniblas.model.variableWidgets.VariableSwitchWidget;
 import com.miniblas.model.variableWidgets.base.BaseVariableWidget;
 import com.pedrogomez.renderers.Renderer;
@@ -30,6 +31,7 @@ public class SwitchVariableRenderer extends Renderer<BaseVariableWidget>{
 	 */
 	private final Context context;
 	private final AplicacionPrincipal app;
+	private static ThemeUtils mThemeUtils;
 
 	/*
 	 * Constructor
@@ -38,6 +40,7 @@ public class SwitchVariableRenderer extends Renderer<BaseVariableWidget>{
 	public SwitchVariableRenderer(Context context){
 		this.context = context;
 		app = (AplicacionPrincipal) context.getApplicationContext();
+		mThemeUtils = new ThemeUtils(context);
 	}
     /*
      * Widgets
@@ -79,7 +82,12 @@ public class SwitchVariableRenderer extends Renderer<BaseVariableWidget>{
 		tv_nom_variable.setText(variable.getWidgetName());
 		if(!Boolean.valueOf(touched.getText().toString())){
 			//no notificar
-			switch1.setChecked((Double.valueOf(variable.getValue()).equals(Double.valueOf(variable.getValue_on()))) == true, false);
+			try{
+				switch1.setChecked((Double.valueOf(variable.getValue()).equals(Double.valueOf(variable.getValue_on()))) == true, false);
+			}catch(NumberFormatException ex){
+				tv_nom_variable.setTextColor(mThemeUtils.accentColor());
+				((FabActivity)context).addLineTerminal(context.getString(R.string.ErrorConvirtiendoANumber) + " " + variable.getNameElement());
+			}
 		}
 
 		switch1.setOnTouchListener(new View.OnTouchListener(){

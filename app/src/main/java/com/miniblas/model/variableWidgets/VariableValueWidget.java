@@ -1,5 +1,6 @@
 package com.miniblas.model.variableWidgets;
 
+import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import com.miniblas.model.variableWidgets.base.BaseVariableWidget;
 import com.miniblas.persistence.ormlite.Contract;
@@ -12,7 +13,9 @@ public class VariableValueWidget extends BaseVariableWidget{
 
 	public static final int REQUEST_CODE_NEW_VALUE = 78686;
 
+	@DatabaseField(columnName = Contract.VARIABLE_WIDGET_VALUE_MINVALUE)
 	private int min_value;
+	@DatabaseField(columnName = Contract.VARIABLE_WIDGET_VALUE_MAXVALUE)
 	private int max_value;
 
 	public VariableValueWidget(){

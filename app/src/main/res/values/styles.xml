@@ -32,6 +32,7 @@
 
     <style name="LStyled.ActionMode" parent="@style/Widget.AppCompat.ActionMode">
         <item name="background">@color/dark_theme_gray_darker</item>
+        <item name="android:actionMenuTextColor">@color/white</item>
     </style>
 
 </resources>

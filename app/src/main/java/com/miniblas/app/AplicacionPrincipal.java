@@ -82,6 +82,7 @@ public class AplicacionPrincipal extends Application{
 			}else if (_state == CosmeStates.COMMUNICATION_IMPOSSIBLE ||
 					_state == CosmeStates.CONNECTION_INTERRUPTED||
 					_state == CosmeStates.COMMUNICATION_TIMEOUT ||
+					_state == CosmeStates.DISCONNECTED ||
 					_state == CosmeStates.CONNEXION_IMPOSSIBLE){
 				listenerIconConnection.onDisconnectNotify();
 			}
@@ -187,11 +188,7 @@ public class AplicacionPrincipal extends Application{
 		listenerObservadorVariables.setObservador(_observer);
 	}
 
-	public void deleteVariablesObserver(IObservadorVariables _observer){
-		listenerObservadorVariables.removeObservador(_observer);
-	}
-
-	public void deleteAllVariablesObservers(){
+	public void deleteVariablesObserver(){
 		listenerObservadorVariables.deleteAllObservers();
 	}
 
