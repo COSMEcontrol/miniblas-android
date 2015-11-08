@@ -4,7 +4,10 @@ import android.content.Context;
 import android.content.res.TypedArray;
 
 import com.miniblas.app.R;
-
+/**
+ *
+ * @author A. Azuara
+ */
 public class Utils {
 
 

@@ -5,7 +5,7 @@ import com.arcadio.common.ItemVariable;
 import com.arcadio.common.VariablesList;
 
 /**
- * @author fserna, Alberto Azuara García
+ * @author fserna, A. Azuara
  */
 public class Watchdog extends Thread{
 

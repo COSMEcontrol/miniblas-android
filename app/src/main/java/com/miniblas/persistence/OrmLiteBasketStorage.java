@@ -10,7 +10,10 @@ import com.miniblas.persistence.ormlite.Contract;
 import java.sql.SQLException;
 import java.util.Collections;
 
-
+/**
+ *
+ * @author A. Azuara
+ */
 public class OrmLiteBasketStorage implements BasketStorage{
 	private static OrmLiteBasketStorage moimeme;
 	private Dao basketDao;

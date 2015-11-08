@@ -21,7 +21,10 @@ import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-
+/**
+ *
+ * @author A. Azuara
+ */
 public class SeekVariableRenderer extends Renderer<BaseVariableWidget>{
 
 	/*

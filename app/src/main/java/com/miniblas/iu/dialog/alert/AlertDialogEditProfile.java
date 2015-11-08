@@ -27,7 +27,10 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-
+/**
+ *
+ * @author A. Azuara
+ */
 public class AlertDialogEditProfile extends DialogFragment{
 
 	public static final String LISTA_NOMBRE_PERFILES = "LISTA_NOMBRE_PERFILES";

@@ -3,7 +3,10 @@ package com.arcadio;
 import java.io.PrintWriter;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-
+/**
+ *
+ * @author fserna
+ */
 public class Mensajero extends Thread{
 	//  private static final Logger logger = Logger.getLogger(Mensajero.class);
 

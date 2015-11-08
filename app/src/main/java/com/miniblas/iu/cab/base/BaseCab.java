@@ -13,7 +13,10 @@ import com.miniblas.iu.fragments.base.CabOrdenableElementsFragment;
 import com.miniblas.iu.utils.ThemeUtils;
 
 import java.io.Serializable;
-
+/**
+ *
+ * @author A. Azuara
+ */
 public abstract class BaseCab implements ActionMode.Callback, Serializable{
 
 	private transient ActionMode mActionMode;

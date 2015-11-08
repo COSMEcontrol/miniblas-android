@@ -2,7 +2,10 @@ package com.miniblas.iu.controllers;
 
 
 import com.miniblas.app.AplicacionPrincipal;
-
+/**
+ *
+ * @author A. Azuara
+ */
 public class ListVariablesListener <T>{
 	private ObservadorListaVariables<T> observador;
 	//	private T data;

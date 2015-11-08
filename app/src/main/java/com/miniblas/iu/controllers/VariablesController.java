@@ -20,7 +20,10 @@ import com.miniblas.persistence.BdException;
 
 import java.util.ArrayList;
 import java.util.Collection;
-
+/**
+ *
+ * @author A. Azuara
+ */
 public class VariablesController extends BaseController<BaseVariableWidget> implements ObservadorVariables.IObservadorVariables, ConnectionIconListener.ObservadorConnectionIcon, IObservadorEditBasket{
 
 	public static VariablesController instance;

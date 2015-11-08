@@ -5,7 +5,10 @@ import android.util.Log;
 
 import com.arcadio.CosmeListener;
 import com.arcadio.common.VariablesList;
-
+/**
+ *
+ * @author A. Azuara
+ */
 public class AdapterCosmeListener implements CosmeListener{
 
 	private ICosmeListener cosmeListener;

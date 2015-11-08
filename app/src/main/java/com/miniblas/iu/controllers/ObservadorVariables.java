@@ -6,7 +6,10 @@ import com.arcadio.common.VariablesList;
 import com.miniblas.app.AplicacionPrincipal;
 
 import java.util.ArrayList;
-
+/**
+ *
+ * @author A. Azuara
+ */
 public class ObservadorVariables{
 	private IObservadorVariables observador;
 

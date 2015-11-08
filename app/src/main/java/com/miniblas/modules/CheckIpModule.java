@@ -8,7 +8,10 @@ import java.util.regex.Pattern;
 
 import dagger.Module;
 import dagger.Provides;
-
+/**
+ *
+ * @author A. Azuara
+ */
 @Module(injects = {AlertDialogNewProfile.class, AlertDialogEditProfile.class,})
 public class CheckIpModule{
 	private Pattern pattern;

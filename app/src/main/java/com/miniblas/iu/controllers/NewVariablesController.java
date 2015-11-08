@@ -16,7 +16,10 @@ import com.miniblas.persistence.BdException;
 
 import java.util.Collections;
 import java.util.Comparator;
-
+/**
+ *
+ * @author A. Azuara
+ */
 public class NewVariablesController extends BaseController<BaseVariableWidget> implements ObservadorState.IObservadorState{
 
 	public static NewVariablesController instance;

@@ -24,7 +24,7 @@ import java.util.concurrent.Semaphore;
  * ningún otro telegrama, y el sistema quedará en una situación de error
  * irrecuperable.
  *
- * @author Félix Serna, Alberto Azuara García
+ * @author Félix Serna, A. Azuara
  */
 public class OyenteTelegrama extends Thread{
 	// private static final Logger logger = Logger.getLogger(OyenteTelegrama.class);

@@ -13,7 +13,10 @@ import com.pedrogomez.renderers.RendererAdapter;
 import com.pedrogomez.renderers.RendererBuilder;
 
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
-
+/**
+ *
+ * @author A. Azuara
+ */
 public class SeleccionableBaseElementsListRendererAdapter <T extends BaseElement> extends RendererAdapter<T> implements StickyListHeadersAdapter{
 
 	/** Selected items in the list */

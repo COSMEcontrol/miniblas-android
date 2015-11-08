@@ -23,7 +23,10 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-
+/**
+ *
+ * @author A. Azuara
+ */
 public class AlertDialogEditBag extends DialogFragment{
 
 	private MaterialDialog.Builder alertBuilder;

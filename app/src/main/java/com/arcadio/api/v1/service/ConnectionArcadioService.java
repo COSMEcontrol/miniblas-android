@@ -33,7 +33,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
+/**
+ *
+ * @author A. Azuara
+ */
 public class ConnectionArcadioService extends Service{
 
 	//(sessionId, sessionKey);
@@ -157,7 +160,6 @@ public class ConnectionArcadioService extends Service{
 
 							@Override
 							public void onStateChange(ParceableCosmeStates parceableCosmeStates) throws RemoteException{
-								try{
 									if(parceableCosmeStates.getState()==CosmeStates.COMMUNICATION_OK){
 										int sdk = android.os.Build.VERSION.SDK_INT;
 										if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN){
@@ -170,9 +172,7 @@ public class ConnectionArcadioService extends Service{
 										// Builds the notification and issues it.
 										mNotifyMgr.cancel(session.getSessionId());
 									}
-								}catch(Exception e){
-									System.out.println(e.toString());
-								}
+
 								iCosmeListener.onStateChange(parceableCosmeStates);
 							}
 
@@ -189,7 +189,7 @@ public class ConnectionArcadioService extends Service{
 						session.setCosmeCosmeConnector(conexion);
 						//notificar al cliente con su identificacion
 						iSessionStartedListener.onSessionStarted(session.getSessionId(), session.getSessionKeyString());
-						//conexion.conectar(true);
+						conexion.conectar(true);
 						/*
 						if(isConnected(session.getSessionId(), session.getSessionKeyString())){
 							int sdk = android.os.Build.VERSION.SDK_INT;
@@ -234,36 +234,77 @@ public class ConnectionArcadioService extends Service{
 
 		@Override
 		public void connect2(final ISessionStartedListener iSessionStartedListener, final ICosmeListener iCosmeListener, final String _password, final String _host, final int _port) throws RemoteException{
-			/*
 			addGlobalTask(new Runnable(){
 
 				@Override
 				public void run(){
 					try{
-						CosmeConnector conexion = new CosmeConnector(new AdapterCosmeListener(iCosmeListener), _password, _host, _port, true);
-						Session session = new Session(iSessionStartedListener, conexion);
+						final Session session = new Session(iSessionStartedListener);
 						sessions.put(session.getSessionId(), session);
+						CosmeConnector conexion = new CosmeConnector(new AdapterCosmeListener(new ICosmeListener(){
+							@Override
+							public void onDataReceived(String s, VariablesList variablesList) throws RemoteException{
+								iCosmeListener.onDataReceived(s, variablesList);
+							}
+
+							@Override
+							public void onStateChange(ParceableCosmeStates parceableCosmeStates) throws RemoteException{
+									if(parceableCosmeStates.getState()==CosmeStates.COMMUNICATION_OK){
+										int sdk = android.os.Build.VERSION.SDK_INT;
+										if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN){
+											notify_deprecated(getString(com.miniblas.app.R.string.contectadoConCosme), getString(com.miniblas.app.R.string.ip_notification)+ _host, session.getSessionId());
+										}else{
+											notify_api16(getString(com.miniblas.app.R.string.contectadoConCosme), getString(com.miniblas.app.R.string.ip_notification)+ _host, session.getSessionId(), session.getSessionKeyString());
+										}
+									}else if(!isConnected(session.getSessionId(), session.getSessionKeyString())){
+										NotificationManager mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+										// Builds the notification and issues it.
+										mNotifyMgr.cancel(session.getSessionId());
+									}
+
+								iCosmeListener.onStateChange(parceableCosmeStates);
+							}
+
+							@Override
+							public void onError(String s) throws RemoteException{
+								iCosmeListener.onError(s);
+							}
+
+							@Override
+							public IBinder asBinder(){
+								return asBinder();
+							}
+						}), _password, _host, _port, true);
+						session.setCosmeCosmeConnector(conexion);
 						//notificar al cliente con su identificacion
 						iSessionStartedListener.onSessionStarted(session.getSessionId(), session.getSessionKeyString());
-						//conexion.conectar(true);
+						conexion.conectar(true);
+						/*
 						if(isConnected(session.getSessionId(), session.getSessionKeyString())){
-							//							Log.v("",String.valueOf(session.getSessionId()));
 							int sdk = android.os.Build.VERSION.SDK_INT;
 							if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN){
-								notify_deprecated("Conectado a servidor COSME", "IP: " + _host, session.getSessionId());
+								notify_deprecated(getString(com.miniblas.app.R.string.contectadoConCosme), getString(com.miniblas.app.R.string.ip_notification)+ perfil.getIp(), session.getSessionId());
 							}else{
-								notify_api16("Conectado a servidor COSME", "IP: " + _host, session.getSessionId(), session.getSessionKeyString());
+								notify_api16(getString(com.miniblas.app.R.string.contectadoConCosme), getString(com.miniblas.app.R.string.ip_notification)+ perfil.getIp(), session.getSessionId(), session.getSessionKeyString());
 							}
 						}
+						*/
+
 					}catch(RemoteException e){
 						e.printStackTrace();
 						error_sessionKey.show();
 					}catch(CosmeException e){
+						try{
+							iCosmeListener.onError(e.toString());
+						}catch(RemoteException e1){
+							e1.printStackTrace();
+						}
 						e.printStackTrace();
 					}
 				}
 			});
-			*/
+
+
 		}
 
 		@Override

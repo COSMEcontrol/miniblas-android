@@ -6,7 +6,10 @@ import com.miniblas.model.base.BaseElementList;
 
 import java.sql.SQLException;
 import java.util.Collections;
-
+/**
+ *
+ * @author A. Azuara
+ */
 public class OrmLiteProfileStorage implements ProfileStorage{
 	private static OrmLiteProfileStorage moimeme;
 	private Dao perfilDao;

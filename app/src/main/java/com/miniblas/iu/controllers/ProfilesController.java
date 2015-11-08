@@ -7,7 +7,10 @@ import com.miniblas.iu.fragments.base.CabOrdenableElementsFragment;
 import com.miniblas.model.MiniBlasProfile;
 import com.miniblas.model.base.BaseElementList;
 import com.miniblas.persistence.BdException;
-
+/**
+ *
+ * @author A. Azuara
+ */
 public class ProfilesController extends BaseController<MiniBlasProfile> implements ConnectionListener.IObservadorConnection{
 
 	// private ProfilesFragment profilesView;

@@ -3,7 +3,10 @@ package com.miniblas.persistence;
 import com.miniblas.model.MiniBlasBag;
 import com.miniblas.model.MiniBlasProfile;
 import com.miniblas.model.base.BaseElementList;
-
+/**
+ *
+ * @author A. Azuara
+ */
 
 public interface BasketStorage{
 	/**

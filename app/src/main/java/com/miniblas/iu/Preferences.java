@@ -23,7 +23,10 @@ import com.miniblas.model.base.BaseElementList;
 import com.miniblas.persistence.BdException;
 import com.miniblas.utils.Utils;
 import com.miniblas.views.MiniblasPreference;
-
+/**
+ *
+ * @author A. Azuara
+ */
 public class Preferences extends ThemableActivity implements ColorChooserDialog.ColorCallback{
 
 

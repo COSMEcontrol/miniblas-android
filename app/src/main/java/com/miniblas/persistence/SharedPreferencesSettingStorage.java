@@ -5,7 +5,10 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.miniblas.model.MiniBlasProfile;
-
+/**
+ *
+ * @author A. Azuara
+ */
 public class SharedPreferencesSettingStorage implements SettingStorage{
 
 	//editor de preferencias

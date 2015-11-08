@@ -23,7 +23,10 @@ import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-
+/**
+ *
+ * @author A. Azuara
+ */
 public class DialogNewSeekbarWidget extends DialogFragment{
 
 

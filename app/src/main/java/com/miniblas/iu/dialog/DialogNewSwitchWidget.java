@@ -26,7 +26,10 @@ import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-
+/**
+ *
+ * @author A. Azuara
+ */
 public class DialogNewSwitchWidget extends DialogFragment{
 
 	public static IObservadorNewDialog<VariableSwitchWidget> observador;

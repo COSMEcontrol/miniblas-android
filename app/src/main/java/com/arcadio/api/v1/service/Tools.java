@@ -15,7 +15,10 @@ import com.miniblas.persistence.ormlite.DBHelper;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
-
+/**
+ *
+ * @author A. Azuara
+ */
 public class Tools{
 	public static CosmeConnector getConexion(int sessionId, String sessionKey, HashMap<Integer, Session> sessions) throws SessionNotFound, IncorrectSessionKey{
 		Session session = sessions.get(sessionId);

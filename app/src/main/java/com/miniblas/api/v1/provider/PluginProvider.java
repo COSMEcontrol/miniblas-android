@@ -3,8 +3,10 @@ package com.miniblas.api.v1.provider;
 
 import com.miniblas.persistence.ormlite.DBHelper;
 import com.tojc.ormlite.android.OrmLiteSimpleContentProvider;
-
-
+/**
+ *
+ * @author A. Azuara
+ */
 public class PluginProvider extends OrmLiteSimpleContentProvider<DBHelper>{
 
 	public static final int CONTENT_URI_PATTERN_MANY = 1;

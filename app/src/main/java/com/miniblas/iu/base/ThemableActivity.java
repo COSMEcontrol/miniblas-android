@@ -9,7 +9,10 @@ import android.support.v7.app.ActionBarActivity;
 import com.afollestad.materialdialogs.ThemeSingleton;
 import com.miniblas.app.R;
 import com.miniblas.iu.utils.ThemeUtils;
-
+/**
+ *
+ * @author A. Azuara
+ */
 public class ThemableActivity extends ActionBarActivity{
 
 	private ThemeUtils mThemeUtils;

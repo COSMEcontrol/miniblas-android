@@ -6,7 +6,10 @@ import android.preference.PreferenceManager;
 
 import com.miniblas.app.R;
 import com.miniblas.iu.dialog.ColorChooserDialog;
-
+/**
+ *
+ * @author A. Azuara
+ */
 public class ThemeUtils{
 
 	public ThemeUtils(Context context){

@@ -15,7 +15,10 @@ import com.miniblas.model.variableWidgets.VariableSwitchWidget;
 import com.miniblas.model.variableWidgets.VariableValueWidget;
 
 import java.sql.SQLException;
-
+/**
+ *
+ * @author A. Azuara
+ */
 /**
  * Database helper class used to manage the creation and upgrading of your database. This class also usually provides
  * the DAOs used by the other classes.

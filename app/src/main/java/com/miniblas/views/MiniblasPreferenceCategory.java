@@ -9,7 +9,10 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.ThemeSingleton;
 import com.miniblas.app.R;
-
+/**
+ *
+ * @author A. Azuara
+ */
 public class MiniblasPreferenceCategory extends PreferenceCategory {
 
     public MiniblasPreferenceCategory(Context context, AttributeSet attrs) {

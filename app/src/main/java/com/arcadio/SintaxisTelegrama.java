@@ -12,7 +12,7 @@ import java.util.List;
 
 
 /**
- * @author fserna, Alberto Azuara García 03/12/2014
+ * @author fserna, A. Azuara 03/12/2014
  */
 public class SintaxisTelegrama{
 

@@ -2,7 +2,10 @@ package com.miniblas.iu.controllers;
 
 import com.arcadio.api.v1.service.CosmeStates;
 import com.miniblas.app.AplicacionPrincipal;
-
+/**
+ *
+ * @author A. Azuara
+ */
 public class ObservadorError{
 	private IObservadorError observadores;
 

@@ -10,7 +10,10 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
-
+/**
+ *
+ * @author A. Azuara
+ */
 public class StopConnection extends Activity{
 	private static IPluginServiceArcadio remoteArcadio;
 	private int sessionId;

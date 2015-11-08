@@ -6,7 +6,10 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.miniblas.app.R;
-
+/**
+ *
+ * @author A. Azuara
+ */
 public class MiniblasPreference extends Preference {
 
     private View mView;

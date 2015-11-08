@@ -8,7 +8,10 @@ import com.pedrogomez.renderers.RendererBuilder;
 import java.util.Collection;
 
 import javax.inject.Inject;
-
+/**
+ *
+ * @author A. Azuara
+ */
 public class BagRendererBuilder extends RendererBuilder<MiniBlasBag>{
 	@Inject
 	public BagRendererBuilder(Collection<Renderer<MiniBlasBag>> prototypes){

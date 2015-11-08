@@ -14,7 +14,10 @@ import com.arcadio.CosmeListener;
 import com.arcadio.api.v1.service.CosmeStates;
 
 import java.util.Random;
-
+/**
+ *
+ * @author fserna
+ */
 public class Muestreador{
 
 

@@ -10,7 +10,10 @@ import com.miniblas.persistence.ormlite.Contract;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ *
+ * @author A. Azuara
+ */
 @DatabaseTable(tableName = Contract.BASKET_TABLE_NAME)
 public class MiniBlasBag extends BaseElement{
 

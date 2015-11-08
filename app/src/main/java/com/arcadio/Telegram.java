@@ -14,7 +14,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 
 /**
- * @author fserna, Alberto Azuara García 03/12/2014
+ * @author fserna, A. Azuara  03/12/2014
  */
 
 public class Telegram implements Serializable{

@@ -2,7 +2,10 @@ package com.miniblas.persistence;
 
 import com.miniblas.model.base.BaseElementList;
 import com.miniblas.model.variableWidgets.base.BaseVariableWidget;
-
+/**
+ *
+ * @author A. Azuara
+ */
 public interface VariableWidgetsStorage{
 	/**
 	 * Guarda la cesta pasada por parámetros.

@@ -27,7 +27,10 @@ import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
-
+/**
+ *
+ * @author fserna
+ */
 public class CosmeConnector{
 	// <editor-fold defaultstate="collapsed" desc=" Vars ">
 
@@ -107,7 +110,7 @@ public class CosmeConnector{
 		host = _host;
 		puerto = _puerto;
 		contrasenaPasarela = _contrasenaPasarela;
-		this.conectar(host, puerto, contrasenaPasarela);
+		//this.conectar(host, puerto, contrasenaPasarela);
 	}
 
 	/**
@@ -131,7 +134,7 @@ public class CosmeConnector{
 		host = _host;
 		puerto = _puerto;
 		contrasenaPasarela = _contrasenaPasarela;
-		this.conectar(host, puerto, contrasenaPasarela);
+		//this.conectar(host, puerto, contrasenaPasarela);
 	}
 
 	public CosmeConnector(boolean _reconectar, CosmeListener _emcosListener, String _contrasenaPasarela, String _host, int _puerto){

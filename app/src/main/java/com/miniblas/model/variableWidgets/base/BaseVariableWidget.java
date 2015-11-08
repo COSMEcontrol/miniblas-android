@@ -4,6 +4,10 @@ import com.j256.ormlite.field.DatabaseField;
 import com.miniblas.model.MiniBlasBag;
 import com.miniblas.model.base.BaseElement;
 import com.miniblas.persistence.ormlite.Contract;
+/**
+ *
+ * @author A. Azuara
+ */
 public class BaseVariableWidget extends BaseElement{
 
 

@@ -4,7 +4,10 @@ import android.util.SparseBooleanArray;
 
 import java.io.IOException;
 import java.io.Serializable;
-
+/**
+ *
+ * @author A. Azuara
+ */
 public class SerializableSparseBooleanArrayContainer implements Serializable{
 
 	private static final long serialVersionUID = 393662066105575556L;

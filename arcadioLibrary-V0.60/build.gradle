@@ -1,0 +1,2 @@
+configurations.create("default")
+artifacts.add("default", file('arcadioLibrary-V0.60.aar'))

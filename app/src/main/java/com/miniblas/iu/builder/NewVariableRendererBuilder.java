@@ -8,7 +8,10 @@ import com.pedrogomez.renderers.RendererBuilder;
 import java.util.Collection;
 
 import javax.inject.Inject;
-
+/**
+ *
+ * @author A. Azuara
+ */
 public class NewVariableRendererBuilder extends RendererBuilder<BaseVariableWidget>{
 	@Inject
 	public NewVariableRendererBuilder(Collection<Renderer<BaseVariableWidget>> prototypes){

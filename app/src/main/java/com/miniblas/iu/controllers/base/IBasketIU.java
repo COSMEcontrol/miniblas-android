@@ -2,7 +2,10 @@ package com.miniblas.iu.controllers.base;
 
 
 import com.miniblas.model.MiniBlasBag;
-
+/**
+ *
+ * @author A. Azuara
+ */
 public interface IBasketIU{
 	public void actualizarLista();
 

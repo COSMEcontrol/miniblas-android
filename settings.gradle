@@ -1,1 +1,1 @@
-include ':app', ':librarySeekBar', ':librarySwitch'
+include ':app', ':librarySeekBar', ':librarySwitch', ':arcadioLibrary-V0.60'

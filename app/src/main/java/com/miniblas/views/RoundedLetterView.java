@@ -12,7 +12,10 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.miniblas.app.R;
-
+/**
+ *
+ * @author A. Azuara
+ */
 public class RoundedLetterView extends View {
 
     private static int DEFAULT_TITLE_COLOR = Color.WHITE;

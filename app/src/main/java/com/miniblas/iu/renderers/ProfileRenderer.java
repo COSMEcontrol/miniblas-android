@@ -16,7 +16,10 @@ import com.pedrogomez.renderers.Renderer;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-
+/**
+ *
+ * @author A. Azuara
+ */
 public class ProfileRenderer extends Renderer<MiniBlasProfile>{
 
 	/*

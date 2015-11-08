@@ -31,8 +31,10 @@ import com.miniblas.iu.controllers.ObservadorError;
 import com.miniblas.iu.controllers.ObservadorState;
 import com.miniblas.iu.fragments.ProfilesElementsFragmentCab;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
-
-
+/**
+ *
+ * @author A. Azuara
+ */
 public class FabActivity extends ThemableActivity implements ObservadorError.IObservadorError{
 
 	private FloatingActionButton fab; // the floating blue add/paste button

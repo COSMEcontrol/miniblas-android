@@ -10,7 +10,10 @@ import com.miniblas.model.base.BaseElementList;
 import com.miniblas.persistence.BdException;
 
 import java.util.ArrayList;
-
+/**
+ *
+ * @author A. Azuara
+ */
 public abstract class BaseController <T extends BaseElement> implements IObservadorNewDialog<T>, IObservadorEditDialog<T>{
 	protected CabOrdenableElementsFragment<T> vista;
 	private SeleccionableBaseElementsListRendererAdapter<T> adapter;

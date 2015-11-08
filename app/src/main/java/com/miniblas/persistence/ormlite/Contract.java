@@ -1,5 +1,8 @@
 package com.miniblas.persistence.ormlite;
-
+/**
+ *
+ * @author A. Azuara
+ */
 public class Contract{
 
 	/**

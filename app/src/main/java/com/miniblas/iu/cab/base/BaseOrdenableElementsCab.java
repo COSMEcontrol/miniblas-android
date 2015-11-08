@@ -8,7 +8,10 @@ import com.miniblas.app.R;
 import com.miniblas.iu.fragments.base.CabOrdenableElementsFragment;
 import com.miniblas.model.base.BaseElement;
 import com.miniblas.model.base.BaseElementList;
-
+/**
+ *
+ * @author A. Azuara
+ */
 public abstract class BaseOrdenableElementsCab extends BaseCab{
 
 	private Menu menu;

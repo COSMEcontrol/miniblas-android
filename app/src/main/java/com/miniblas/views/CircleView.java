@@ -11,7 +11,10 @@ import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
 import com.miniblas.app.R;
-
+/**
+ *
+ * @author A. Azuara
+ */
 
 public class CircleView extends FrameLayout {
 

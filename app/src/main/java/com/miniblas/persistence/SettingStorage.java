@@ -1,6 +1,9 @@
 package com.miniblas.persistence;
 
-
+/**
+ *
+ * @author A. Azuara
+ */
 public interface SettingStorage{
 
 	public boolean getPrefAutoConexion();

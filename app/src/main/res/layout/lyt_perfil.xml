@@ -22,11 +22,11 @@
         <com.miniblas.views.RoundedLetterView
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/mRoundedLetterView"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:layout_marginStart="15dp"
             android:layout_marginLeft="16dp"
-            app:titleSize="35dp"
+            app:titleSize="30dp"
             />
 
         <TextView
@@ -35,10 +35,11 @@
             android:layout_height="wrap_content"
             android:text="Medium Text"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="15dp"
             android:layout_marginLeft="15dp"
-            android:layout_alignParentTop="true" android:layout_toRightOf="@+id/mRoundedLetterView"
-            android:layout_toEndOf="@+id/mRoundedLetterView" android:layout_marginTop="12dp"/>
+            android:layout_alignBottom="@+id/mRoundedLetterView"
+            android:layout_toRightOf="@+id/mRoundedLetterView"
+            android:layout_toEndOf="@+id/mRoundedLetterView" android:layout_marginBottom="9dp"/>
 
     </RelativeLayout>
 

@@ -44,8 +44,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import dagger.ObjectGraph;
-
-
+/**
+ *
+ * @author A. Azuara
+ */
 public class AplicacionPrincipal extends Application{
 
 	private static AplicacionPrincipal instance;

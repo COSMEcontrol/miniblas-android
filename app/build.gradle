@@ -77,7 +77,7 @@ dependencies {
     compile project(':librarySwitch')
     compile 'com.android.support:gridlayout-v7:21.0.3'
     compile 'com.sothree.slidinguppanel:library:3.0.0'
-    compile 'com.alazuga:arcadioLibrary:0.57'
+    compile project(':arcadioLibrary-V0.60')
 }
 
 

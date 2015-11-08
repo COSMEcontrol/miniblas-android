@@ -97,7 +97,7 @@
     <string name="variables">Variables</string>
     <string name="widget">Widget</string>
     <string name="ok">Ok!</string>
-    <string name="about_body"><![CDATA[miniBlas, programa desarrollado por <b>Alberto Azuara</b>.<br/><a href=\'https://github.com/alazuga\'>GitHub</a>&nbsp;&nbsp;&nbsp; <a href=\'https://google.com/+AlbertoAzuaraGarcia\'>Google+</a>&nbsp;&nbsp;&nbsp;<a href=\'https://twitter.com/alazuga\'>Twitter</a>&nbsp;&nbsp;&nbsp;</a><br/> ]]></string>
+    <string name="about_body"><![CDATA[MiniBlas<br/> ]]></string>
     <string name="valor_on">Valor ON</string>
     <string name="valor_off">Valor OFF</string>
     <string name="salto_seekbar">Salto de la seekbar</string>

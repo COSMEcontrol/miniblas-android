@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/arcadioLibrary-V0.60/arcadioLibrary-V0.60.iml" filepath="$PROJECT_DIR$/arcadioLibrary-V0.60/arcadioLibrary-V0.60.iml" />
       <module fileurl="file://$PROJECT_DIR$/librarySeekBar/librarySeekBar.iml" filepath="$PROJECT_DIR$/librarySeekBar/librarySeekBar.iml" />
       <module fileurl="file://$PROJECT_DIR$/librarySwitch/librarySwitch.iml" filepath="$PROJECT_DIR$/librarySwitch/librarySwitch.iml" />
       <module fileurl="file://$PROJECT_DIR$/miniblas.iml" filepath="$PROJECT_DIR$/miniblas.iml" />

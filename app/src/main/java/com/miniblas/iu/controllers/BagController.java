@@ -8,7 +8,10 @@ import com.miniblas.model.MiniBlasBag;
 import com.miniblas.model.MiniBlasProfile;
 import com.miniblas.model.base.BaseElementList;
 import com.miniblas.persistence.BdException;
-
+/**
+ *
+ * @author A. Azuara
+ */
 public class BagController extends BaseController<MiniBlasBag> implements ConnectionIconListener.ObservadorConnectionIcon{
 
 	// private ProfilesFragment profilesView;

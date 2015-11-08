@@ -3,7 +3,10 @@ package com.miniblas.iu.fragments.base;
 import com.miniblas.iu.utils.SeleccionableBaseElementsListRendererAdapter;
 import com.miniblas.model.base.BaseElement;
 import com.mobeta.android.dslv.DragSortListView;
-
+/**
+ *
+ * @author A. Azuara
+ */
 class onDropBaseElementListener <T extends BaseElement> implements DragSortListView.DropListener{
 	public SeleccionableBaseElementsListRendererAdapter<T> adapter;
 
